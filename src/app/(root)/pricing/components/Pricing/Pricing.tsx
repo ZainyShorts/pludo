@@ -6,7 +6,7 @@ import { pricingPlans } from './data';
 export default function PricingPlans() {
   return (
 <div className="w-full min-h-screen  py-16 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
-<div className="w-full max-w-7xl mx-auto lg:max-w-[1400px]">
+<div className="w-full mt-24 max-w-7xl mx-auto lg:max-w-[1400px]">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-extrabold text-white sm:text-5xl lg:text-6xl drop-shadow-lg">
             Choose Your Plan

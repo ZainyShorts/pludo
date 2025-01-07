@@ -1,6 +1,6 @@
 'use client'
 
-import {MarketingSectionProps } from './types'
+import { MarketingSectionProps } from './types'
 
 export default function MarketingSection({
   mainCard,
@@ -20,12 +20,19 @@ export default function MarketingSection({
             <p className="text-lg md:text-3xl mb-6 font-semibold max-w-[300px] md:max-w-[400px] text-white">
               {mainCard.description}
             </p>
+            <ul className="list-none space-y-2 mb-6">
+              {mainCard.keyPoints.map((point, index) => (
+                <li key={index} className="flex items-start p-1">
+                  <span className="text-green-400 mr-2">•</span>
+                  <span className="text-gray-200 text-sm md:text-base">{point}</span>
+                </li>
+              ))}
+            </ul>
             <button className="px-4 py-2 rounded-full text-sm font-medium border border-white text-white hover:bg-white/10 transition-colors">
               Learn more
             </button>
           </div>
 
-          {/* Image Section */}
           <div className="flex-1 flex p-4 items-center justify-end mt-8 md:mt-0">
             <img
               src={mainCard.image}
@@ -36,11 +43,9 @@ export default function MarketingSection({
         </div>
       </div>
 
-      {/* Sub Cards Grid */}
       <div className="grid md:grid-cols-2 gap-4 w-full lg:w-[90%]">
-        {/* Sub Card 1 */}
         <div 
-          className="bg-white/10  backdrop-blur-md rounded-3xl p-6 md:p-8 shadow-lg border border-white/30 overflow-hidden relative flex flex-col"
+          className="bg-white/10 backdrop-blur-md rounded-3xl p-6 md:p-8 shadow-lg border border-white/30 overflow-hidden relative flex flex-col"
         >
           <div className="p-8 flex flex-col flex-1">
             <div className="flex flex-col items-center text-center">
@@ -50,6 +55,14 @@ export default function MarketingSection({
               <p className="text-lg mb-6 max-w-[280px] text-white">
                 {subCard1.description}
               </p>
+              <ul className="list-none space-y-2 mb-6">
+                {subCard1.keyPoints.map((point, index) => (
+                  <li key={index} className="flex items-start p-1">
+                    <span className="text-yellow-400 mr-2">•</span>
+                    <span className="text-gray-200 text-sm">{point}</span>
+                  </li>
+                ))}
+              </ul>
               <button className="px-4 py-2 rounded-full text-sm font-medium border border-gray-200 text-white hover:bg-black/5 transition-colors">
                 Learn more
               </button>
@@ -58,12 +71,13 @@ export default function MarketingSection({
               <img
                 src={subCard1.image}
                 alt={subCard1.title}
-                className="w-auto  h-[300px] md:h-[500px] object-contain"
+                className="w-auto h-[300px] md:h-[500px] object-contain"
               />
             </div>
           </div>
         </div>
 
+        {/* Sub Card 2 */}
         <div 
           className="rounded-3xl bg-white/10 backdrop-blur-md p-6 md:p-8 shadow-lg border border-white/30 overflow-hidden relative flex flex-col"
         >
@@ -75,6 +89,15 @@ export default function MarketingSection({
               <p className="text-lg mb-6 max-w-[280px] text-white">
                 {subCard2.description}
               </p>
+              {/* Key Points */}
+              <ul className="list-none space-y-2 mb-6">
+                {subCard2.keyPoints.map((point, index) => (
+                  <li key={index} className="flex items-start p-1">
+                    <span className="text-blue-400 mr-2 ">•</span>
+                    <span className="text-gray-200 text-sm">{point}</span>
+                  </li>
+                ))}
+              </ul>
               <button className="px-4 py-2 rounded-full text-sm font-medium border border-gray-200 text-white hover:bg-gray-200 transition-colors">
                 Learn more
               </button>
@@ -92,3 +115,4 @@ export default function MarketingSection({
     </div>
   )
 }
+

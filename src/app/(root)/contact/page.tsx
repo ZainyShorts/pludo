@@ -7,10 +7,10 @@ const page = () => {
   return (
     <>
     <Navbar/>
-    <div className='mt-24'>
+    <div className='bg-gradient-to-r from-blue-900 via-purple-900 to-indigo-900'>
         <ContactPageForm/>
-    </div>
     <Footer/>
+    </div>
     </>
   )
 }
