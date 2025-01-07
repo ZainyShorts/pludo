@@ -26,7 +26,7 @@ export interface TestimonialAuthor {
       trustpilotRating: "Rated excellent on Trustpilot",
       mainTitle: "Trusted by thousands of entrepreneurs",
       description:
-        "With over 60,000 entrepreneurs from more than 100 countries around the globe, pludo is the world's leading provider for AI prompts, bots and everything in between.",
+        "With over 60,000 entrepreneurs from more than 100 countries around the globe, pludo is the world&#39;s leading provider for AI prompts, bots and everything in between.",
       testimonialQuote:
         'Can say my first experiences of using pludo X are very good, in the way you have a selection of assistants to converse with',
       testimonialAuthor: { name: "Steve Nelson", location: "AU" },
