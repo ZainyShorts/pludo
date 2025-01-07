@@ -4,6 +4,7 @@ import Navbar from "@/app/components/Navbar/Navbar";
 import BlogPost from "./components/BlogPost";
 
 export default function page({ params }: { params: { blogId: string } }) {
+  console.log(params)
   return (
     <>
       <Navbar />

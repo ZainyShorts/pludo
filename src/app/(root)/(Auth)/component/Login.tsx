@@ -14,6 +14,7 @@ export default function LoginComponent() {
       emailSchema.parse(email)
       return true
     } catch (error) {
+      console.log(error)
       return false
     }
   }
@@ -33,6 +34,7 @@ export default function LoginComponent() {
       await new Promise(resolve => setTimeout(resolve, 1000))
       console.log('Email submitted:', email)
     } catch (err) {
+      console.log(err)
       setError('Something went wrong. Please try again.')
     } finally {
       setIsLoading(false)

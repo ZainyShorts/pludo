@@ -41,7 +41,7 @@ export default function BlogPost() {
           {/* Article Content */}
           <div className="prose prose-lg max-w-none">
             <p className="text-xl leading-relaxed mb-8">
-              We're thrilled to announce the launch of the Sintra AI app for
+              We&#39;re thrilled to announce the launch of the Sintra AI app for
               iOS, available from November 2024! The app marks a significant
               step in our commitment to empowering small and medium-sized
               businesses with accessible, on-demand AI employees. Now, you can
@@ -50,7 +50,7 @@ export default function BlogPost() {
             </p>
 
             <p className="mb-8">
-              Today's business environment is competitive, and time is of the
+              Today&#39;s business environment is competitive, and time is of the
               essence. One key advantage is making AI-powered
               information-related decisions early across various Sintra AI agent
               roles. Launching the mobile app eliminates many of the challenges
@@ -81,7 +81,7 @@ export default function BlogPost() {
               computer. In that case, the Sintra mobile app provides access to
               your Sintra agents and workspace anytime, anywhere, directly from
               your iPhone or iPad. A case in point is you can ask the customer
-              support agent Cassie to generate reports on last month's customer
+              support agent Cassie to generate reports on last month&#39;s customer
               support metrics or ask your E-commerce specialist to update
               product listings while commuting.
             </p>
