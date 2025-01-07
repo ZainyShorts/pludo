@@ -36,7 +36,7 @@ export default function TestimonialSection() {
               <div className={`${testimonial.backgroundColour} p-6 rounded-xl`}>
                 <blockquote className="relative">
                   <p className="text-lg text-gray-800 leading-relaxed">
-                    "{testimonial.testimonialQuote}" –{" "}
+                  &quot;{testimonial.testimonialQuote}&quot; –{" "}
                     <span className="font-medium">
                       {testimonial.testimonialAuthor.name},{" "}
                       {testimonial.testimonialAuthor.location}
