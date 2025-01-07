@@ -10,11 +10,12 @@ export default function Home() {
   return (
     <main>
       <Navbar />
-      <div className="min-h-screen bg-black flex  flex-col items-center justify-center text-center px-4">
+      <div className="min-h-screen flex bg-custom-gradient   flex-col items-center justify-center text-center px-4">
         <div className="max-w-3xl mt-32 md:mt-40 mx-auto">
-          <h1 className=" text-5xl sm:text-7xl font-bold text-white mb-4">
-            Pludo
-          </h1>
+        <h1 className="text-5xl sm:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 mb-4">
+  Pludo
+</h1>
+
           <p className="text-3xl sm:text-4xl text-white/90 mb-8">
             Your first hires, on AI.
           </p>
@@ -29,20 +30,24 @@ export default function Home() {
         </div>
         
         <div className="mt-16  relative w-full max-w-lg aspect-square">
-          <Image
-            src="https://cdn.prod.website-files.com/661d4f6d81ac1042b721396c/6643b4de415eac4a26e4e800_homepage.webp"
-            alt="3D character with space helmet"
-            width={600}
-            height={600}
-            priority
-            className="animate-float "
-          /> 
+        <Image
+  src="/images/HeroImage.png"  
+  alt="3D character with space helmet"
+  width={600}
+  height={600}
+  priority
+  className="animate-float"
+/>
+
 
         </div>
-      </div>
-      <TextComponent/> 
-      <Robots/> 
+      </div> 
+
+      <TextComponent/>  
+      <div className='bg-gradient-to-br from-blue-900 via-purple-900  to-pink-600'>
+      <Robots/>  
       <Footer/>
+      </div>
  
     </main>
   )

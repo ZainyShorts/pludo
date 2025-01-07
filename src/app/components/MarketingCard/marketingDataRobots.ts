@@ -3,17 +3,17 @@ export const marketingDataRobots = [
       mainCard: {
         title: "Penn",
         description: "The greatest copywriters of all time, in one.",
-        image: "https://cdn.prod.website-files.com/661d4f6d81ac1042b721396c/6638e4146222dac3384ef1c5_Penn.webp",
+        image: "/images/Avatars/Avatar2.png",
       },
       subCard1: {
         title: "Uzzy",
         description: "Your executive assistant, on AI.",
-        image: "https://cdn.prod.website-files.com/661d4f6d81ac1042b721396c/6638e4149cec1560abfb39b2_Dexter.avif",
+        image: "/images/Avatars/Avatar.png",
       },
       subCard2: {
         title: "Seomi",
         description: "All your SEO needs, covered.",
-        image: "https://cdn.prod.website-files.com/661d4f6d81ac1042b721396c/6638e414822bfcc01f6a21e4_Scouty.webp",
+        image: "/images/Avatars/Avatar3.png",
       },
       bgClr: "#015843",
     },

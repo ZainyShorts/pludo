@@ -8,9 +8,13 @@ export default {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-  	extend: {
+  	extend: { 
+		backgroundImage: {
+			'custom-gradient': 'linear-gradient(to right, #1e3a8a, #4c1d95, #db2777)',
+		  },
   		colors: {
-  			background: 'hsl(var(--background))',
+  			background: 'hsl(var(--background))', 
+			
   			foreground: 'hsl(var(--foreground))',
   			card: {
   				DEFAULT: 'hsl(var(--card))',
