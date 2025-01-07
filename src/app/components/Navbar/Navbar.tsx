@@ -55,7 +55,9 @@ export default function Navbar() {
             </Link>
             </Button>
             <Button>
-              Log In
+            <Link href="/login" className="text-white ">
+                Log In
+            </Link>
             </Button>
           </div>
         </div>
