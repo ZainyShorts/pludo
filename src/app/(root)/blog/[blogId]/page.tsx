@@ -3,7 +3,7 @@ import Navbar from "@/app/components/Navbar/Navbar";
 
 import BlogPost from "./components/BlogPost";
 
-export default function page({ params }: { params: { blogId: any } }) {
+export default function page({ params }: { params: { blogId: string | number } }) {
   console.log(params)
   return (
     <>
