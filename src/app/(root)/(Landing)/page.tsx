@@ -31,7 +31,7 @@ export default function Home() {
         
         <div className="pt-[15px]  relative w-full max-w-lg aspect-square">
         <Image
-  src="/images/Avatars/Avatar2.png"  
+  src="/images/Avatars/Avatar4.png"  
   alt="3D character with space helmet"
   width={600}
   height={600}
