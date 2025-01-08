@@ -21,7 +21,7 @@ export default function ContactPageForm() {
     
     toast({
       title: "Message sent!",
-      description: "We'll get back to you as soon as possible.",
+      description: "We&#39;ll get back to you as soon as possible.",
     })
     
     setIsSubmitting(false)
@@ -37,7 +37,7 @@ export default function ContactPageForm() {
             Contact Pludo Support
           </h1>
           <p className="text-xl text-indigo-200 max-w-3xl mx-auto">
-            Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+            Have questions? We&#39;d love to hear from you. Send us a message and we&#39;ll respond as soon as possible.
           </p>
         </div>
 
