@@ -29,14 +29,14 @@ export default function Home() {
           </Button>
         </div>
         
-        <div className="mt-16  relative w-full max-w-lg aspect-square">
+        <div className="pt-[15px]  relative w-full max-w-lg aspect-square">
         <Image
-  src="/images/HeroImage.png"  
+  src="/images/Avatars/Avatar2.png"  
   alt="3D character with space helmet"
   width={600}
   height={600}
   priority
-  className="animate-float"
+  className="animate-float h-[600px]"
 />
 
 
