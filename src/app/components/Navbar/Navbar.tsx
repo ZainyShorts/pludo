@@ -2,10 +2,19 @@
 import Link from 'next/link' 
 import { useEffect , useState } from 'react';
 import { Button } from "@/components/ui/button"
- 
+import { useSession
+  // , useUser
+ } from '@descope/nextjs-sdk/client';
 
 export default function Navbar() { 
   const [isScrolled, setIsScrolled] = useState(false);
+
+  const { isAuthenticated
+    // ,
+    //  isSessionLoading
+     } = useSession();
+ 
+	// const { user } = useUser();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -55,9 +64,17 @@ export default function Navbar() {
             </Link>
             </Button>
             <Button>
-            <Link href="/login" className="text-white ">
+              {
+                !isAuthenticated && <Link href="/login" className="text-white ">
                 Log In
             </Link>
+              }
+
+              {/* {
+                 round image dikhao yahan 
+                 user?.picture || "deault image from public"
+               } */}
+            
             </Button>
           </div>
         </div>

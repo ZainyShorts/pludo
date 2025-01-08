@@ -3,7 +3,9 @@ import LoginComponent from '../component/Login'
 
 const page = () => {
   return (
-    <LoginComponent/>
+    <div className='h-screen flex justify-center items-center bg-custom-gradient'>
+      <LoginComponent/>
+    </div>
   )
 }
 
