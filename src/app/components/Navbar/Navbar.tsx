@@ -1,21 +1,33 @@
 'use client'
 import Link from 'next/link' 
-import { useEffect , useState } from 'react';
-import { Button } from "@/components/ui/button"
-import { useSession
-  // , useUser
+import { useEffect , useState , useCallback } from 'react'; 
+import Image from 'next/image';
+import { Button } from "@/components/ui/button" 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+
+import { useSession 
+  , useUser , useDescope
  } from '@descope/nextjs-sdk/client';
 
 export default function Navbar() { 
   const [isScrolled, setIsScrolled] = useState(false);
-
-  const { isAuthenticated
-    // ,
-    //  isSessionLoading
+  const sdk = useDescope();
+  const { isAuthenticated ,
+     isSessionLoading 
      } = useSession();
  
-	// const { user } = useUser();
-
+	const { user  } = useUser(); 
+  
+  const handleLogout = useCallback(() => {
+		sdk.logout();
+	}, [sdk])
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 0) {
@@ -62,20 +74,44 @@ export default function Navbar() {
             <Link href="/contact" className="text-gray-600 hover:text-gray-900">
                 Contact
             </Link>
-            </Button>
+            </Button> 
+            {!isAuthenticated && 
             <Button>
-              {
-                !isAuthenticated && <Link href="/login" className="text-white ">
-                Log In
-            </Link>
-              }
-
-              {/* {
-                 round image dikhao yahan 
-                 user?.picture || "deault image from public"
-               } */}
             
-            </Button>
+               <Link href="/login" className="text-white ">
+                Log In
+            </Link> 
+            </Button> 
+}
+            
+
+<div>
+          {isAuthenticated &&
+        
+          <DropdownMenu>
+  <DropdownMenuTrigger asChild>
+  <Image src={user?.picture || "/images/Avatars/Avatar2.png" }
+          alt='user'
+          width={40}
+          height={40}
+          className='rounded-full cursor-pointer'
+          />
+  </DropdownMenuTrigger>
+  <DropdownMenuContent >
+    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+    <DropdownMenuSeparator />
+    <DropdownMenuItem className='cursor-pointer' onClick={handleLogout}>Logout</DropdownMenuItem>
+   
+  </DropdownMenuContent>
+</DropdownMenu>
+           
+          // <Link className='hover:scale-105 cursor-pointer hover:text-primary' href={'/sign-in'} >Login</Link>
+
+         
+          }
+            </div>
+            
+            
           </div>
         </div>
       </div>

@@ -5,13 +5,15 @@ import { ArrowRight } from 'lucide-react'
 import TextComponent from './components/Text/Text'  
 import Robots from './components/RobotsSection/Robots'
 import Footer from '@/app/components/Footer/Footer'
+import Features from './components/Features/Features'
+import Integrations from './components/Integrations/Integration'
 export default function Home() { 
  
   return (
     <main>
       <Navbar />
-      <div className="min-h-screen flex bg-custom-gradient   flex-col items-center justify-center text-center px-4">
-        <div className="max-w-3xl mt-32 md:mt-40 mx-auto">
+      <div className=" h-[768px] lg:h-[850px] flex bg-custom-gradient relative  flex-col items-center text-center px-4">
+        <div className="max-w-3xl mt-32 md:mt-36 mx-auto">
         <h1 className="text-5xl sm:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 mb-4">
   Pludo
 </h1>
@@ -29,14 +31,14 @@ export default function Home() {
           </Button>
         </div>
         
-        <div className="pt-[15px]  relative w-full max-w-lg aspect-square">
+        <div className="  absolute  bottom-0  h-[360px] sm:h-[380px] lg:[400px] 2xl:h-[480px] w-full max-w-lg aspect-square">
         <Image
-  src="/images/Avatars/Avatar4.png"  
+  src="/images/Avatars/Avatar2.png"  
   alt="3D character with space helmet"
   width={600}
   height={600}
   priority
-  className="animate-float h-[600px]"
+  className="animate-float h-[360px] sm:h-[380px] lg:[400px]  2xl:h-[480px] "
 />
 
 
@@ -45,8 +47,10 @@ export default function Home() {
 
       <TextComponent/>  
       <div className='bg-gradient-to-br from-blue-900 via-purple-900  to-pink-600'>
-      <Robots/>  
-      <Footer/>
+      <Robots/>   
+      <Features/> 
+      <Integrations/>
+      <Footer/> 
       </div>
  
     </main>

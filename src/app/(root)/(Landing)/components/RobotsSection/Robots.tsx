@@ -11,7 +11,6 @@ function Robots() {
           mainCard={data.mainCard}
           subCard1={data.subCard1} 
           subCard2={data.subCard2}
-          mainBgColor={data.bgClr}
         />
       ))}
      </>

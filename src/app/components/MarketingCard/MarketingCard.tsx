@@ -1,12 +1,18 @@
 'use client'
 
-import { MarketingSectionProps } from './types'
+import { MarketingSectionProps } from './types' 
+import Image from 'next/image' 
+import { useRouter } from 'next/navigation'
 
-export default function MarketingSection({
+export default function MarketingSection({ 
   mainCard,
   subCard1, 
   subCard2,
-}: MarketingSectionProps) {
+}: MarketingSectionProps) { 
+  const router = useRouter(); 
+  const handleNavigate = (title:any) => { 
+   router.push(`/${title}`)
+  }
   return (
     <div className="w-full flex flex-col items-center justify-center p-4 space-y-4">
       {/* Main Card */}
@@ -28,7 +34,7 @@ export default function MarketingSection({
                 </li>
               ))}
             </ul>
-            <button className="px-4 py-2 rounded-full text-sm font-medium border border-white text-white hover:bg-white/10 transition-colors">
+            <button onClick={()=>handleNavigate(mainCard.title)} className="px-4 py-2 rounded-full text-sm font-medium border border-white text-white hover:bg-white/10 transition-colors">
               Learn more
             </button>
           </div>
@@ -63,16 +69,18 @@ export default function MarketingSection({
                   </li>
                 ))}
               </ul>
-              <button className="px-4 py-2 rounded-full text-sm font-medium border border-gray-200 text-white hover:bg-black/5 transition-colors">
+              <button onClick={()=>handleNavigate(subCard1.title)} className="px-4 py-2 rounded-full text-sm font-medium border border-gray-200 text-white hover:bg-white/10 transition-colors">
                 Learn more
               </button>
             </div>
             <div className="flex-1 flex items-end justify-center mt-8">
-              <img
+              <Image
                 src={subCard1.image}
+                height={300} 
+                width={300}
                 alt={subCard1.title}
                 className="w-auto h-[300px] md:h-[500px] object-contain"
-              />
+              ></Image>
             </div>
           </div>
         </div>
@@ -98,7 +106,7 @@ export default function MarketingSection({
                   </li>
                 ))}
               </ul>
-              <button className="px-4 py-2 rounded-full text-sm font-medium border border-gray-200 text-white hover:bg-gray-200 transition-colors">
+              <button onClick={()=>handleNavigate(subCard2.title)} className="px-4 py-2 rounded-full text-sm font-medium border border-gray-200 text-white hover:bg-white/10 transition-colors">
                 Learn more
               </button>
             </div>
