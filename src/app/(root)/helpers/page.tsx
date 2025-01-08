@@ -8,7 +8,7 @@ const help = () => {
   return (
     <>
     <Navbar/>
-    <div>
+    <div className='bg-custom-gradient mt-20'>
         <TopHelpersComponent/>
         <BottomSectionRobots/>
     </div>

@@ -5,10 +5,10 @@ import { teamMembers } from './Data'
 
 export default function TopHelpersComponent() {
   return (
-    <main className="min-h-screen mt-24 ">
+    <main className="min-h-screen ">
       {/* Header */}
       <header className="p-6 mx-auto w-[70vw] ">
-        <h1 className="text-2xl font-bold">Shop Pludo</h1>
+        <h1 className="text-2xl text-white font-bold">Shop Pludo</h1>
       </header>
 
       {/* Hero Section */}
@@ -37,6 +37,9 @@ export default function TopHelpersComponent() {
 
       {/* Team Section */}
       <section className="max-w-7xl mx-auto px-4 mb-16">
+        <h3 className={`text-3xl font-bold mb-2 text-white `}  style={{ fontFamily: 'cursive' }}>
+                Top Agents
+              </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8">
           {teamMembers.map((member) => (
             <div key={member.name} className="flex flex-col items-center text-center">
@@ -48,10 +51,10 @@ export default function TopHelpersComponent() {
                   className="object-contain"
                 />
               </div>
-              <h3 className={`text-3xl font-bold mb-2 ${member.color}`} style={{ fontFamily: 'cursive' }}>
+              <h3 className={`text-3xl font-bold mb-2 ${member.color}`}  style={{ fontFamily: 'cursive' }}>
                 {member.name}
               </h3>
-              <p className="text-gray-600">{member.role}</p>
+              <p className=" text-white">{member.role}</p>
             </div>
           ))}
         </div>
