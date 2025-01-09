@@ -10,8 +10,8 @@ export default {
   theme: {
   	extend: { 
 		backgroundImage: {
-			// 'custom-gradient': 'linear-gradient(to right, #1e3a8a, #4c1d95, #db2777)', 
-			'custom-gradient': 'linear-gradient(to right, #000000, #4c1d95)',
+			'custom-gradient': 'linear-gradient(to right, #000000, #2e1065, #9d174d)',
+			// 'custom-gradient': 'linear-gradient(to right, #000000, #4c1d95)',
 
 		  },
   		colors: {

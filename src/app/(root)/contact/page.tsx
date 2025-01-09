@@ -7,7 +7,7 @@ const page = () => {
   return (
     <>
     <Navbar/>
-    <div className='bg-gradient-to-r from-blue-900 via-purple-900 to-indigo-900'>
+    <div className='bg-custom-gradient'>
         <ContactPageForm/>
     <Footer/>
     </div>

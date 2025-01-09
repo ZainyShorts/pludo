@@ -11,7 +11,7 @@ export default function MarketingSection({
 }: MarketingSectionProps) { 
   const router = useRouter(); 
   const handleNavigate = (title:string) => { 
-   router.push(`/${title}`)
+   router.push(`/agents/${title}`)
   }
   return (
     <div className="w-full flex flex-col items-center justify-center p-4 space-y-4">

@@ -29,7 +29,7 @@ export default function ContactPageForm() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-custom-gradient flex items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
       <div className="w-full mt-24 max-w-4xl">
         {/* Header Section */}
         <div className="text-center mb-12 space-y-4">

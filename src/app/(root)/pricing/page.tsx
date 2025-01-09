@@ -9,7 +9,7 @@ export default function Pricing() {
   return ( 
     <>    
     <Navbar/>
-    <div className=" bg-gradient-to-br from-blue-900 via-purple-900  to-pink-600 ">  
+    <div className=" bg-custom-gradient ">  
       <PricingPlans/>   
       <FeaturesSection/>
       {/* <TestimonialSection/> */}
