@@ -22,6 +22,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/(root)/helpers/components/TopPart/TopHelpersComponent.tsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/(root)/agents/components/TopPart/TopHelpersComponent.tsx"],
   "exclude": ["node_modules"]
 }

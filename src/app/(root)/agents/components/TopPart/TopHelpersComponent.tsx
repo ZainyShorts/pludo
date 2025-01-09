@@ -4,7 +4,7 @@ import { teamMembers } from './Data'
 
 export default function TopHelpersComponent() {
   return (
-    <main className="min-h-screen bg-custom-gradient ">
+    <main className="bg-custom-gradient ">
    
 
       {/* Team Section */}

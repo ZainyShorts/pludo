@@ -57,7 +57,7 @@ export default function Navbar() {
           </Link>
 
           <div className="hidden md:flex items-center space-x-8">
-            <Link href="/helpers" className="text-gray-600 hover:text-gray-900">
+            <Link href="/agents" className="text-gray-600 hover:text-gray-900">
               Agents
             </Link>
             <Link href="/pricing" className="text-gray-600 hover:text-gray-900">

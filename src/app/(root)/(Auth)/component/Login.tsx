@@ -12,13 +12,13 @@ const LoginComponent = () => {
 		flowId="sign-up-or-in"
 		theme="light"
 		onSuccess={() => {
-			console.log('success')
+      console.log('success')
       router.push('/pricing')
 		}}
 		onError={(err:any) => {
-			console.log("Error!", err)
+      console.log("Error!", err)
 		}}
-	/>
+    />
   )
 }
 
