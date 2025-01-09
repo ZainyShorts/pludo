@@ -31,22 +31,22 @@ export default function Home() {
           </Button>
         </div>
         
-        <div className="  absolute  bottom-0  h-[360px] sm:h-[380px] lg:[400px] 2xl:h-[480px] w-full max-w-lg aspect-square">
+        <div className="  absolute  bottom-0  h-[360px] sm:h-[380px] lg:[450px] 2xl:h-[550px] w-full flex justify-center aspect-square">
         <Image
-  src="/images/Avatars/Avatar2.png"  
+  src="/images/Avatars/Hero.png"  
   alt="3D character with space helmet"
   width={600}
   height={600}
   priority
-  className="animate-float h-[360px] sm:h-[380px] lg:[400px]  2xl:h-[480px] "
+  className="animate-float h-[360px] sm:h-[380px] lg:[450px]  w-[708px] 2xl:h-[550px] "
 />
 
 
         </div>
       </div> 
 
-      <TextComponent/>  
-      <div className='bg-gradient-to-br from-blue-900 via-purple-900  to-pink-600'>
+      {/* <TextComponent/>   */}
+      <div className='bg-custom-gradient'>
       <Robots/>   
       <Features/> 
       <Integrations/>
