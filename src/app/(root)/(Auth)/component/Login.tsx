@@ -15,8 +15,8 @@ const LoginComponent = () => {
       console.log('success')
       router.push('/pricing')
 		}}
-		onError={(err:any) => {
-      console.log("Error!", err)
+		onError={() => {
+      console.log("Error!")
 		}}
     />
   )

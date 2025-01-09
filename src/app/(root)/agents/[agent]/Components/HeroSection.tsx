@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react"
 import { FastAverageColor } from 'fast-average-color' 
 import { AgentData } from "./data"
 import { Button } from "@/components/ui/button"
+import Image from "next/image"
 
 interface HeroSectionProps {
   Name: string
@@ -30,7 +31,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ Name }) => {
             )
             setTextColor(`rgb(${r}, ${g}, ${b})`)
           })
-          .catch(e => console.log(e))
+          .catch(() => console.log('error'))
       }
     })
   }, [Name])
@@ -69,7 +70,9 @@ const HeroSection: React.FC<HeroSectionProps> = ({ Name }) => {
 
             <div className="relative">
               <div className="absolute inset-0 rounded-3xl"></div>
-              <img
+              <Image
+                width={200}
+                height={200}
                 src={data.avatar}
                 alt={data.name}
                 className="w-full h-auto max-w-[600px] mx-auto transform translate-y-8"

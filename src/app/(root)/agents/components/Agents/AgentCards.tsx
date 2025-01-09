@@ -2,7 +2,7 @@
 
 import Image from 'next/image' 
 import { useRouter } from 'next/navigation'
-import { TypeIcon as type, type LucideIcon } from 'lucide-react'
+import { type LucideIcon } from 'lucide-react'
 
 interface AgentCardProps {
   name: string
@@ -23,7 +23,7 @@ export default function AgentCard({
 }: AgentCardProps) { 
     const router = useRouter();
    const handleClick = (name:any) => { 
-     router.push(`/${name}`)
+     router.push(`/agents/${name}`)
    }
   return (
     <div onClick={()=>handleClick(name)} className="group relative overflow-hidden bg-white/10 backdrop-blur-lg rounded-xl hover:bg-white/20 transition-all transform hover:-translate-y-1 cursor-pointer">
@@ -35,7 +35,7 @@ export default function AgentCard({
           className="object-cover object-top"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           priority
-          onError={(e) => {
+          onError={(e:React.SyntheticEvent<HTMLImageElement, Event>) => {
             const target = e.target as HTMLImageElement;
             target.src = 'https://via.placeholder.com/400x280?text=Avatar+Not+Found';
           }}

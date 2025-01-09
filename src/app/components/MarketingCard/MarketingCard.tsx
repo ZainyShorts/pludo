@@ -10,7 +10,7 @@ export default function MarketingSection({
   subCard2,
 }: MarketingSectionProps) { 
   const router = useRouter(); 
-  const handleNavigate = (title:any) => { 
+  const handleNavigate = (title:string) => { 
    router.push(`/${title}`)
   }
   return (
@@ -40,7 +40,9 @@ export default function MarketingSection({
           </div>
 
           <div className="flex-1 flex p-4 items-center justify-end mt-8 md:mt-0">
-            <img
+            <Image
+              width={200}
+              height={200}
               src={mainCard.image}
               alt={mainCard.title}
               className="w-auto h-[250px] sm:h-[300px] md:h-[400px] lg:h-[500px] object-contain"

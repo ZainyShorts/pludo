@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react"
 import { FastAverageColor } from 'fast-average-color' 
 import { AgentData } from "./data"
 import { MessageSquareQuote } from 'lucide-react'
+import Image from "next/image"
 
 interface AgentCardsProps {
   Name: string
@@ -66,7 +67,9 @@ const DetailBlocks: React.FC<AgentCardsProps> = ({ Name }) => {
               </p>
             </div>
           </div>
-          <img 
+          <Image
+            width={200}
+            height={200} 
             src={data.avatar} 
             alt={data.name}
             className="absolute bottom-0 right-0 w-40 h-auto lg:w-72 transform translate-y-4"
@@ -90,8 +93,8 @@ const DetailBlocks: React.FC<AgentCardsProps> = ({ Name }) => {
               <span className="font-medium text-white">Follow-Up Email Generator</span>
             </div>
             <p className="text-white/90 text-sm leading-relaxed">
-              "It was great connecting earlier. I've thought further about our conversation, 
-              and there's an additional thought that might benefit your current strategy..."
+              "It was great connecting earlier. I&#39;ve thought further about our conversation, 
+              and there&#39;s an additional thought that might benefit your current strategy..."
             </p>
           </div>
           <img 

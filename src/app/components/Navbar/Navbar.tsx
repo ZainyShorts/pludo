@@ -19,8 +19,8 @@ import { useSession
 export default function Navbar() { 
   const [isScrolled, setIsScrolled] = useState(false);
   const sdk = useDescope();
-  const { isAuthenticated ,
-     isSessionLoading 
+  const { isAuthenticated 
+    // ,isSessionLoading 
      } = useSession();
  
 	const { user  } = useUser(); 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Facebook, Instagram, Linkedin, MessageCircle, Mail, Cloud } from 'lucide-react';
+import { Facebook, MessageCircle, Cloud } from 'lucide-react';
 
 const integrationCategories = [
   {
