@@ -93,7 +93,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ Name }) => {
             Meet {data.name}
           </h3>
           <p className="text-2xl lg:text-4xl font-semibold p-4 mt-4 text-black">
-            The revolutionary AI sales manager designed to boost your sales team's effectiveness. Milli brings high-level strategy and meticulous execution to every interaction, every time.
+            The revolutionary AI sales manager designed to boost your sales team&apos;s effectiveness. Milli brings high-level strategy and meticulous execution to every interaction, every time.
           </p>
         </div>
       </section>
