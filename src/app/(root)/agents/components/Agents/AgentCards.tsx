@@ -22,7 +22,7 @@ export default function AgentCard({
   features 
 }: AgentCardProps) { 
     const router = useRouter();
-   const handleClick = (name:any) => { 
+   const handleClick = (name:string) => { 
      router.push(`/agents/${name}`)
    }
   return (

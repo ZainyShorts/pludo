@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from "react"
-import { FastAverageColor } from 'fast-average-color' 
+import { FastAverageColor } from 'fast-average-color'
 import { AgentData } from "./data"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
@@ -10,38 +10,43 @@ interface HeroSectionProps {
   Name: string
 }
 
+interface Agent {
+  name: string
+  role: string
+  subtitle: string
+  avatar: string
+}
+
 const HeroSection: React.FC<HeroSectionProps> = ({ Name }) => {
-  const [data, setData] = useState<any>()
+  const [data, setData] = useState<Agent | null>(null)
   const [bgColor, setBgColor] = useState<string>()
   const [textColor, setTextColor] = useState<string>("")
 
   useEffect(() => {
-    AgentData.forEach((agent) => {
-      if (Name === agent.name) {
-        setData(agent)
-        const fac = new FastAverageColor()
-        fac.getColorAsync(agent.avatar)
-          .then(color => {
-            const [r, g, b] = color.value
-            setBgColor(`linear-gradient(180deg, 
-              rgba(0,0,0,1) 0%,
-              rgba(10,10,10,0.95) 15%,
-              rgba(${r*0.5},${g*0.5},${b*0.5},0.95) 45%,
-              rgba(${r*0.7},${g*0.7},${b*0.7},0.85) 100%)`
-            )
-            setTextColor(`rgb(${r}, ${g}, ${b})`)
-          })
-          .catch(() => console.log('error'))
-      }
-    })
+    const agent = AgentData.find((agent) => agent.name === Name)
+    if (agent) {
+      setData(agent)
+      const fac = new FastAverageColor()
+      fac.getColorAsync(agent.avatar)
+        .then(color => {
+          const [r, g, b] = color.value
+          setBgColor(`linear-gradient(180deg, 
+            rgba(0,0,0,1) 0%,
+            rgba(10,10,10,0.95) 15%,
+            rgba(${r * 0.5},${g * 0.5},${b * 0.5},0.95) 45%,
+            rgba(${r * 0.7},${g * 0.7},${b * 0.7},0.85) 100%)`)
+          setTextColor(`rgb(${r}, ${g}, ${b})`)
+        })
+        .catch((e) => console.error('Error processing color:', e))
+    }
   }, [Name])
 
   if (!data) return null
 
-  return ( 
+  return (
     <>
       <div className="relative min-h-screen pt-24 overflow-hidden" style={{ background: bgColor }}>
-        <div 
+        <div
           className="absolute inset-0 text-[25vw] font-bold text-white/10 select-none flex items-center justify-center"
           style={{ zIndex: 1 }}
         >
@@ -80,7 +85,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ Name }) => {
             </div>
           </div>
         </div>
-      </div>   
+      </div>
 
       <section className="py-36">
         <div className="container mx-auto px-4 w-full lg:w-[70%] lg:h-[50vh] flex items-center flex-col justify-center text-center">
@@ -88,9 +93,8 @@ const HeroSection: React.FC<HeroSectionProps> = ({ Name }) => {
             Meet {data.name}
           </h3>
           <p className="text-2xl lg:text-4xl font-semibold p-4 mt-4 text-black">
-     The revolutionary AI sales manager designed to boost your sales team&#39;s effectiveness. Milli brings high-level strategy and meticulous execution to every interaction, every time.
-</p>
-
+            The revolutionary AI sales manager designed to boost your sales team's effectiveness. Milli brings high-level strategy and meticulous execution to every interaction, every time.
+          </p>
         </div>
       </section>
     </>
