@@ -96,7 +96,7 @@ export default function Navbar() {
                   <Button 
                     asChild 
                     variant="outline"
-                    className={`${isScrolled ? 'text-gray-200 border-gray-200' : 'text-white border-white'} transition-colors duration-200`}
+                    className={`${isScrolled ? 'text-black border-gray-200' : 'text-black border-white'} transition-colors duration-200`}
                   >
                     <Link href="/login">Log In</Link>
                   </Button>

@@ -14,6 +14,7 @@ export default function MarketingSection({
    router.push(`/agents/${title}`)
   }
   return (
+            
     <div className="w-full flex flex-col items-center justify-center p-4 space-y-4">
       {/* Main Card */}
       <div className="rounded-3xl bg-white/10 backdrop-blur-sm p-6 md:p-8 shadow-lg border border-white/30 overflow-hidden relative h-auto w-full lg:w-[90%] flex flex-col md:flex-row">
