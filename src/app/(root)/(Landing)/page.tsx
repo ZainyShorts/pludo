@@ -7,8 +7,7 @@ import Footer from '@/app/components/Footer/Footer'
 import Features from './components/Features/Features'
 import Integrations from './components/Integrations/Integration'
 
-import BentoTilt  from './components//UIDesignLayouts/BentoTilt'
-import FloatingImage  from './components//UIDesignLayouts/Story'
+
 
 export default function Home() { 
   const [isLoaded, setIsLoaded] = useState(false)
@@ -130,8 +129,7 @@ export default function Home() {
 
       {/* <TextComponent/>   */}
       <div className='bg-custom-gradient'>
-      <BentoTilt />
-      <FloatingImage />
+
       <Robots/>   
       <Features/> 
       <Integrations/>

@@ -1,5 +1,4 @@
 'use client'
-
 import Link from 'next/link'
 import { useEffect, useState, useCallback } from 'react'
 import Image from 'next/image'
@@ -7,21 +6,23 @@ import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger, 
+  DropdownMenuLabel,  
+  DropdownMenuItem
 } from "@/components/ui/dropdown-menu"
-import { Menu } from 'lucide-react'
+import { Menu, Users, CreditCard, BookOpen, Mail } from 'lucide-react'
 import { useSession, useUser, useDescope } from '@descope/nextjs-sdk/client'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
+import SideMenu from './SideMenu'
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
+  const [isSideMenuOpen, setIsSideMenuOpen] = useState(false)
   const sdk = useDescope()
   const { isAuthenticated } = useSession()
   const { user } = useUser()
-  
+
   const handleLogout = useCallback(() => {
     sdk.logout()
   }, [sdk])
@@ -35,60 +36,68 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
+  const menuItems = [
+    { name: 'Agents', icon: Users, href: '/agents' },
+    { name: 'Pricing', icon: CreditCard, href: '/pricing' },
+    { name: 'Blog', icon: BookOpen, href: '/blog' },
+    { name: 'Contact', icon: Mail, href: '/contact' },
+  ]
+
   return (
-    <motion.nav
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.3 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? "bg-white/10 backdrop-blur-lg" : "bg-transparent"
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16 md:h-20">
-          {/* Hamburger menu for mobile */}
-          <motion.div 
-            className="md:hidden"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            <Button variant="ghost" size="icon">
-              <Menu className={`h-6 w-6 ${isScrolled ? 'text-gray-200' : 'text-white'}`} />
-            </Button>
-          </motion.div>
+    <>
+      <motion.nav
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.3 }}
+        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
+          isScrolled ? "bg-white/10 backdrop-blur-lg" : "bg-transparent"
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16 md:h-20">
+            {/* Hamburger menu for mobile */}
+            <motion.div 
+              className="md:hidden"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              <Button variant="ghost" size="icon" onClick={() => setIsSideMenuOpen(true)}>
+                <Menu className={`h-6 w-6 ${isScrolled ? 'text-gray-200' : 'text-white'}`} />
+              </Button>
+            </motion.div>
 
-          {/* Logo */}
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            transition={{ type: 'spring', stiffness: 300 }}
-          >
-            <Link href="/" className={`text-xl font-bold text-center flex-grow md:flex-grow-0 ${isScrolled ? 'text-gray-200' : 'text-white'}`}>
-              Pludo
-            </Link>
-          </motion.div>
+            {/* Logo */}
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              transition={{ type: 'spring', stiffness: 300 }}
+            >
+              <Link href="/" className={`text-xl font-bold text-center flex-grow md:flex-grow-0 ${isScrolled ? 'text-gray-200' : 'text-white'}`}>
+                Pludo
+              </Link>
+            </motion.div>
 
-          {/* Desktop menu items */}
-          <div className="hidden md:flex items-center space-x-8">
-            {['agents', 'pricing', 'blog', 'contact'].map((item) => (
-              <motion.div
-                key={item}
-                whileHover={{ y: -2 }}
-                whileTap={{ y: 0 }}
-              >
-                <Link 
-                  href={`/${item}`} 
-                  className={`${isScrolled ? 'text-gray-200' : 'text-white'} hover:text-gray-300 transition-colors duration-200`}
+            {/* Desktop menu items */}
+            <div className="hidden md:flex items-center space-x-8">
+              {menuItems.map((item) => (
+                <motion.div
+                  key={item.name}
+                  whileHover={{ y: -2 }}
+                  whileTap={{ y: 0 }}
                 >
-                  {item.charAt(0).toUpperCase() + item.slice(1)}
-                </Link>
-              </motion.div>
-            ))}
-          </div>
+                  <Link 
+                    href={item.href} 
+                    className={`${isScrolled ? 'text-gray-200' : 'text-white'} hover:text-gray-300 transition-colors duration-200 flex items-center`}
+                  >
+                    {/* <item.icon className="h-5 w-5 mr-1" /> */}
+                    {item.name}
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
 
-          {/* Action Buttons */}
-          <div className="flex items-center">
-            {!isAuthenticated && (
-              <div className="hidden md:block">
+            {/* Action Buttons */}
+            <div className="flex items-center">
+              {!isAuthenticated ? (
                 <motion.div
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -96,43 +105,61 @@ export default function Navbar() {
                   <Button 
                     asChild 
                     variant="outline"
-                    className={`${isScrolled ? 'text-black border-gray-200' : 'text-black border-white'} transition-colors duration-200`}
+                    className={`${isScrolled ? 'text-gray-200 bg-transparent border-gray-200' : 'bg-transparent text-white border-white'} transition-colors duration-200`}
                   >
                     <Link href="/login">Log In</Link>
                   </Button>
                 </motion.div>
-              </div>
-            )}
-
-            {isAuthenticated && (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <motion.div
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                  >
-                    <Image
-                      src={user?.picture || "/images/Avatars/Avatar2.png"}
-                      alt='user'
-                      width={40}
-                      height={40}
-                      className='rounded-full cursor-pointer'
-                    />
-                  </motion.div>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem className='cursor-pointer' onClick={handleLogout}>
-                    Logout
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
+              ) : (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <motion.div
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                    >
+                      <Image
+                        src={user?.picture || "/images/Avatars/Avatar2.png"}
+                        alt='user'
+                        width={40}
+                        height={40}
+                        className='rounded-full cursor-pointer'
+                      />
+                    </motion.div>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem className='cursor-pointer' onClick={handleLogout}>
+                      Logout
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
+            </div>
           </div>
         </div>
-      </div>
-    </motion.nav>
+      </motion.nav>
+
+      <AnimatePresence>
+        {isSideMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 bg-black bg-opacity-50 z-40"
+            onClick={() => setIsSideMenuOpen(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      <SideMenu 
+        isOpen={isSideMenuOpen} 
+        onClose={() => setIsSideMenuOpen(false)}
+        isAuthenticated={isAuthenticated}
+        onLogout={handleLogout}
+      />
+    </>
   )
 }
 
