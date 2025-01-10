@@ -2,8 +2,6 @@
 import Image from 'next/image' 
 import { useState , useEffect } from 'react'
 import Navbar from '../../components/Navbar/Navbar'
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
 import Robots from './components/RobotsSection/Robots'
 import Footer from '@/app/components/Footer/Footer'
 import Features from './components/Features/Features'
