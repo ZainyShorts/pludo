@@ -13,7 +13,7 @@ const LoginComponent = () => {
 		theme="light"
 		onSuccess={() => {
       console.log('success')
-      router.push('/pricing')
+      router.push('/dashboard')
 		}}
 		onError={() => {
       console.log("Error!")
