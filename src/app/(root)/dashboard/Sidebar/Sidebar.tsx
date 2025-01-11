@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from "react"
-import { icons, Menu } from 'lucide-react'
+import { Menu } from 'lucide-react'
 import { LayoutDashboard, Users, Briefcase, UserPlus, LinkIcon, BarChart2, Settings, CreditCard, HelpCircle } from 'lucide-react'
 import { cn } from "@/lib/utils" 
 import { useRouter } from "next/navigation"
@@ -10,7 +10,7 @@ import { useCallback } from "react"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet" 
-import { useSession, useUser, useDescope } from '@descope/nextjs-sdk/client' 
+import {  useUser, useDescope } from '@descope/nextjs-sdk/client' 
 import { LogOut } from 'lucide-react';
 import { VisuallyHidden } from "@/components/visually-hidden"
 
@@ -35,7 +35,7 @@ export function Sidebar({ className }: SidebarProps) {
   const [isOpen, setIsOpen] = React.useState<boolean>(false) 
   const [isScrolled, setIsScrolled] = React.useState<boolean>(false)
  
-    const sdk = useDescope()
+    // const sdk = useDescope()
     
   
   React.useEffect(() => {
@@ -105,7 +105,7 @@ export function Sidebar({ className }: SidebarProps) {
 const SidebarContent = React.memo(function SidebarContent() { 
   const pathname = usePathname(); 
   const sdk = useDescope()
-  const { isAuthenticated } = useSession()
+  // const { isAuthenticated } = useSession()
     const { user } = useUser()
     const router = useRouter(); 
     const handleClick = (route : string) => {   
