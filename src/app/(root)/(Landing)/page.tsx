@@ -127,7 +127,6 @@ export default function Home() {
     </div>
 
 
-      {/* <TextComponent/>   */}
       <div className='bg-custom-gradient'>
 
       <Robots/>   
