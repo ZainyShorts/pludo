@@ -19,11 +19,11 @@ const navItems = [
   { icon: Users, label: "My Agents", route: "/dashboard/my-agents" },
   { icon: Briefcase, label: "Agent Suite", route: "/dashboard/pludo-agents" },
   { icon: UserPlus, label: "Create Agent", route: "#" },
-  { icon: LinkIcon, label: "Integrations", route: "#" },
-  { icon: BarChart2, label: "Analytics", route: "#" },
-  { icon: Settings, label: "Settings", route: "#" },
-  { icon: CreditCard, label: "Payments", route: "#" },
-  { icon: HelpCircle, label: "Support", route: "#" },  
+  { icon: LinkIcon, label: "Integrations", route: "/dashboard/integrations" },
+  { icon: BarChart2, label: "Analytics", route: "/dashboard/analytics" },
+  { icon: Settings, label: "Settings", route: "/dashboard/settings" },
+  { icon: CreditCard, label: "Payments", route: "/dashboard/payments" },
+  { icon: HelpCircle, label: "Support", route: "/dashboard/support" },  
   { icon: LogOut, label: "Logout", route:"/"}
 ]
 

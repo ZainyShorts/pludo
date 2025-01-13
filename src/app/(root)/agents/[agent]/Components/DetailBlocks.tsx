@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { FastAverageColor } from 'fast-average-color';
 import { AgentData } from './data';
-import { MessageSquareQuote } from 'lucide-react';
+import { MessageSquareQuote } from 'lucide-react'; 
 import Image from 'next/image';
 
 interface Agent {
@@ -17,12 +17,12 @@ interface AgentCardsProps {
   Name: string;
 }
 
-const DetailBlocks: React.FC<AgentCardsProps> = ({ Name }) => {
+const DetailBlocks: React.FC<AgentCardsProps> = React.memo(({ Name }) => {
   const [data, setData] = useState<Agent | null>(null);
   const [extractedColor, setExtractedColor] = useState<string>('');
 
   useEffect(() => {
-    AgentData.forEach((agent) => {
+     AgentData.forEach((agent) => {
       if (Name === agent.name) {
         setData(agent);
         const fac = new FastAverageColor();
@@ -121,6 +121,6 @@ const DetailBlocks: React.FC<AgentCardsProps> = ({ Name }) => {
       </div>
     </div>
   );
-};
+});
 
 export default DetailBlocks;
