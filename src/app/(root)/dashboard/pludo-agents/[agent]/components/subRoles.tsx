@@ -1,9 +1,9 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { agentsWithSubRoles } from './agentData'  
+import { agentsWithSubAgents } from './agentData'  
 import { FastAverageColor } from 'fast-average-color'
-import { AgentWithSubRoles } from './agentData'
+import { AgentWithSubAgents } from './agentData'
 import { ChevronRight, BarChart2, Handshake, TrendingUp } from 'lucide-react'
 
 interface Prop {
@@ -11,14 +11,14 @@ interface Prop {
 }
 
 const SubRoles: React.FC<Prop> = ({ name }) => {
-  const [details, setDetails] = useState<AgentWithSubRoles>() 
+  const [details, setDetails] = useState<AgentWithSubAgents>() 
     const [bgStartColor, setBgStartColor] = useState<string>('rgb(30, 30, 30)')
   
 
  useEffect(() => {
      if (!name) return
  
-     const matchedAgent = agentsWithSubRoles.find(agent => agent.name === name)
+     const matchedAgent = agentsWithSubAgents.find(agent => agent.name === name)
      if (matchedAgent) {
        setDetails(matchedAgent)
        
@@ -58,7 +58,7 @@ const SubRoles: React.FC<Prop> = ({ name }) => {
           {details?.role || 'Role Details'}
         </h2>
         <div className="space-y-6">
-          {details?.subRoles.map((role : any, index : number) => (
+          {details?.subAgents.map((role : any, index : number) => (
             <div
               key={index}
               className="group relative bg-gradient-to-r from-black via-violet-900/30 to-slate-900 rounded-xl p-8 

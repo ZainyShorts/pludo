@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState } from 'react'
 import { FastAverageColor } from 'fast-average-color'
-import { agentsWithSubRoles } from './agentData' 
-import { AgentWithSubRoles } from './agentData'
+import { agentsWithSubAgents } from './agentData' 
+import { AgentWithSubAgents } from './agentData'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 
@@ -12,13 +12,13 @@ interface Prop {
 }
 
 const AgentDetails: React.FC<Prop> = ({ name }) => {
-  const [details, setDetails] = useState<AgentWithSubRoles>()
+  const [details, setDetails] = useState<AgentWithSubAgents>()
   const [bgStartColor, setBgStartColor] = useState<string>('rgb(30, 30, 30)')
   
   useEffect(() => {
     if (!name) return
 
-    const matchedAgent = agentsWithSubRoles.find(agent => agent.name === name)
+    const matchedAgent = agentsWithSubAgents.find(agent => agent.name === name)
     if (matchedAgent) {
       setDetails(matchedAgent)
       

@@ -1,185 +1,184 @@
-export interface SubRole {
+export interface SubAgent {
     name: string;
     description: string;
-  }
-  
-  export interface AgentWithSubRoles {
+}
+
+export interface AgentWithSubAgents {
     name: string;
     role: string;
     image: string;
-    subRoles: SubRole[];
-  }
+    subAgents: SubAgent[];
+}
 
-export const agentsWithSubRoles: AgentWithSubRoles[] = [
+export const agentsWithSubAgents: AgentWithSubAgents[] = [
     {
       name: "Ace",
       role: "Business Development",
-      image: "/images/Avatars/Avatar1.png",
-      subRoles: [
-        { name: "Strategic Planning", description: "Develops comprehensive strategies to achieve business goals, improve operations, and drive long-term growth." },
-        { name: "Partnership Management", description: "Builds and nurtures strategic partnerships to foster mutual growth, streamline business operations, and increase market reach." },
-        { name: "Market Analysis", description: "Conducts thorough market research to understand customer trends, industry shifts, and opportunities for business expansion and product development." },
+      image: "/images/Avatars/Avatar10.png",
+      subAgents: [
+        { name: "Strategic Planning Agent", description: "This subagent is tasked with formulating business strategies that help achieve long-term goals, streamline operations, and drive growth through comprehensive planning." },
+        { name: "Partnership Management Agent", description: "This subagent focuses on building and maintaining relationships with strategic partners to foster collaboration, increase market reach, and enhance mutual growth." },
+        { name: "Market Analysis Agent", description: "This subagent specializes in market research, analyzing customer trends and competitive landscapes to uncover opportunities for business expansion and product innovation." },
       ],
     },
     {
       name: "Cora",
       role: "Customer Support",
       image: "/images/Avatars/Avatar2.png",
-      subRoles: [
-        { name: "Issue Resolution", description: "Works quickly and efficiently to address customer complaints, troubleshoot issues, and provide resolutions to ensure satisfaction." },
-        { name: "Feedback Collection", description: "Collects valuable feedback from customers to identify areas of improvement and drive better services or product offerings." },
-        { name: "Knowledge Base Management", description: "Maintains and regularly updates the knowledge base to provide customers with accessible, accurate, and useful self-service resources." },
+      subAgents: [
+        { name: "Issue Resolution Agent", description: "This subagent ensures that customer complaints and technical issues are addressed swiftly and effectively, aiming to enhance customer satisfaction and retention." },
+        { name: "Feedback Collection Agent", description: "This subagent gathers valuable insights from customers through surveys and feedback forms, which help identify areas for improvement in products or services." },
+        { name: "Knowledge Base Management Agent", description: "This subagent maintains an up-to-date, comprehensive knowledge base for customers, ensuring easy access to solutions and reducing the burden on support teams." },
       ],
     },
     {
       name: "Echo",
       role: "eCommerce Specialist",
       image: "/images/Avatars/Avatar3.png",
-      subRoles: [
-        { name: "Product Listing", description: "Oversees the creation, optimization, and management of product listings to ensure accuracy and attract potential customers." },
-        { name: "Sales Analytics", description: "Analyzes eCommerce data to identify trends, customer behavior, and sales patterns that drive performance and profitability." },
-        { name: "Campaign Management", description: "Plans, launches, and tracks promotional campaigns to increase product visibility, boost sales, and enhance brand recognition." },
+      subAgents: [
+        { name: "Product Listing Agent", description: "This subagent ensures that product listings are created, optimized, and regularly updated to ensure accuracy and maximize customer appeal on eCommerce platforms." },
+        { name: "Sales Analytics Agent", description: "This subagent analyzes sales data to uncover customer purchasing behaviors, trends, and market dynamics, providing actionable insights to improve sales strategies." },
+        { name: "Campaign Management Agent", description: "This subagent oversees the execution of promotional campaigns, ensuring they are well-targeted, effectively launched, and accurately tracked to boost brand visibility and drive sales." },
       ],
     },
     {
       name: "Delta",
       role: "Data Analyst",
       image: "/images/Avatars/Avatar4.png",
-      subRoles: [
-        { name: "Data Collection", description: "Gathers accurate and relevant data from various sources to create a foundation for detailed analysis and decision-making." },
-        { name: "Trend Analysis", description: "Identifies emerging patterns and trends in large datasets to predict future behavior and inform business strategies." },
-        { name: "Reporting", description: "Compiles data analysis into comprehensive reports to communicate key insights and assist in data-driven decision-making." },
+      subAgents: [
+        { name: "Data Collection Agent", description: "This subagent is responsible for gathering relevant data from diverse sources, ensuring its quality and reliability for subsequent analysis." },
+        { name: "Trend Analysis Agent", description: "This subagent uses statistical tools to identify emerging patterns in large datasets, providing insights that can help shape future business strategies." },
+        { name: "Reporting Agent", description: "This subagent compiles data into comprehensive reports, transforming raw data into clear and actionable insights that inform decision-making." },
       ],
     },
     {
       name: "Ember",
       role: "Email Marketing",
       image: "/images/Avatars/Avatar5.png",
-      subRoles: [
-        { name: "Campaign Design", description: "Designs engaging, visually appealing email campaigns that resonate with target audiences and effectively communicate promotional messages." },
-        { name: "Audience Segmentation", description: "Segments audiences based on behaviors, preferences, and demographics to tailor email campaigns for maximum engagement and conversions." },
-        { name: "Performance Tracking", description: "Monitors and analyzes email campaign performance metrics, such as open rates and click-through rates, to refine strategies and improve results." },
+      subAgents: [
+        { name: "Campaign Design Agent", description: "This subagent is in charge of designing visually engaging and persuasive email campaigns that align with the company’s marketing objectives and resonate with the target audience." },
+        { name: "Audience Segmentation Agent", description: "This subagent segments the email list based on customer demographics and behaviors, ensuring each campaign is highly targeted and personalized." },
+        { name: "Performance Tracking Agent", description: "This subagent monitors key email campaign metrics, such as open rates and click-through rates, to assess effectiveness and refine future marketing strategies." },
       ],
     },
     {
       name: "Gala",
       role: "Personal Development Coach",
       image: "/images/Avatars/Avatar6.png",
-      subRoles: [
-        { name: "Goal Setting", description: "Assists clients in defining clear, achievable personal and professional goals, creating actionable plans to reach them." },
-        { name: "Skill Enhancement", description: "Helps individuals identify areas for improvement, providing strategies and support for developing new personal and professional skills." },
-        { name: "Motivational Sessions", description: "Leads motivational sessions to inspire and encourage clients to stay focused, overcome challenges, and achieve their full potential." },
+      subAgents: [
+        { name: "Goal Setting Agent", description: "This subagent helps clients define clear, actionable goals and create detailed plans to achieve them, tracking progress and adjusting strategies as needed." },
+        { name: "Skill Enhancement Agent", description: "This subagent identifies areas for improvement and provides tailored strategies and resources to help individuals develop essential personal and professional skills." },
+        { name: "Motivational Agent", description: "This subagent delivers motivational sessions designed to inspire and empower clients to overcome challenges and stay focused on their personal growth journey." },
       ],
     },
     {
       name: "Maverik",
       role: "Sales Manager",
       image: "/images/Avatars/Avatar7.png",
-      subRoles: [
-        { name: "Team Management", description: "Leads and manages the sales team, providing guidance, setting performance goals, and ensuring collaboration towards achieving targets." },
-        { name: "Sales Strategies", description: "Develops and implements innovative sales strategies to drive revenue growth, increase market share, and optimize sales performance." },
-        { name: "Client Acquisition", description: "Identifies and acquires new clients through prospecting, networking, and establishing relationships to expand the customer base." },
+      subAgents: [
+        { name: "Team Management Agent", description: "This subagent leads the sales team, providing direction, support, and training to ensure that team members meet their performance targets and contribute to the company’s goals." },
+        { name: "Sales Strategy Agent", description: "This subagent designs and implements innovative sales strategies aimed at increasing revenue, expanding market reach, and optimizing sales processes." },
+        { name: "Client Acquisition Agent", description: "This subagent is responsible for sourcing and acquiring new clients by networking, prospecting, and building strong relationships with potential customers." },
       ],
     },
     {
       name: "Quill",
       role: "Copy Writer",
       image: "/images/Avatars/Avatar8.png",
-      subRoles: [
-        { name: "Content Creation", description: "Writes clear, concise, and persuasive content for websites, blogs, and marketing materials to drive engagement and conversions." },
-        { name: "SEO Writing", description: "Creates content that is optimized for search engines, using relevant keywords to improve search engine rankings and visibility." },
-        { name: "Editing and Proofreading", description: "Reviews and edits content for clarity, consistency, and grammatical accuracy to ensure high-quality, error-free writing." },
+      subAgents: [
+        { name: "Content Creation Agent", description: "This subagent is tasked with writing persuasive and engaging content for websites, blogs, and other marketing materials that align with brand messaging and drive conversions." },
+        { name: "SEO Writing Agent", description: "This subagent creates content optimized for search engines, ensuring that relevant keywords are used to improve rankings and drive organic traffic." },
+        { name: "Editing and Proofreading Agent", description: "This subagent reviews written content to ensure it is clear, concise, error-free, and consistent with brand voice, making adjustments for grammar, style, and clarity." },
       ],
     },
     {
       name: "Ryder",
       role: "Recruiter",
       image: "/images/Avatars/Avatar9.png",
-      subRoles: [
-        { name: "Talent Sourcing", description: "Proactively searches for qualified candidates through various channels to identify the best talent for the company." },
-        { name: "Interview Coordination", description: "Schedules and coordinates interviews with candidates, ensuring smooth communication and efficient processes during recruitment." },
-        { name: "Onboarding", description: "Supports new hires during the onboarding process, ensuring they have the tools, resources, and knowledge to succeed." },
+      subAgents: [
+        { name: "Talent Sourcing Agent", description: "This subagent proactively seeks out and evaluates qualified candidates through various recruitment channels, ensuring the best talent is brought into the company." },
+        { name: "Interview Coordination Agent", description: "This subagent handles the scheduling and logistics of interviews, ensuring clear communication with candidates and efficient interview processes." },
+        { name: "Onboarding Agent", description: "This subagent facilitates the onboarding process for new hires, ensuring they receive the necessary training, resources, and support to succeed in their new role." },
       ],
     },
     {
       name: "Sage",
       role: "SEO Specialist",
       image: "/images/Avatars/Avatar10.png",
-      subRoles: [
-        { name: "Keyword Research", description: "Conducts in-depth keyword research to identify high-ranking and relevant keywords for search engine optimization." },
-        { name: "Content Optimization", description: "Optimizes website content by incorporating targeted keywords and improving readability to enhance SEO performance." },
-        { name: "Performance Monitoring", description: "Monitors and analyzes SEO performance metrics to track improvements, identify trends, and adjust strategies for optimal results." },
+      subAgents: [
+        { name: "Keyword Research Agent", description: "This subagent conducts in-depth research to identify the most relevant and high-ranking keywords for improving the website’s SEO performance." },
+        { name: "Content Optimization Agent", description: "This subagent optimizes website content to improve readability, keyword usage, and user experience, ensuring content is both engaging and SEO-friendly." },
+        { name: "Performance Monitoring Agent", description: "This subagent tracks and analyzes SEO metrics to evaluate website performance, identifying areas for improvement and adapting strategies for optimal results." },
       ],
     },
     {
       name: "Lumen",
       role: "Social Media Specialist",
       image: "/images/Avatars/Avatar11.png",
-      subRoles: [
-        { name: "Content Scheduling", description: "Plans and schedules social media posts across multiple platforms to maintain consistent engagement with the audience." },
-        { name: "Engagement Tracking", description: "Monitors social media engagement metrics to assess content effectiveness and refine strategies to increase audience interaction." },
-        { name: "Platform Strategy", description: "Develops tailored strategies for different social media platforms to maximize reach, engagement, and brand awareness." },
+      subAgents: [
+        { name: "Content Scheduling Agent", description: "This subagent ensures that social media posts are scheduled and published consistently across platforms to maintain ongoing engagement with the audience." },
+        { name: "Engagement Tracking Agent", description: "This subagent tracks engagement metrics such as likes, shares, and comments, assessing content effectiveness and refining future social media strategies." },
+        { name: "Platform Strategy Agent", description: "This subagent develops tailored strategies for each social media platform to maximize reach, engagement, and brand awareness." },
       ],
     },
     {
       name: "Vera",
       role: "Virtual Assistant",
       image: "/images/Avatars/Avatar12.png",
-      subRoles: [
-        { name: "Administrative Tasks", description: "Handles day-to-day administrative duties, including scheduling, correspondence, and office management to ensure smooth operations." },
-        { name: "Data Management", description: "Organizes and maintains data, ensuring accuracy and accessibility to support efficient decision-making and business processes." },
-        { name: "Research Assistance", description: "Conducts in-depth research on various topics, gathering insights and providing information to assist with business decisions." },
+      subAgents: [
+        { name: "Administrative Tasks Agent", description: "This subagent manages day-to-day administrative duties, including scheduling, correspondence, and office management, ensuring smooth operation of the business." },
+        { name: "Data Management Agent", description: "This subagent organizes, updates, and maintains accurate data records, ensuring that essential business information is easily accessible and properly stored." },
+        { name: "Research Assistance Agent", description: "This subagent conducts research on a variety of topics, gathering insights and providing reports to assist with business decision-making and planning." },
       ],
     },
     {
       name: "Aria",
       role: "Education Specialist",
       image: "/images/Avatars/Avatar13.png",
-      subRoles: [
-        { name: "Curriculum Design", description: "Creates well-structured, engaging curricula that align with educational goals and enhance the learning experience for students." },
-        { name: "Instructional Support", description: "Provides resources, guidance, and support to instructors to improve teaching methods and student learning outcomes." },
-        { name: "Student Assessment", description: "Develops, administers, and evaluates assessments to gauge student progress, identify learning gaps, and improve teaching approaches." },
+      subAgents: [
+        { name: "Curriculum Design Agent", description: "This subagent designs educational programs and curricula that are structured, engaging, and aligned with educational objectives to optimize student learning outcomes." },
+        { name: "Instructional Support Agent", description: "This subagent provides guidance and resources to instructors, helping improve teaching methods and student learning experiences." },
+        { name: "Student Assessment Agent", description: "This subagent develops and administers assessments to evaluate student progress, identify learning gaps, and guide improvements in educational strategies." },
       ],
     },
     {
       name: "Drift",
       role: "Event Planner",
       image: "/images/Avatars/Avatar14.png",
-      subRoles: [
-        { name: "Event Design", description: "Plans and conceptualizes event themes, decorations, and layouts to create a cohesive and engaging experience for attendees." },
-        { name: "Vendor Coordination", description: "Manages relationships with vendors, negotiating contracts, ensuring timely delivery of services, and overseeing vendor performance." },
-        { name: "On-Site Management", description: "Oversees the event’s execution on the day of, ensuring smooth operations, troubleshooting issues, and ensuring a successful outcome." },
+      subAgents: [
+        { name: "Event Design Agent", description: "This subagent is responsible for conceptualizing event themes, decorations, and layouts to create an engaging and cohesive experience for attendees." },
+        { name: "Vendor Coordination Agent", description: "This subagent manages vendor relationships, ensuring timely delivery of goods and services, negotiating contracts, and overseeing vendor performance." },
+        { name: "On-Site Management Agent", description: "This subagent oversees the logistics and execution of events, ensuring everything runs smoothly and troubleshooting issues as they arise during the event." },
       ],
     },
     {
       name: "Neon",
       role: "Creative Designer",
       image: "/images/Avatars/Avatar15.png",
-      subRoles: [
-        { name: "Graphic Design", description: "Creates visually appealing designs for marketing materials, websites, and branding to attract and engage audiences." },
-        { name: "Brand Identity", description: "Develops and maintains consistent brand identity, including logo design, color schemes, and style guides for cohesive communication." },
-        { name: "UI/UX Design", description: "Designs user-friendly interfaces and experiences, ensuring seamless navigation, functionality, and user satisfaction." },
+      subAgents: [
+        { name: "Graphic Design Agent", description: "This subagent creates visually captivating designs for branding, websites, and marketing materials to attract and engage the target audience." },
+        { name: "Brand Identity Agent", description: "This subagent is responsible for developing and maintaining a consistent brand identity, including logo design, color schemes, and style guidelines." },
+        { name: "UI/UX Design Agent", description: "This subagent designs user-friendly interfaces and seamless user experiences, ensuring that websites and applications are intuitive and easy to navigate." },
       ],
     },
     {
       name: "Pulse",
       role: "Health & Wellness Advisor",
       image: "/images/Avatars/Avatar16.png",
-      subRoles: [
-        { name: "Nutrition Planning", description: "Develops customized nutrition plans based on individual needs, preferences, and health goals to support overall wellness." },
-        { name: "Exercise Guidance", description: "Provides personalized exercise recommendations to improve physical fitness, strength, and overall health outcomes." },
-        { name: "Mental Wellness Support", description: "Offers strategies and support to improve mental well-being, reduce stress, and enhance emotional resilience." },
+      subAgents: [
+        { name: "Nutrition Planning Agent", description: "This subagent creates personalized nutrition plans based on individual health goals, preferences, and dietary needs, promoting overall well-being." },
+        { name: "Exercise Guidance Agent", description: "This subagent provides personalized fitness advice and exercise routines to enhance physical strength, health, and wellness." },
+        { name: "Mental Wellness Support Agent", description: "This subagent offers guidance and strategies for improving mental health, reducing stress, and building emotional resilience to maintain overall mental well-being." },
       ],
     },
     {
       name: "Nova",
       role: "Customizable Support Agent",
-      image: "/images/Avatars/Avatar17.png",
-      subRoles: [
-        { name: "Feature Configuration", description: "Works with customers to configure and customize product features according to their specific needs and preferences." },
-        { name: "User Training", description: "Provides training and resources to users to help them understand and efficiently use system features and functionalities." },
-        { name: "Feedback Integration", description: "Collects user feedback to improve system features, prioritize updates, and ensure the product meets user needs and expectations." },
+      image: "/images/Avatars/Avatar11.png",
+      subAgents: [
+        { name: "Feature Configuration Agent", description: "This subagent works closely with customers to configure and customize product features according to their specific needs, ensuring satisfaction." },
+        { name: "User Training Agent", description: "This subagent provides training and educational resources to users to help them understand and efficiently use the system’s features." },
+        { name: "Feedback Integration Agent", description: "This subagent gathers and analyzes user feedback to improve system features, prioritize product updates, and ensure that the product meets user expectations." },
       ],
     },
   ];
-  
