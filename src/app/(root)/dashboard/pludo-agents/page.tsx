@@ -18,7 +18,7 @@ export default function AgentSuit() {
         
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 p-4">
           {pludoAgentsData.map((agent) => (
-            <Agentcard
+            <Agentcard  
               key={agent.id}
               agent={agent}
             />

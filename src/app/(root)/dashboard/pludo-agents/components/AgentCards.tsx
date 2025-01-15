@@ -4,17 +4,22 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import type { Agent } from './dummyData'
-import { useState } from "react"
+import { useState } from "react" 
+import { useRouter } from 'next/navigation'
 
 interface AgentCardProps {
   agent: Agent
 }
 
-export function Agentcard({ agent }: AgentCardProps) {
-  const [isHovered, setIsHovered] = useState(false)
-
+export function Agentcard({ agent }: AgentCardProps) { 
+  const router = useRouter();
+  const [isHovered, setIsHovered] = useState<boolean>(false); 
+  const handleDetails = (agent : Agent) => {  
+    router.push(`/dashboard/pludo-agents/${agent.name}`)
+  }
   return (
-    <Card 
+    <Card  
+    onClick={()=>handleDetails(agent)}
       className={cn(
         "group relative h-[420px] overflow-hidden rounded-3xl transition-all duration-500",
         agent.isLocked 
