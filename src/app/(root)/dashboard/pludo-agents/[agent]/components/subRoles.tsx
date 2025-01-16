@@ -22,17 +22,17 @@ const SubRoles: React.FC<Prop> = ({ name }) => {
      if (matchedAgent) {
        setDetails(matchedAgent)
        
-       const fac = new FastAverageColor()
-       fac.getColorAsync(matchedAgent.image)
-         .then(color => {
-           const [r, g, b] = color.value.slice(0, 3)
-           const brighterColor = `rgb(${Math.min(r + 30, 255)}, ${Math.min(g + 30, 255)}, ${Math.min(b + 30, 255)})`
-          //  setBgStartColor(brighterColor)
-         })
-         .catch(e => {
-           console.log(e)
-          //  setBgStartColor('rgb(60, 60, 60)') 
-         })
+      //  const fac = new FastAverageColor()
+      //  fac.getColorAsync(matchedAgent.image)
+      //    .then(color => {
+      //      const [r, g, b] = color.value.slice(0, 3)
+      //      const brighterColor = `rgb(${Math.min(r + 30, 255)}, ${Math.min(g + 30, 255)}, ${Math.min(b + 30, 255)})`
+      //      setBgStartColor(brighterColor)
+      //    })
+      //    .catch(e => {
+      //      console.log(e)
+      //      setBgStartColor('rgb(60, 60, 60)') 
+      //    })
      } else {
        
      }
