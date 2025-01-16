@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { agentsWithSubAgents } from './agentData'  
-import { FastAverageColor } from 'fast-average-color'
+// import { FastAverageColor } from 'fast-average-color'
 import { AgentWithSubAgents } from './agentData'
 import { ChevronRight, BarChart2, Handshake, TrendingUp } from 'lucide-react'
 
