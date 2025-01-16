@@ -12,7 +12,7 @@ interface Prop {
 
 const SubRoles: React.FC<Prop> = ({ name }) => {
   const [details, setDetails] = useState<AgentWithSubAgents>() 
-    const [bgStartColor, setBgStartColor] = useState<string>('rgb(30, 30, 30)')
+    // const [bgStartColor, setBgStartColor] = useState<string>('rgb(30, 30, 30)')
   
 
  useEffect(() => {
@@ -27,11 +27,11 @@ const SubRoles: React.FC<Prop> = ({ name }) => {
          .then(color => {
            const [r, g, b] = color.value.slice(0, 3)
            const brighterColor = `rgb(${Math.min(r + 30, 255)}, ${Math.min(g + 30, 255)}, ${Math.min(b + 30, 255)})`
-           setBgStartColor(brighterColor)
+          //  setBgStartColor(brighterColor)
          })
          .catch(e => {
            console.log(e)
-           setBgStartColor('rgb(60, 60, 60)') 
+          //  setBgStartColor('rgb(60, 60, 60)') 
          })
      } else {
        

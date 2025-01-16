@@ -12,7 +12,7 @@ interface Agent {
   subtitle: string;
   avatar: string;
 }
-
+ 
 interface AgentCardsProps {
   Name: string;
 }
@@ -122,5 +122,7 @@ const DetailBlocks: React.FC<AgentCardsProps> = React.memo(({ Name }) => {
     </div>
   );
 });
+
+DetailBlocks.displayName = 'DetailBlocks';
 
 export default DetailBlocks;

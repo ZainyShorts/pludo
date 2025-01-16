@@ -1,4 +1,4 @@
-import { MessageCircle, FileText, Phone, Mail, Plus, ChevronDown } from 'lucide-react'
+import { MessageCircle, FileText, Phone, Mail } from 'lucide-react'
 import { Card, CardContent } from "@/components/ui/card"
 import {
   Accordion,
@@ -87,8 +87,8 @@ export default function SupportPage() {
                 How do I upgrade my subscription?
               </AccordionTrigger>
               <AccordionContent className="text-purple-200/70">
-                Visit the Payments page and click on "Upgrade Plan" to view available options and make changes to your subscription.
-              </AccordionContent>
+                Visit the Payments page and click on &quot;Upgrade Plan&quot; to view available options and make changes to your subscription.
+             </AccordionContent>
             </AccordionItem>
           </Accordion>
         </div>
