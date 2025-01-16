@@ -16,7 +16,7 @@ const LoginComponent = () => {
       router.push('/dashboard')
 		}}
 		onError={() => {
-      console.log("Error!")
+      console.log("Error")
 		}}
     />
   )
