@@ -2,14 +2,16 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ChatInput } from '../Input'
-import { Sparkles, Stars } from 'lucide-react'
+import { ChatInput } from '../Input/Input'
+import { Sparkles } from 'lucide-react'
 import { ChatHeader } from '../Chat-header/Chat-header'
 import type { ChatInterfaceProps, Message } from '../types/chat'
+import { TypingLoader } from '../typing-Loader/Typing-Loader'
 
 export const ChatInterface = ({ botName, botAvatar }: ChatInterfaceProps) => {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
+  const [isTyping, setIsTyping] = useState(false)
   const chatEndRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -37,6 +39,7 @@ export const ChatInterface = ({ botName, botAvatar }: ChatInterfaceProps) => {
       setMessages(prev => [...prev, newMessage])
       setInput('')
       
+      setIsTyping(true)
       setTimeout(() => {
         const botMessage: Message = {
           id: (Date.now() + 1).toString(),
@@ -44,20 +47,22 @@ export const ChatInterface = ({ botName, botAvatar }: ChatInterfaceProps) => {
           content: `Response to: ${message.trim()}`
         }
         setMessages(prev => [...prev, botMessage])
-      }, 1000)
+        setIsTyping(false)
+      }, 2000)
     }
   }
 
   return (
-    <div className="flex flex-col h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-purple-900 to-slate-900">
-      {/* Animated background elements */}
-      <div className="absolute lg:ml-[280px] inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSIjZmZmIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxjaXJjbGUgY3g9IjMiIGN5PSIzIiByPSIxIi8+PC9nPjwvc3ZnPg==')] opacity-30"></div>
+    <div className="flex flex-col h-screen bg-gradient-to-b from-purple-950 via-gray-950 to-black">
+      <div className="absolute lg:ml-64 inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-fuchsia-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
       </div>
       
-      {/* Messages Area */}
+      {/* Messages Area with enhanced scrollbar */}
       <ChatHeader botName={botName} botAvatar={botAvatar} />
-      <div className="flex-1 p-4 overflow-y-auto space-y-4 relative"> 
+      <div className="flex-1 p-8 overflow-y-auto space-y-4 relative scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent hover:scrollbar-thumb-white/20"> 
 
         <AnimatePresence>
           {messages.length === 0 ? (
@@ -65,11 +70,14 @@ export const ChatInterface = ({ botName, botAvatar }: ChatInterfaceProps) => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5 }}
-              className="flex flex-col  items-center justify-center h-full space-y-4 text-gray-400"
+              className="flex flex-col items-center mt-10 justify-center space-y-4"
             >
-              <Stars className="w-12 h-12 animate-pulse" />
-              <p className="text-lg font-light tracking-wide">Your messages will be shown here</p>
-              <Sparkles className="w-6 h-6 animate-bounce" />
+              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-purple-500/20 to-fuchsia-500/20 flex items-center justify-center backdrop-blur-xl border border-white/10">
+                <Sparkles className="w-12 h-12 text-white/40 animate-pulse" />
+              </div>
+              <p className="text-lg font-light tracking-wide text-white/60 bg-white/5 px-6 py-2 rounded-full backdrop-blur-xl border border-white/10">
+                Your messages will be shown here
+              </p>
             </motion.div>
           ) : (
             messages.map((message) => (
@@ -82,16 +90,17 @@ export const ChatInterface = ({ botName, botAvatar }: ChatInterfaceProps) => {
                 className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <div
-                  className={`max-w-[80%] p-4 rounded-2xl backdrop-blur-md shadow-lg transform transition-all duration-200 hover:scale-[1.02] ${
+                  className={`max-w-[80%] p-4 rounded-2xl backdrop-blur-xl shadow-lg transform transition-all duration-200 hover:scale-[1.02] ${
                     message.sender === 'user'
-                      ? 'bg-white text-black ml-auto hover:shadow-white/20'
-                      : 'bg-white/10 text-white hover:bg-white/20 border border-white/10'
+                      ? 'bg-gradient-to-br from-white/95 to-white/90 text-black ml-auto hover:shadow-purple-500/10'
+                      : 'bg-gradient-to-br from-white/10 to-transparent text-white hover:bg-white/20 border border-white/10 hover:border-white/20'
                   }`}
                 >
                   <motion.p
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.1 }}
+                    className="font-light"
                   >
                     {message.content}
                   </motion.p>
@@ -100,16 +109,17 @@ export const ChatInterface = ({ botName, botAvatar }: ChatInterfaceProps) => {
             ))
           )}
         </AnimatePresence>
+        {isTyping && <TypingLoader />}
         <div ref={chatEndRef} />
       </div>
 
-      {/* Input Area */}
+      {/* Enhanced Input Area */}
       <motion.div 
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="p-4 bg-black/20 backdrop-blur-xl border-t border-white/10"
+        className="p-4 bg-gradient-to-t from-black/40 to-black/20 backdrop-blur-2xl border-t border-white/5"
       >
-        <div className="flex items-end gap-2 max-w-4xl mx-auto">
+        <div className="flex items-end gap-2 w-full mx-auto">
           <div className="flex-1 relative">
             <ChatInput
               onSendMessage={handleSendMessage}
