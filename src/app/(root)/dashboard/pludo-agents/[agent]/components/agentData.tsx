@@ -1,184 +1,202 @@
 export interface SubAgent {
-    name: string;
-    description: string;
+  id: string;
+  name: string;
+  description: string;
 }
 
 export interface AgentWithSubAgents {
-    name: string;
-    role: string;
-    image: string;
-    subAgents: SubAgent[];
+  name: string;
+  role: string;
+  image: string;
+  subAgents: SubAgent[];
 }
 
 export const agentsWithSubAgents: AgentWithSubAgents[] = [
-    {
-      name: "Ace",
-      role: "Business Development",
-      image: "/images/Avatars/Avatar10.png",
-      subAgents: [
-        { name: "Strategic Planning Agent", description: "This subagent is tasked with formulating business strategies that help achieve long-term goals, streamline operations, and drive growth through comprehensive planning." },
-        { name: "Partnership Management Agent", description: "This subagent focuses on building and maintaining relationships with strategic partners to foster collaboration, increase market reach, and enhance mutual growth." },
-        { name: "Market Analysis Agent", description: "This subagent specializes in market research, analyzing customer trends and competitive landscapes to uncover opportunities for business expansion and product innovation." },
-      ],
-    },
-    {
-      name: "Cora",
-      role: "Customer Support",
-      image: "/images/Avatars/Avatar2.png",
-      subAgents: [
-        { name: "Issue Resolution Agent", description: "This subagent ensures that customer complaints and technical issues are addressed swiftly and effectively, aiming to enhance customer satisfaction and retention." },
-        { name: "Feedback Collection Agent", description: "This subagent gathers valuable insights from customers through surveys and feedback forms, which help identify areas for improvement in products or services." },
-        { name: "Knowledge Base Management Agent", description: "This subagent maintains an up-to-date, comprehensive knowledge base for customers, ensuring easy access to solutions and reducing the burden on support teams." },
-      ],
-    },
-    {
-      name: "Echo",
-      role: "eCommerce Specialist",
-      image: "/images/Avatars/Avatar3.png",
-      subAgents: [
-        { name: "Product Listing Agent", description: "This subagent ensures that product listings are created, optimized, and regularly updated to ensure accuracy and maximize customer appeal on eCommerce platforms." },
-        { name: "Sales Analytics Agent", description: "This subagent analyzes sales data to uncover customer purchasing behaviors, trends, and market dynamics, providing actionable insights to improve sales strategies." },
-        { name: "Campaign Management Agent", description: "This subagent oversees the execution of promotional campaigns, ensuring they are well-targeted, effectively launched, and accurately tracked to boost brand visibility and drive sales." },
-      ],
-    },
-    {
-      name: "Delta",
-      role: "Data Analyst",
-      image: "/images/Avatars/Avatar4.png",
-      subAgents: [
-        { name: "Data Collection Agent", description: "This subagent is responsible for gathering relevant data from diverse sources, ensuring its quality and reliability for subsequent analysis." },
-        { name: "Trend Analysis Agent", description: "This subagent uses statistical tools to identify emerging patterns in large datasets, providing insights that can help shape future business strategies." },
-        { name: "Reporting Agent", description: "This subagent compiles data into comprehensive reports, transforming raw data into clear and actionable insights that inform decision-making." },
-      ],
-    },
-    {
-      name: "Ember",
-      role: "Email Marketing",
-      image: "/images/Avatars/Avatar5.png",
-      subAgents: [
-        { name: "Campaign Design Agent", description: "This subagent is in charge of designing visually engaging and persuasive email campaigns that align with the company’s marketing objectives and resonate with the target audience." },
-        { name: "Audience Segmentation Agent", description: "This subagent segments the email list based on customer demographics and behaviors, ensuring each campaign is highly targeted and personalized." },
-        { name: "Performance Tracking Agent", description: "This subagent monitors key email campaign metrics, such as open rates and click-through rates, to assess effectiveness and refine future marketing strategies." },
-      ],
-    },
-    {
-      name: "Gala",
-      role: "Personal Development Coach",
-      image: "/images/Avatars/Avatar6.png",
-      subAgents: [
-        { name: "Goal Setting Agent", description: "This subagent helps clients define clear, actionable goals and create detailed plans to achieve them, tracking progress and adjusting strategies as needed." },
-        { name: "Skill Enhancement Agent", description: "This subagent identifies areas for improvement and provides tailored strategies and resources to help individuals develop essential personal and professional skills." },
-        { name: "Motivational Agent", description: "This subagent delivers motivational sessions designed to inspire and empower clients to overcome challenges and stay focused on their personal growth journey." },
-      ],
-    },
-    {
-      name: "Maverik",
-      role: "Sales Manager",
-      image: "/images/Avatars/Avatar7.png",
-      subAgents: [
-        { name: "Team Management Agent", description: "This subagent leads the sales team, providing direction, support, and training to ensure that team members meet their performance targets and contribute to the company’s goals." },
-        { name: "Sales Strategy Agent", description: "This subagent designs and implements innovative sales strategies aimed at increasing revenue, expanding market reach, and optimizing sales processes." },
-        { name: "Client Acquisition Agent", description: "This subagent is responsible for sourcing and acquiring new clients by networking, prospecting, and building strong relationships with potential customers." },
-      ],
-    },
-    {
-      name: "Quill",
-      role: "Copy Writer",
-      image: "/images/Avatars/Avatar8.png",
-      subAgents: [
-        { name: "Content Creation Agent", description: "This subagent is tasked with writing persuasive and engaging content for websites, blogs, and other marketing materials that align with brand messaging and drive conversions." },
-        { name: "SEO Writing Agent", description: "This subagent creates content optimized for search engines, ensuring that relevant keywords are used to improve rankings and drive organic traffic." },
-        { name: "Editing and Proofreading Agent", description: "This subagent reviews written content to ensure it is clear, concise, error-free, and consistent with brand voice, making adjustments for grammar, style, and clarity." },
-      ],
-    },
-    {
-      name: "Ryder",
-      role: "Recruiter",
-      image: "/images/Avatars/Avatar9.png",
-      subAgents: [
-        { name: "Talent Sourcing Agent", description: "This subagent proactively seeks out and evaluates qualified candidates through various recruitment channels, ensuring the best talent is brought into the company." },
-        { name: "Interview Coordination Agent", description: "This subagent handles the scheduling and logistics of interviews, ensuring clear communication with candidates and efficient interview processes." },
-        { name: "Onboarding Agent", description: "This subagent facilitates the onboarding process for new hires, ensuring they receive the necessary training, resources, and support to succeed in their new role." },
-      ],
-    },
-    {
-      name: "Sage",
-      role: "SEO Specialist",
-      image: "/images/Avatars/Avatar10.png",
-      subAgents: [
-        { name: "Keyword Research Agent", description: "This subagent conducts in-depth research to identify the most relevant and high-ranking keywords for improving the website’s SEO performance." },
-        { name: "Content Optimization Agent", description: "This subagent optimizes website content to improve readability, keyword usage, and user experience, ensuring content is both engaging and SEO-friendly." },
-        { name: "Performance Monitoring Agent", description: "This subagent tracks and analyzes SEO metrics to evaluate website performance, identifying areas for improvement and adapting strategies for optimal results." },
-      ],
-    },
-    {
-      name: "Lumen",
-      role: "Social Media Specialist",
-      image: "/images/Avatars/Avatar11.png",
-      subAgents: [
-        { name: "Content Scheduling Agent", description: "This subagent ensures that social media posts are scheduled and published consistently across platforms to maintain ongoing engagement with the audience." },
-        { name: "Engagement Tracking Agent", description: "This subagent tracks engagement metrics such as likes, shares, and comments, assessing content effectiveness and refining future social media strategies." },
-        { name: "Platform Strategy Agent", description: "This subagent develops tailored strategies for each social media platform to maximize reach, engagement, and brand awareness." },
-      ],
-    },
-    {
-      name: "Vera",
-      role: "Virtual Assistant",
-      image: "/images/Avatars/Avatar12.png",
-      subAgents: [
-        { name: "Administrative Tasks Agent", description: "This subagent manages day-to-day administrative duties, including scheduling, correspondence, and office management, ensuring smooth operation of the business." },
-        { name: "Data Management Agent", description: "This subagent organizes, updates, and maintains accurate data records, ensuring that essential business information is easily accessible and properly stored." },
-        { name: "Research Assistance Agent", description: "This subagent conducts research on a variety of topics, gathering insights and providing reports to assist with business decision-making and planning." },
-      ],
-    },
-    {
-      name: "Aria",
-      role: "Education Specialist",
-      image: "/images/Avatars/Avatar13.png",
-      subAgents: [
-        { name: "Curriculum Design Agent", description: "This subagent designs educational programs and curricula that are structured, engaging, and aligned with educational objectives to optimize student learning outcomes." },
-        { name: "Instructional Support Agent", description: "This subagent provides guidance and resources to instructors, helping improve teaching methods and student learning experiences." },
-        { name: "Student Assessment Agent", description: "This subagent develops and administers assessments to evaluate student progress, identify learning gaps, and guide improvements in educational strategies." },
-      ],
-    },
-    {
-      name: "Drift",
-      role: "Event Planner",
-      image: "/images/Avatars/Avatar14.png",
-      subAgents: [
-        { name: "Event Design Agent", description: "This subagent is responsible for conceptualizing event themes, decorations, and layouts to create an engaging and cohesive experience for attendees." },
-        { name: "Vendor Coordination Agent", description: "This subagent manages vendor relationships, ensuring timely delivery of goods and services, negotiating contracts, and overseeing vendor performance." },
-        { name: "On-Site Management Agent", description: "This subagent oversees the logistics and execution of events, ensuring everything runs smoothly and troubleshooting issues as they arise during the event." },
-      ],
-    },
-    {
-      name: "Neon",
-      role: "Creative Designer",
-      image: "/images/Avatars/Avatar15.png",
-      subAgents: [
-        { name: "Graphic Design Agent", description: "This subagent creates visually captivating designs for branding, websites, and marketing materials to attract and engage the target audience." },
-        { name: "Brand Identity Agent", description: "This subagent is responsible for developing and maintaining a consistent brand identity, including logo design, color schemes, and style guidelines." },
-        { name: "UI/UX Design Agent", description: "This subagent designs user-friendly interfaces and seamless user experiences, ensuring that websites and applications are intuitive and easy to navigate." },
-      ],
-    },
-    {
-      name: "Pulse",
-      role: "Health & Wellness Advisor",
-      image: "/images/Avatars/Avatar16.png",
-      subAgents: [
-        { name: "Nutrition Planning Agent", description: "This subagent creates personalized nutrition plans based on individual health goals, preferences, and dietary needs, promoting overall well-being." },
-        { name: "Exercise Guidance Agent", description: "This subagent provides personalized fitness advice and exercise routines to enhance physical strength, health, and wellness." },
-        { name: "Mental Wellness Support Agent", description: "This subagent offers guidance and strategies for improving mental health, reducing stress, and building emotional resilience to maintain overall mental well-being." },
-      ],
-    },
-    {
-      name: "Nova",
-      role: "Customizable Support Agent",
-      image: "/images/Avatars/Avatar11.png",
-      subAgents: [
-        { name: "Feature Configuration Agent", description: "This subagent works closely with customers to configure and customize product features according to their specific needs, ensuring satisfaction." },
-        { name: "User Training Agent", description: "This subagent provides training and educational resources to users to help them understand and efficiently use the system’s features." },
-        { name: "Feedback Integration Agent", description: "This subagent gathers and analyzes user feedback to improve system features, prioritize product updates, and ensure that the product meets user expectations." },
-      ],
-    },
-  ];
+  {
+    name: "Ace",
+    role: "Business Development",
+    image: "/images/Avatars/Avatar10.png",
+    subAgents: [
+      { id: "ace-1", name: "Strategic Planning Agent", description: "Formulates strategies for long-term goals." },
+      { id: "ace-2", name: "Partnership Management Agent", description: "Builds and maintains strategic partnerships." },
+      { id: "ace-3", name: "Market Analysis Agent", description: "Analyzes customer trends and opportunities." },
+      { id: "ace-4", name: "Business Proposal Agent", description: "Creates proposals to secure funding or deals." }
+    ],
+  },
+  {
+    name: "Cora",
+    role: "Customer Support",
+    image: "/images/Avatars/Avatar2.png",
+    subAgents: [
+      { id: "cora-1", name: "Issue Resolution Agent", description: "Addresses customer complaints and issues." },
+      { id: "cora-2", name: "Feedback Collection Agent", description: "Gathers insights through customer surveys." },
+      { id: "cora-3", name: "Knowledge Base Management Agent", description: "Maintains a comprehensive knowledge base." },
+      { id: "cora-4", name: "Customer Engagement Agent", description: "Proactively engages customers for loyalty." }
+    ],
+  },
+  {
+    name: "Echo",
+    role: "eCommerce Specialist",
+    image: "/images/Avatars/Avatar3.png",
+    subAgents: [
+      { id: "echo-1", name: "Product Listing Agent", description: "Creates and optimizes product listings." },
+      { id: "echo-2", name: "Sales Analytics Agent", description: "Analyzes sales data and trends." },
+      { id: "echo-3", name: "Campaign Management Agent", description: "Oversees execution of promotional campaigns." },
+      { id: "echo-4", name: "Inventory Management Agent", description: "Monitors and optimizes stock levels." }
+    ],
+  },
+  {
+    name: "Delta",
+    role: "Data Analyst",
+    image: "/images/Avatars/Avatar4.png",
+    subAgents: [
+      { id: "delta-1", name: "Data Collection Agent", description: "Gathers reliable data from diverse sources." },
+      { id: "delta-2", name: "Trend Analysis Agent", description: "Identifies patterns and trends in data." },
+      { id: "delta-3", name: "Reporting Agent", description: "Compiles data into actionable reports." },
+      { id: "delta-4", name: "Data Cleaning Agent", description: "Ensures data accuracy and consistency." }
+    ],
+  },
+  {
+    name: "Ember",
+    role: "Email Marketing",
+    image: "/images/Avatars/Avatar5.png",
+    subAgents: [
+      { id: "ember-1", name: "Campaign Design Agent", description: "Designs engaging and persuasive email campaigns." },
+      { id: "ember-2", name: "Audience Segmentation Agent", description: "Segments email lists for personalization." },
+      { id: "ember-3", name: "Performance Tracking Agent", description: "Monitors key email campaign metrics." },
+      { id: "ember-4", name: "A/B Testing Agent", description: "Tests strategies for maximum engagement." }
+    ],
+  },
+  {
+    name: "Gala",
+    role: "Personal Development Coach",
+    image: "/images/Avatars/Avatar6.png",
+    subAgents: [
+      { id: "gala-1", name: "Goal Setting Agent", description: "Defines actionable goals and strategies." },
+      { id: "gala-2", name: "Skill Enhancement Agent", description: "Provides resources for skill development." },
+      { id: "gala-3", name: "Motivational Agent", description: "Inspires clients to overcome challenges." },
+      { id: "gala-4", name: "Accountability Agent", description: "Ensures clients stay on track." }
+    ],
+  },
+  {
+    name: "Maverik",
+    role: "Sales Manager",
+    image: "/images/Avatars/Avatar7.png",
+    subAgents: [
+      { id: "maverik-1", name: "Team Management Agent", description: "Leads and trains the sales team." },
+      { id: "maverik-2", name: "Sales Strategy Agent", description: "Designs innovative revenue strategies." },
+      { id: "maverik-3", name: "Client Acquisition Agent", description: "Sources and acquires new clients." },
+      { id: "maverik-4", name: "Customer Retention Agent", description: "Builds relationships for repeat business." }
+    ],
+  },
+  {
+    name: "Quill",
+    role: "Copy Writer",
+    image: "/images/Avatars/Avatar8.png",
+    subAgents: [
+      { id: "quill-1", name: "Content Creation Agent", description: "Writes persuasive content for marketing." },
+      { id: "quill-2", name: "SEO Writing Agent", description: "Optimizes content for search engines." },
+      { id: "quill-3", name: "Editing and Proofreading Agent", description: "Reviews content for clarity and errors." },
+      { id: "quill-4", name: "Creative Storytelling Agent", description: "Crafts compelling brand narratives." }
+    ],
+  },
+  {
+    name: "Ryder",
+    role: "Recruiter",
+    image: "/images/Avatars/Avatar9.png",
+    subAgents: [
+      { id: "ryder-1", name: "Talent Sourcing Agent", description: "Seeks and evaluates qualified candidates." },
+      { id: "ryder-2", name: "Interview Coordination Agent", description: "Manages scheduling and interview logistics." },
+      { id: "ryder-3", name: "Onboarding Agent", description: "Facilitates smooth onboarding for hires." },
+      { id: "ryder-4", name: "Employee Engagement Agent", description: "Maintains relationships with employees." }
+    ],
+  },
+  {
+    name: "Sage",
+    role: "SEO Specialist",
+    image: "/images/Avatars/Avatar10.png",
+    subAgents: [
+      { id: "sage-1", name: "Keyword Research Agent", description: "Identifies high-ranking SEO keywords." },
+      { id: "sage-2", name: "Content Optimization Agent", description: "Enhances content for SEO performance." },
+      { id: "sage-3", name: "Performance Monitoring Agent", description: "Tracks and analyzes SEO metrics." },
+      { id: "sage-4", name: "Link Building Agent", description: "Builds backlinks to boost rankings." }
+    ],
+  },
+  {
+    name: "Lumen",
+    role: "Social Media Specialist",
+    image: "/images/Avatars/Avatar11.png",
+    subAgents: [
+      { id: "lumen-1", name: "Content Scheduling Agent", description: "Schedules posts for consistent engagement." },
+      { id: "lumen-2", name: "Engagement Tracking Agent", description: "Tracks metrics like likes and shares." },
+      { id: "lumen-3", name: "Platform Strategy Agent", description: "Develops strategies for social platforms." },
+      { id: "lumen-4", name: "Community Management Agent", description: "Interacts with and supports the audience." }
+    ],
+  },
+  {
+    name: "Vera",
+    role: "Virtual Assistant",
+    image: "/images/Avatars/Avatar12.png",
+    subAgents: [
+      { id: "vera-1", name: "Administrative Tasks Agent", description: "Handles day-to-day administrative duties." },
+      { id: "vera-2", name: "Data Management Agent", description: "Organizes and maintains accurate data." },
+      { id: "vera-3", name: "Research Assistance Agent", description: "Conducts research and provides reports." },
+      { id: "vera-4", name: "Customer Support Agent", description: "Addresses inquiries to ensure satisfaction." }
+    ],
+  },
+  {
+    name: "Aria",
+    role: "Education Specialist",
+    image: "/images/Avatars/Avatar13.png",
+    subAgents: [
+      { id: "aria-1", name: "Curriculum Design Agent", description: "Designs structured and engaging curricula." },
+      { id: "aria-2", name: "Instructional Support Agent", description: "Provides resources to improve teaching." },
+      { id: "aria-3", name: "Student Assessment Agent", description: "Develops assessments to evaluate progress." },
+      { id: "aria-4", name: "E-Learning Development Agent", description: "Creates interactive online learning content." }
+    ],
+  },
+  {
+    name: "Drift",
+    role: "Event Planner",
+    image: "/images/Avatars/Avatar14.png",
+    subAgents: [
+      { id: "drift-1", name: "Event Design Agent", description: "Conceptualizes themes and decorations." },
+      { id: "drift-2", name: "Vendor Coordination Agent", description: "Manages vendor contracts and delivery." },
+      { id: "drift-3", name: "On-Site Management Agent", description: "Oversees logistics during events." },
+      { id: "drift-4", name: "Budget Management Agent", description: "Tracks and allocates event budgets." }
+    ],
+  },
+  {
+    name: "Neon",
+    role: "Creative Designer",
+    image: "/images/Avatars/Avatar15.png",
+    subAgents: [
+      { id: "neon-1", name: "Graphic Design Agent", description: "Creates captivating visual designs." },
+      { id: "neon-2", name: "Brand Identity Agent", description: "Develops and maintains consistent branding." },
+      { id: "neon-3", name: "UI/UX Design Agent", description: "Designs user-friendly digital interfaces." },
+      { id: "neon-4", name: "Motion Graphics Agent", description: "Creates dynamic video content." }
+    ],
+  },
+  {
+    name: "Pulse",
+    role: "Health & Wellness Advisor",
+    image: "/images/Avatars/Avatar16.png",
+    subAgents: [
+      { id: "pulse-1", name: "Nutrition Planning Agent", description: "Designs personalized nutrition plans." },
+      { id: "pulse-2", name: "Exercise Guidance Agent", description: "Provides personalized fitness routines." },
+      { id: "pulse-3", name: "Mental Wellness Support Agent", description: "Offers strategies for mental health." },
+      { id: "pulse-4", name: "Holistic Health Agent", description: "Integrates physical and spiritual wellness." }
+    ],
+  },
+  {
+    name: "Nova",
+    role: "Customizable Support Agent",
+    image: "/images/Avatars/Avatar11.png",
+    subAgents: [
+      { id: "nova-1", name: "Feature Configuration Agent", description: "Customizes features to user needs." },
+      { id: "nova-2", name: "User Training Agent", description: "Provides training for efficient use." },
+      { id: "nova-3", name: "Feedback Integration Agent", description: "Analyzes feedback to prioritize updates." },
+      { id: "nova-4", name: "Customer Success Agent", description: "Ensures satisfaction and ongoing support." }
+    ],
+  }
+];

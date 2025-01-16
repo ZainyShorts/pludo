@@ -41,7 +41,10 @@ const HeroSection: React.FC<HeroSectionProps> = ({ Name }) => {
     }
   }, [Name])
 
-  if (!data) return null
+  if (!data) return null 
+  const handlePurchase = (price : number) =>{ 
+    
+  }
 
   return (
     <>
@@ -58,7 +61,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ Name }) => {
             <h2 className="text-xl font-medium text-white/90">
               {data.name} <span className="text-white/60">({data.role})</span>
             </h2>
-            <Button variant="secondary" className="rounded-full px-6 py-2 bg-white/10 hover:bg-white/20 text-white border-none">
+            <Button onClick={()=>handlePurchase(data.price)} variant="secondary" className="rounded-full px-6 py-2 bg-white/10 hover:bg-white/20 text-white border-none">
               Buy now →
             </Button>
           </div>

@@ -11,7 +11,7 @@ export interface Plan {
   export const pricingPlans: Plan[] = [
     {
       name: 'Basic',
-      price: '$49 /month',
+      price: '$20 /month',
       features: [
         'Only Bots Access',
         'Basic Customization',

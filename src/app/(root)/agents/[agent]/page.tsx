@@ -11,7 +11,7 @@ agent? : string;
 function Agent() { 
     const params = useParams<Params>();
     const name = params?.agent || 'Unknown Agent'; 
-
+ 
     return (
         <div> 
            <Navbar/>  
