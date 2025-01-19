@@ -2,18 +2,48 @@
 import React from 'react'
 import { Descope } from '@descope/nextjs-sdk';
 import { useRouter } from 'next/navigation';
+import { Add_User, Get_User } from '@/lib/query';
+import { getUserTimezone } from '@/lib/methods';
+import { useLazyQuery, useMutation } from '@apollo/client';
+
 
 const LoginComponent = () => {
   const router  = useRouter()
 
+  const [AddUser] = useMutation(Add_User());
+
+
+  const [fetchData, { loading, data, error }] = useLazyQuery(Get_User());
+
+ 
 
   return (
     <Descope
 		flowId="sign-up-or-in"
 		theme="light"
-		onSuccess={() => {
-      console.log('success')
-      router.push('/dashboard')
+		onSuccess={async (event:unknown) => {
+      console.log(event)
+      const detail = event?.detail
+      const user = detail.user
+      if(detail.firstSeen){
+        await AddUser({
+          variables: {
+            addUserInput: {
+              deScopeId: user.userId,
+              username: user.name,
+              email: user.email,
+              timeZone:getUserTimezone()
+
+            },
+          },
+        });
+      }
+      else{
+        const { data } = await fetchData();
+        console.log(data)
+        // if(data.getUser.subscription) return router.push('/dashboard')
+      }
+      router.push('/')
 		}}
 		onError={() => {
       console.log("Error")
@@ -23,3 +53,4 @@ const LoginComponent = () => {
 }
 
 export default LoginComponent
+

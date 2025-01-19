@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { AuthProvider } from '@descope/nextjs-sdk';
+import { ApolloProvider } from "@/providers/ApolloPovider";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -13,12 +14,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <AuthProvider projectId="P2rKjIaILiYkDRu8bST9CS14pS3P">
+    <AuthProvider projectId={process.env.DESCOPE_PROJECT_ID as string}>
+      <ApolloProvider>
     <html lang="en">
       <body >
         {children}
       </body>
     </html>
+    </ApolloProvider>
     </AuthProvider>
   );
 }

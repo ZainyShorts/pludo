@@ -15,6 +15,7 @@ import { Menu, Users, CreditCard, BookOpen, Mail } from 'lucide-react'
 import { useSession, useUser, useDescope } from '@descope/nextjs-sdk/client'
 import { motion, AnimatePresence } from 'framer-motion'
 import SideMenu from './SideMenu'
+import { useRouter } from 'next/navigation'
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -22,9 +23,12 @@ export default function Navbar() {
   const sdk = useDescope()
   const { isAuthenticated } = useSession()
   const { user } = useUser()
+  const router = useRouter()
 
-  const handleLogout = useCallback(() => {
-    sdk.logout()
+  const handleLogout = useCallback((path:string) => {
+    if(path === "/logout") return sdk.logout()
+
+    else router.push(path)
   }, [sdk])
 
   useEffect(() => {
@@ -129,7 +133,10 @@ export default function Navbar() {
                   <DropdownMenuContent>
                     <DropdownMenuLabel>My Account</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem className='cursor-pointer' onClick={handleLogout}>
+                    <DropdownMenuItem className='cursor-pointer' onClick={()=>handleLogout('/dashboard')}>
+                      Dashboard
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className='cursor-pointer' onClick={()=>handleLogout('/logout')}>
                       Logout
                     </DropdownMenuItem>
                   </DropdownMenuContent>
@@ -157,7 +164,7 @@ export default function Navbar() {
         isOpen={isSideMenuOpen} 
         onClose={() => setIsSideMenuOpen(false)}
         isAuthenticated={isAuthenticated}
-        onLogout={handleLogout}
+        onLogout={()=>handleLogout('/logout')}
       />
     </>
   )

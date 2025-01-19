@@ -5,6 +5,7 @@ import { FastAverageColor } from 'fast-average-color'
 import { AgentData } from "./data"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
+import Link from "next/link"
 
 interface HeroSectionProps {
   Name: string
@@ -61,9 +62,11 @@ const HeroSection: React.FC<HeroSectionProps> = ({ Name }) => {
             <h2 className="text-xl font-medium text-white/90">
               {data.name} <span className="text-white/60">({data.role})</span>
             </h2>
-            <Button onClick={()=>handlePurchase(data.price)} variant="secondary" className="rounded-full px-6 py-2 bg-white/10 hover:bg-white/20 text-white border-none">
+            <Link href={'/pricing'}>
+            <Button  variant="secondary" className="rounded-full px-6 py-2 bg-white/10 hover:bg-white/20 text-white border-none">
               Buy now →
             </Button>
+            </Link>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">

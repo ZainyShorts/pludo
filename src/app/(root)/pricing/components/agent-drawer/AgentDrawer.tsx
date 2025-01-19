@@ -5,6 +5,11 @@ import Image from 'next/image';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
 import { AgentData } from '@/app/(root)/agents/[agent]/Components/data';
+import { useMutation } from '@apollo/client';
+import { Make_Payment } from '@/lib/query';
+import { Stripe, loadStripe } from '@stripe/stripe-js';
+import { useUser } from '@descope/nextjs-sdk/client'
+import { useRouter } from 'next/navigation';
 
 interface AgentDrawerProps {
   isOpen: boolean;
@@ -16,6 +21,8 @@ export function AgentDrawer({ isOpen, onClose }: AgentDrawerProps) {
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
   const [selectedAgents, setSelectedAgents] = useState<typeof AgentData>([]);
+  const router = useRouter()
+  const {user} = useUser()
 
   const scrollTo = (direction: 'left' | 'right') => {
     const container = scrollContainerRef.current;
@@ -75,6 +82,56 @@ export function AgentDrawer({ isOpen, onClose }: AgentDrawerProps) {
       window.removeEventListener('resize', checkScrollButtons);
     };
   }, []);
+
+  const [MakePayment] = useMutation(Make_Payment())
+
+  const Checkout = async() =>{
+   if(!user?.userId) return router.push('/login')
+
+
+    const stripe:Stripe | null = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_KEY!);
+
+    if (!stripe) {
+      console.error("Stripe failed to load.");
+      return;
+    }
+
+    let path = "http://localhost:3000" 
+
+    if (typeof window !== "undefined") {
+       path = window.location.origin;
+      }
+
+    const paymentInput = selectedAgents.map(agent => ({
+      amount: agent.price,
+      agent: agent.name,
+      img: "https://res.cloudinary.com/dklqbx5k0/image/upload/v1737030967/ossuczzut3kurcwrqsuw.webp"
+    })) 
+
+   const { data, errors } = await MakePayment({
+     variables: {
+        paymentInput:paymentInput,
+        deScopeId: user!.userId,
+        path,
+      },
+    });
+
+    if(errors){
+      console.log(errors)
+      return
+     }
+
+     try {
+
+     await stripe.redirectToCheckout({
+        sessionId: data.makePayment, 
+     });
+   
+   } catch (error) {
+       console.error('Payment failed:', error);
+   } 
+     
+  }
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
@@ -197,6 +254,7 @@ export function AgentDrawer({ isOpen, onClose }: AgentDrawerProps) {
                         <X className="w-3 h-3 text-gray-400 hover:text-white" />
                       </button>
                     </div>
+                    <span className='flex justify-center items-center tracking-widest text-white font-zentry text-xl' >{agent.name}</span>
                   </div>
                 ))}
               </div>
@@ -210,7 +268,7 @@ export function AgentDrawer({ isOpen, onClose }: AgentDrawerProps) {
                       ${calculateTotalPrice().toLocaleString()}
                     </p>
                   </div>
-                  <button className="px-6 py-2 rounded-full border-2 border-white/20 text-white transition-all duration-300 hover:bg-white hover:text-gray-900 hover:border-white backdrop-blur-sm">
+                  <button onClick={Checkout} className="px-6 py-2 rounded-full border-2 border-white/20 text-white transition-all duration-300 hover:bg-white hover:text-gray-900 hover:border-white backdrop-blur-sm">
                     Checkout
                   </button>
                 </div>
@@ -233,3 +291,5 @@ export function AgentDrawer({ isOpen, onClose }: AgentDrawerProps) {
     </Sheet>
   );
 }
+
+
