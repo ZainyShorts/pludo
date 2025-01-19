@@ -9,10 +9,16 @@ import { AgentDrawer } from '../agent-drawer/AgentDrawer'
 
 export default function PricingPlans() {
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false)
-
-  const handlePurchasing = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault()
-    setIsDrawerOpen(true)
+  const [planName , setPlanName] = useState<string>('');
+  const handlePurchasing = (event: React.MouseEvent<HTMLButtonElement>, name : string) => {
+    event.preventDefault()  
+    if (name) {
+    setPlanName(name);
+    setIsDrawerOpen(true) 
+    } 
+    else { 
+      return 
+    }
   }
 
   return (
@@ -66,7 +72,7 @@ export default function PricingPlans() {
                         ? 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl'
                         : 'bg-white/20 text-white hover:bg-white/30 backdrop-blur-sm'
                     }`}
-                    onClick={handlePurchasing}
+                    onClick={(e)=>handlePurchasing(e,plan.name)}
                   >
                     {plan.buttonText}
                   </button>
@@ -85,7 +91,8 @@ export default function PricingPlans() {
 
       <AgentDrawer 
         isOpen={isDrawerOpen}
-        onClose={() => setIsDrawerOpen(false)}
+        onClose={() => setIsDrawerOpen(false)} 
+        planType={planName}
       />
     </>
   )
