@@ -13,6 +13,7 @@ import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet"
 import {  useUser, useDescope } from '@descope/nextjs-sdk/client' 
 import { LogOut } from 'lucide-react';
 import { VisuallyHidden } from "@/components/visually-hidden"
+import Link from "next/link"
 
 const navItems = [
   { icon: LayoutDashboard, label: "Dashboard", route: "/dashboard" },
@@ -66,9 +67,11 @@ export function Sidebar({ className }: SidebarProps) {
           >
             <Menu className="h-6 w-6" />
           </Button>
-          <h1 className="text-xl font-bold bg-gradient-to-r from-white to-white/70 bg-clip-text text-transparent">
+          <Link  href='/'>
+          <h1 className="text-xl   font-bold bg-gradient-to-r from-white to-white/70 bg-clip-text text-transparent">
             AI Dashboard
           </h1>
+          </Link>
         </div>
       </nav>
 
@@ -120,9 +123,11 @@ const SidebarContent = React.memo(function SidebarContent() {
   return (
     <div className="flex flex-col h-full">
       <div className="p-6">
+        <Link href={'/'}>
         <h1 className="text-xl font-bold bg-gradient-to-r from-white to-white/70 bg-clip-text text-transparent">
           AI Dashboard
         </h1>
+        </Link>
       </div>
       <nav className="flex-1 px-4 space-y-1">
         {navItems.map((item, index) => (

@@ -3,6 +3,7 @@
 import { CreditCard, Clock, CheckCircle, ChevronRight, Sparkles } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import Image from 'next/image'
 
 export default function BillingPage() {
   return (
@@ -19,19 +20,19 @@ export default function BillingPage() {
                   <Sparkles className="h-6 w-6 text-purple-400" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-semibold text-white">Professional Plan</h2>
-                  <p className="text-purple-200/70">$49.99/month</p>
+                  <h2 className="text-lg font-semibold text-white">Agents</h2>
+                  <p className="text-purple-200/70">$20/month</p>
                 </div>
               </div>
               <Button variant="outline" className="bg-purple-500/20 text-purple-200 border-purple-500/30 hover:bg-purple-500/30">
-                Upgrade Plan
+                Purchase 
               </Button>
             </div>
           </CardContent>
         </Card>
 
         {/* Payment Method */}
-        <Card className="mb-8 backdrop-blur-xl bg-black/30 border-purple-500/20">
+        {/* <Card className="mb-8 backdrop-blur-xl bg-black/30 border-purple-500/20">
           <CardHeader>
             <CardTitle className="text-white">Payment Method</CardTitle>
           </CardHeader>
@@ -45,7 +46,7 @@ export default function BillingPage() {
               <ChevronRight className="h-5 w-5 text-purple-400" />
             </div>
           </CardContent>
-        </Card>
+        </Card> */}
 
         {/* Billing History */}
         <Card className="backdrop-blur-xl bg-black/30 border-purple-500/20">

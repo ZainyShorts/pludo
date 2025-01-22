@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Add_User, Get_User } from '@/lib/query';
 import { getUserTimezone } from '@/lib/methods';
 import { useLazyQuery, useMutation } from '@apollo/client';
+import { checkDomainOfScale } from 'recharts/types/util/ChartUtils';
 
 
 const LoginComponent = () => {
@@ -39,11 +40,12 @@ const LoginComponent = () => {
         });
       }
       else{
-        const { data } = await fetchData();
+        const data = await fetchData();
         console.log(data)
-        // if(data.getUser.subscription) return router.push('/dashboard')
+        if(data) return router.push('/dashboard')
+
       }
-      router.push('/')
+      router.push('/pricing')
 		}}
 		onError={() => {
       console.log("Error")
