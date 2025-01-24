@@ -19,7 +19,7 @@ export const useAIFunctions = () => {
     }
   }
 
-  const getRun = async (id: string , ass_id : string) => {
+  const getRun = async (id: string , ass_id  : string) => {
     const runData = {
       threadId: id,
       assistantId: ass_id,
