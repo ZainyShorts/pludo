@@ -13,11 +13,12 @@ export const cartSlice = createSlice({
     name: 'cart',
     initialState,
     reducers: {
-        add: (state, action) => {
+        add: (state, action ) => {
             // Magic
-            // Immer will handle the mutation
             state.items.push(action.payload);
-        },
+        }, 
+        sub: (state,action) => { 
+        }
     },
 });
 

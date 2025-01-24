@@ -2,17 +2,34 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ChatInput } from '../Input/Input'
-import { Sparkles } from 'lucide-react'
+import { ChatInput } from '../Input/Input' 
+import { Sparkles } from 'lucide-react' 
+import { sendMessage } from '@/redux/features/openAI/messageSlice' 
+import { useAppDispatch , useAppSelector } from '@/redux/hooks'
 import { ChatHeader } from '../Chat-header/Chat-header'
 import type { ChatInterfaceProps, Message } from '../types/chat'
-import { TypingLoader } from '../typing-Loader/Typing-Loader'
-
+import { TypingLoader } from '../typing-Loader/Typing-Loader'   
+import { useAIFunctions } from './Functions/Functions'
 export const ChatInterface = ({ botName, botAvatar }: ChatInterfaceProps) => {
-  const [messages, setMessages] = useState<Message[]>([])
-  const [input, setInput] = useState('')
-  const [isTyping, setIsTyping] = useState(false)
-  const chatEndRef = useRef<HTMLDivElement>(null)
+  const dispatch = useAppDispatch();   
+  const {createThread ,createMessage,getRun,getResponse,getReply} = useAIFunctions();
+  const messages = useAppSelector((state : any ) => state.message.messages);
+  const [isTyping, setIsTyping] = useState<boolean>(false)
+  const chatEndRef = useRef<HTMLDivElement>(null);    
+  const [threadID , setThreadID] = useState<string>('');  
+  const assistantId = "asst_Z7kalJHDtGK1Lt24iVa1buWJ";
+
+  useEffect(() => {
+    if (threadID === '') {
+      const create = async () => {
+        const id = await createThread();
+        setThreadID(id);
+      };
+      create(); 
+    }
+  }, [threadID]); 
+   
+
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -29,28 +46,35 @@ export const ChatInterface = ({ botName, botAvatar }: ChatInterfaceProps) => {
     audio_element.play()
   }
 
-  const handleSendMessage = (message: string) => {
-    if (message.trim()) {
-      const newMessage: Message = {
-        id: Date.now().toString(),
+  const handleSendMessage = async (message: string) => {
+
+    const userMessage: Message = {
+        id: (Date.now() + 1).toString(),
         sender: 'user',
         content: message.trim()
+      } 
+      dispatch(sendMessage(userMessage)); 
+      const data = { 
+        message: message, 
+        threadId: threadID,
       }
-      setMessages(prev => [...prev, newMessage])
-      setInput('')
-      
       setIsTyping(true)
-      setTimeout(() => {
+      await createMessage(data);  
+     const runId =  await getRun(threadID as string , assistantId as string); 
+       let GetResponse = await getResponse(threadID as string, runId as string); 
+           while (GetResponse != 'completed' && GetResponse != 'cancelled' && GetResponse != 'failed' && GetResponse != 'expired') {  
+             GetResponse = await getResponse(threadID as string , runId as string); 
+           }  
+           const Reply = await getReply(threadID as string); 
         const botMessage: Message = {
           id: (Date.now() + 1).toString(),
           sender: 'bot',
-          content: `Response to: ${message.trim()}`
+          content: Reply.trim()
         }
-        setMessages(prev => [...prev, botMessage])
+        dispatch(sendMessage(botMessage))
         setIsTyping(false)
-      }, 2000)
     }
-  }
+  
 
   return (
     <div className="flex flex-col h-screen bg-gradient-to-b from-purple-950 via-gray-950 to-black">
@@ -80,20 +104,20 @@ export const ChatInterface = ({ botName, botAvatar }: ChatInterfaceProps) => {
               </p>
             </motion.div>
           ) : (
-            messages.map((message) => (
+            messages.map((msg: Message, index: number) => (
               <motion.div
-                key={message.id}
+                key={index}
                 initial={{ opacity: 0, y: 20, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.2, ease: "easeOut" }}
-                className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <div
                   className={`max-w-[80%] p-4 rounded-2xl backdrop-blur-xl shadow-lg transform transition-all duration-200 hover:scale-[1.02] ${
-                    message.sender === 'user'
+                    msg.sender === 'user'
                       ? 'bg-gradient-to-br from-white/95 to-white/90 text-black ml-auto hover:shadow-purple-500/10'
-                      : 'bg-gradient-to-br from-white/10 to-transparent text-white hover:bg-white/20 border border-white/10 hover:border-white/20'
+                      : 'bg-gradient-to-br from-gray-600/90 to-gray-700/80 text-white mr-auto hover:shadow-purple-500/10'
                   }`}
                 >
                   <motion.p
@@ -102,11 +126,13 @@ export const ChatInterface = ({ botName, botAvatar }: ChatInterfaceProps) => {
                     transition={{ delay: 0.1 }}
                     className="font-light"
                   >
-                    {message.content}
+                    <span>{msg.content}</span>
                   </motion.p>
                 </div>
               </motion.div>
             ))
+            
+            
           )}
         </AnimatePresence>
         {isTyping && <TypingLoader />}
@@ -125,8 +151,8 @@ export const ChatInterface = ({ botName, botAvatar }: ChatInterfaceProps) => {
               onSendMessage={handleSendMessage}
               onSendImage={handleSendImage}
               onSendAudio={handleSendAudio}
-              allowImage={true}
-              allowAudio={true}
+              allowImage={false}
+              allowAudio={false}
             />
           </div>
         </div>

@@ -1,13 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit';
 import cartReducer from './features/cart/cartSlice';
-import productReducer from './features/product/productSlice';
+import productReducer from './features/product/productSlice'; 
+import messageReducer from './features/openAI/messageSlice';  
 // store variable is a global variable.
 export const makeStore = () => {
     return configureStore({
         reducer: {
             cart: cartReducer,
-            product: productReducer,
-        },
+            product: productReducer, 
+            message: messageReducer,
+        }
     });
 };
 
