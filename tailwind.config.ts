@@ -8,43 +8,56 @@ export default {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-  	extend: { 
-		backgroundImage: {
-			'custom-gradient': 'linear-gradient(to right, #0A0118, #36154a)',
-
-		  },
-			screens: {
-			  sm: '640px', // Small screens
-			  md: '768px', // Medium screens
-			  lg: '1024px', // Large screens
-			  xl: '1280px', // Extra large screens
-			  '2xl': '1536px', // 2X large screens 
-			  '3xl' : '1980px',
-			},
-		  fontFamily: {
-			zentry: ["zentry", "sans-serif"],
-			general: ["general", "sans-serif"],
-			"circular-web": ["circular-web", "sans-serif"],
-			"robert-medium": ["robert-medium", "sans-serif"],
-			"robert-regular": ["robert-regular", "sans-serif"],
-		  },
-		  colors: {
-			blue: {
-			  50: "#DFDFF0",
-			  75: "#dfdff2",
-			  100: "#F0F2FA",
-			  200: "#010101",
-			  300: "#4FB7DD",
-			},
-			violet: {
-			  300: "#5724ff",
-			},
-			yellow: {
-			  100: "#8e983f",
-			  300: "#edff66",
-			},
-  			background: 'hsl(var(--background))', 
-			
+  	extend: {
+  		backgroundImage: {
+  			'custom-gradient': 'linear-gradient(to right, #0A0118, #36154a)'
+  		},
+  		screens: {
+  			sm: '640px',
+  			md: '768px',
+  			lg: '1024px',
+  			xl: '1280px',
+  			'2xl': '1536px',
+  			'3xl': '1980px'
+  		},
+  		fontFamily: {
+  			zentry: [
+  				'zentry',
+  				'sans-serif'
+  			],
+  			general: [
+  				'general',
+  				'sans-serif'
+  			],
+  			'circular-web': [
+  				'circular-web',
+  				'sans-serif'
+  			],
+  			'robert-medium': [
+  				'robert-medium',
+  				'sans-serif'
+  			],
+  			'robert-regular': [
+  				'robert-regular',
+  				'sans-serif'
+  			]
+  		},
+  		colors: {
+  			blue: {
+  				'50': '#DFDFF0',
+  				'75': '#dfdff2',
+  				'100': '#F0F2FA',
+  				'200': '#010101',
+  				'300': '#4FB7DD'
+  			},
+  			violet: {
+  				'300': '#5724ff'
+  			},
+  			yellow: {
+  				'100': '#8e983f',
+  				'300': '#edff66'
+  			},
+  			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {
   				DEFAULT: 'hsl(var(--card))',
@@ -83,6 +96,16 @@ export default {
   				'3': 'hsl(var(--chart-3))',
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
+  			},
+  			sidebar: {
+  				DEFAULT: 'hsl(var(--sidebar-background))',
+  				foreground: 'hsl(var(--sidebar-foreground))',
+  				primary: 'hsl(var(--sidebar-primary))',
+  				'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
+  				accent: 'hsl(var(--sidebar-accent))',
+  				'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
+  				border: 'hsl(var(--sidebar-border))',
+  				ring: 'hsl(var(--sidebar-ring))'
   			}
   		},
   		borderRadius: {

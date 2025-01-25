@@ -95,7 +95,7 @@ export const ChatInterface = ({ botName, botAvatar , mainAgent}: ChatInterfacePr
     }, []);
 
   return (
-    <div className="flex flex-col h-screen bg-gradient-to-b from-purple-950 via-gray-950 to-black">
+    <div className="flex flex-col w-full md:w-[80%] h-[95vh] bg-gradient-to-b from-purple-950 via-gray-950 to-black">
       <div className="absolute lg:ml-64 inset-0 overflow-hidden pointer-events-none">
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
@@ -157,7 +157,6 @@ export const ChatInterface = ({ botName, botAvatar , mainAgent}: ChatInterfacePr
         <div ref={chatEndRef} />
       </div>
 
-      {/* Enhanced Input Area */}
       <motion.div 
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}

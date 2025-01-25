@@ -1,4 +1,8 @@
-import { MoreVertical, Settings } from 'lucide-react'
+"use client"
+
+import { MoreVertical, Settings } from 'lucide-react' 
+import { useAppDispatch} from '@/redux/hooks' 
+import { toggleSidebar } from '@/redux/features/chatBox/chatBox'
 import { Button } from "@/components/ui/button"
 
 interface ChatHeaderProps {
@@ -6,9 +10,11 @@ interface ChatHeaderProps {
   botAvatar?: string
 }
 
-export const ChatHeader = ({ botName = 'Bot', botAvatar }: ChatHeaderProps) => {
+export const ChatHeader = ({ botName = 'Bot', botAvatar }: ChatHeaderProps) => { 
+  const dispatch = useAppDispatch();    
+
   return (
-    <div className="flex  items-center gap-3 p-4 bg-gradient-to-r from-purple-600 to-blue-700 backdrop-blur-lg border-b border-white/10">
+    <div className="flex  items-center gap-3 mt-20 md:mt-0 p-4 bg-gradient-to-r from-purple-600 to-blue-700 backdrop-blur-lg border-b rounded-t-2xl border-white/10">
       {/* Custom Avatar */}
       <div className="relative h-10 w-10 rounded-full overflow-hidden border-2 border-white/20 ring-2 ring-white/10 ring-offset-1 ring-offset-blue-600">
         {botAvatar ? (
@@ -26,7 +32,7 @@ export const ChatHeader = ({ botName = 'Bot', botAvatar }: ChatHeaderProps) => {
       </div>
       
       <div className="flex-1">
-        <h2 className="text-white font-medium tracking-wide">Chat with {botName ?? 'Bot'}</h2>
+        <h2 className="text-white font-sm tracking-wide">Chat with {botName ?? 'Bot'}</h2>
         <p className="text-xs text-white/70">Online</p>
       </div>
       
@@ -42,6 +48,7 @@ export const ChatHeader = ({ botName = 'Bot', botAvatar }: ChatHeaderProps) => {
           variant="ghost" 
           size="icon" 
           className="text-white/80 hover:text-white hover:bg-white/10 transition-colors duration-200"
+          onClick={() => dispatch(toggleSidebar())}
         >
           <Settings className="h-5 w-5" />
         </Button>
@@ -49,4 +56,3 @@ export const ChatHeader = ({ botName = 'Bot', botAvatar }: ChatHeaderProps) => {
     </div>
   )
 }
-

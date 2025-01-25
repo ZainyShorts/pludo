@@ -4,7 +4,7 @@ import DescopeClient from '@descope/node-sdk';
 
 const descopeClient = DescopeClient({ projectId: process.env.DESCOPE_PROJECT_ID as string });
 
-const PROTECTED_PATHS = ['/dashboard', '/profile', '/settings'];
+const PROTECTED_PATHS = [ '/profile', '/settings'];
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
