@@ -1,13 +1,13 @@
 import useFetchHook from "@/hooks/apiCall"
 
-const API_URL = "https://alihamza.store/api"
+const API_URL = process.env.PLUDO_SERVER
 
 export const useAIFunctions = () => {
   const { fetchData } = useFetchHook()
     
   const createThread = async () => {
-    const res =  await fetchData('https://alihamza.store/api/create/thread','GET'); 
-    return res.thread.id;
+    const res =  await fetchData(`${API_URL}/create/thread`,'GET'); 
+    return res?.thread?.id;
     } 
   const createMessage = async (data: any) => {
     try {
@@ -27,7 +27,7 @@ export const useAIFunctions = () => {
     try {
       const run = await fetchData(`${API_URL}/create/run`, "POST", runData)
       if (run.response === true) {
-        return run.run.id
+        return run?.run?.id
       }
       throw new Error("Run creation failed")
     } catch (error) {
@@ -44,7 +44,7 @@ export const useAIFunctions = () => {
     try {
       const res = await fetchData(`${API_URL}/get/runStatus`, "POST", data)
       if (res.response === true) {
-        return res.run.status
+        return res?.run?.status
       }
       return res
     } catch (error) {

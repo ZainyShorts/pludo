@@ -11,6 +11,7 @@ type FetchHookReturn = {
   error: string | null;
   fetchData: (url: string, method?: string, body?: any) => Promise<any>;
 };
+
 const useFetchHook = (): FetchHookReturn => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
