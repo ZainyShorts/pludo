@@ -9,26 +9,38 @@ import { useAppDispatch , useAppSelector } from '@/redux/hooks'
 import { ChatHeader } from '../Chat-header/Chat-header'
 import type { ChatInterfaceProps, Message } from '../types/chat'
 import { TypingLoader } from '../typing-Loader/Typing-Loader'   
-import { useAIFunctions } from './Functions/Functions'
-export const ChatInterface = ({ botName, botAvatar }: ChatInterfaceProps) => {
+import { useAIFunctions } from './Functions/Functions' 
+import Markdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+export const ChatInterface = ({ botName, botAvatar , mainAgent}: ChatInterfaceProps) => {
   const dispatch = useAppDispatch();   
-  const {createThread ,createMessage,getRun,getResponse,getReply} = useAIFunctions();
+  const {createThread ,createMessage,getRun,getResponse,getReply , deleteThread} = useAIFunctions();
   const messages = useAppSelector((state : any ) => state.message.messages);
-  const [isTyping, setIsTyping] = useState<boolean>(false)
+  const [isTyping, setIsTyping] = useState<boolean>(false); 
+  const [subAgent , setSubAgent] = useState<string>('');
   const chatEndRef = useRef<HTMLDivElement>(null);    
   const [threadID , setThreadID] = useState<string>('');  
-  const assistantId = "asst_Z7kalJHDtGK1Lt24iVa1buWJ";
 
   useEffect(() => {
     if (threadID === '') {
       const create = async () => {
         const id = await createThread();
-        setThreadID(id);
+        setThreadID(id); 
       };
       create(); 
     }
-  }, [threadID]); 
+  }, [threadID]);  
    
+  useEffect(()=>{ 
+    if (botName) { 
+      function formatBotName(name: string | undefined): string {
+        if (!name) return '';
+        return name.replace(/\s+/g, '_').toUpperCase();
+    }    
+    setSubAgent(formatBotName(botName)); 
+  }
+
+  })
 
 
   useEffect(() => {
@@ -47,7 +59,7 @@ export const ChatInterface = ({ botName, botAvatar }: ChatInterfaceProps) => {
   }
 
   const handleSendMessage = async (message: string) => {
-
+    console.log(mainAgent , subAgent);
     const userMessage: Message = {
         id: (Date.now() + 1).toString(),
         sender: 'user',
@@ -60,7 +72,7 @@ export const ChatInterface = ({ botName, botAvatar }: ChatInterfaceProps) => {
       }
       setIsTyping(true)
       await createMessage(data);  
-     const runId =  await getRun(threadID as string , assistantId as string); 
+     const runId =  await getRun(mainAgent as string , subAgent as string ,threadID as string); 
        let GetResponse = await getResponse(threadID as string, runId as string); 
            while (GetResponse != 'completed' && GetResponse != 'cancelled' && GetResponse != 'failed' && GetResponse != 'expired') {  
              GetResponse = await getResponse(threadID as string , runId as string); 
@@ -74,7 +86,13 @@ export const ChatInterface = ({ botName, botAvatar }: ChatInterfaceProps) => {
         dispatch(sendMessage(botMessage))
         setIsTyping(false)
     }
+     
+    useEffect(() => {
   
+      return () => {
+        deleteThread(threadID as string);
+      };
+    }, []);
 
   return (
     <div className="flex flex-col h-screen bg-gradient-to-b from-purple-950 via-gray-950 to-black">
@@ -85,7 +103,7 @@ export const ChatInterface = ({ botName, botAvatar }: ChatInterfaceProps) => {
       </div>
       
       {/* Messages Area with enhanced scrollbar */}
-      <ChatHeader botName={botName} botAvatar={botAvatar} />
+      <ChatHeader botName={botName} botAvatar={botAvatar}  />
       <div className="flex-1 p-8 overflow-y-auto space-y-4 relative scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent hover:scrollbar-thumb-white/20"> 
 
         <AnimatePresence>
@@ -114,7 +132,7 @@ export const ChatInterface = ({ botName, botAvatar }: ChatInterfaceProps) => {
                 className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <div
-                  className={`max-w-[80%] p-4 rounded-2xl backdrop-blur-xl shadow-lg transform transition-all duration-200 hover:scale-[1.02] ${
+                  className={`max-w-[80%] p-4 rounded-2xl backdrop-blur-xl shadow-lg transform transition-all duration-200 ${
                     msg.sender === 'user'
                       ? 'bg-gradient-to-br from-white/95 to-white/90 text-black ml-auto hover:shadow-purple-500/10'
                       : 'bg-gradient-to-br from-gray-600/90 to-gray-700/80 text-white mr-auto hover:shadow-purple-500/10'
@@ -126,8 +144,8 @@ export const ChatInterface = ({ botName, botAvatar }: ChatInterfaceProps) => {
                     transition={{ delay: 0.1 }}
                     className="font-light"
                   >
-                    <span>{msg.content}</span>
-                  </motion.p>
+                   <Markdown remarkPlugins={[remarkGfm]} className='' children={msg.content} />
+                            </motion.p>
                 </div>
               </motion.div>
             ))

@@ -1,6 +1,7 @@
 export interface ChatInterfaceProps {
     botName: string
-    botAvatar?: string
+    botAvatar?: string 
+    mainAgent?:string
   }
   
   export interface Message {

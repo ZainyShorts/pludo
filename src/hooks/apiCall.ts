@@ -36,7 +36,7 @@ const useFetchHook = (): FetchHookReturn => {
       return result; // Returning the result here
     } catch (err: any) {
       setError(err.message);
-      return null; // If an error occurs, return null
+      return err; // If an error occurs, return null
     } finally {
       setLoading(false);
     }
