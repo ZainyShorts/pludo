@@ -1,6 +1,6 @@
 import useFetchHook from "@/hooks/apiCall"
 
-const API_URL = process.env.PLUDO_SERVER
+const API_URL = process.env.NEXT_PUBLIC_PLUDO_SERVER
 
 export const useAIFunctions = () => {
   const { fetchData } = useFetchHook()
