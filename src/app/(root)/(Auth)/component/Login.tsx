@@ -22,7 +22,7 @@ const LoginComponent = () => {
     <Descope
 		flowId="sign-up-or-in"
 		theme="light"
-		onSuccess={async (event:unknown) => {
+		onSuccess={async (event:any) => {
       console.log(event)
       const detail = event?.detail
       const user = detail.user
