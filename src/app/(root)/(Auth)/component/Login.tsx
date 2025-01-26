@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Descope } from '@descope/nextjs-sdk';
 import { useRouter } from 'next/navigation';
 import { Add_User, Get_User } from '@/lib/query';
@@ -8,12 +8,25 @@ import { useLazyQuery, useMutation } from '@apollo/client';
 
 
 const LoginComponent = () => {
+
+  const [isBrowser, setIsBrowser] = useState(false);
+
+  useEffect(() => {
+    // This ensures the code runs only on the client-side
+    setIsBrowser(true);
+  }, []);
+
+  if (!isBrowser) {
+    return null; // or a loading spinner, or any other fallback
+  }
+  
   const router  = useRouter()
 
   const [AddUser] = useMutation(Add_User());
 
 
   const [fetchData, { loading, data, error }] = useLazyQuery(Get_User());
+
 
  
 
