@@ -33,7 +33,7 @@ export const ChatHeader = ({ botName = 'Bot', botAvatar }: ChatHeaderProps) => {
       
       <div className="flex-1">
         <h2 className="text-white playwrite font-sm tracking-wide">Chat with {botName ?? 'Bot'}</h2>
-        <p className="text-xs text-white/70 font-playwrite">Online</p>
+        <p className="text-xs text-white/70 ">Online</p>
       </div>
       
       <div className="flex items-center gap-1">
