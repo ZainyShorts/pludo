@@ -140,9 +140,23 @@ export default function Home() {
                 animate={{ y: [0, -10, 0] }}
                 transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
               >
+                <div className='flex flex-wrap items-center justify-center'>
+
                 <span className="inline-block bg-clip-text text-transparent bg-gradient-to-r from-[#ff49db] via-[#9d5cff] to-[#37a6ff] animate-gradient-x">
                   Pludo AI
                 </span>
+
+                <Image
+                src="/images/home-avatar.png"
+                alt="Deep Space"
+                // layout="fill"
+                width={150}
+                height={150}
+                objectFit="contain"
+                // className="mix-blend-screen "
+                priority
+                />
+                </div>
               </motion.h1>
 
               {/* Subtitle with Glow Effect */}

@@ -5,7 +5,7 @@ export interface ProductState {
 }
 
 const initialState: ProductState = {
-    isOpen: false,
+    isOpen: true,
 };
 
 export const productSlice = createSlice({

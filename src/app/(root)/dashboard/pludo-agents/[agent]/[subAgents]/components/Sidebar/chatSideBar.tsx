@@ -16,12 +16,14 @@ export function CompactAgentSidebar({ botName, botAvatar, mainAgent }: CompactAg
   const dispatch = useAppDispatch()
   const isOpen = useAppSelector((state) => state.chatbox.isOpen)
 
+  if(isOpen) {
   return (
     <>
       {/* Backdrop for mobile */}
-      {isOpen && <div className="fixed inset-0 bg-black/50 z-40 xl:hidden" onClick={() => dispatch(toggleSidebar())} />}
+       <div className="fixed inset-0 bg-black/50 z-40 xl:hidden " onClick={() => dispatch(toggleSidebar())} />
 
       {/* Sidebar */}
+
       <aside
         className={`
           fixed inset-y-0 right-0 w-[310px] h-full flex flex-col overflow-hidden z-50
@@ -200,5 +202,7 @@ export function CompactAgentSidebar({ botName, botAvatar, mainAgent }: CompactAg
       </aside>
     </>
   )
+}
+
 }
 
