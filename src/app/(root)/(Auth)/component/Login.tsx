@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { Add_User, Get_User } from '@/lib/query';
 import { getUserTimezone } from '@/lib/methods';
 import { useLazyQuery, useMutation } from '@apollo/client';
-import { checkDomainOfScale } from 'recharts/types/util/ChartUtils';
 
 
 const LoginComponent = () => {
