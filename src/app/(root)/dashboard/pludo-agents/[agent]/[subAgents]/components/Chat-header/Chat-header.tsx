@@ -24,7 +24,7 @@ export const ChatHeader = ({ botName = 'Bot', botAvatar }: ChatHeaderProps) => {
             className="h-full w-full object-cover"
           />
         ) : (
-          <div className="h-full w-full flex items-center justify-center bg-blue-800 text-white font-medium">
+          <div className="h-full w-full font-playwrite  flex items-center justify-center bg-blue-800 text-white font-medium">
             {botName?.[0] ?? 'B'}
           </div>
         )}
@@ -32,8 +32,8 @@ export const ChatHeader = ({ botName = 'Bot', botAvatar }: ChatHeaderProps) => {
       </div>
       
       <div className="flex-1">
-        <h2 className="text-white font-sm tracking-wide">Chat with {botName ?? 'Bot'}</h2>
-        <p className="text-xs text-white/70">Online</p>
+        <h2 className="text-white playwrite font-sm tracking-wide">Chat with {botName ?? 'Bot'}</h2>
+        <p className="text-xs text-white/70 font-playwrite">Online</p>
       </div>
       
       <div className="flex items-center gap-1">

@@ -132,7 +132,7 @@ export const ChatInterface = ({ botName, botAvatar , mainAgent}: ChatInterfacePr
                 className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <div
-                  className={`max-w-[80%] p-4 rounded-2xl backdrop-blur-xl shadow-lg transform transition-all duration-200 ${
+                  className={`max-w-[80%] p-4  rounded-2xl backdrop-blur-xl shadow-lg transform transition-all duration-200 ${
                     msg.sender === 'user'
                       ? 'bg-gradient-to-br from-white/95 to-white/90 text-black ml-auto hover:shadow-purple-500/10'
                       : 'bg-gradient-to-br from-gray-600/90 to-gray-700/80 text-white mr-auto hover:shadow-purple-500/10'
@@ -144,7 +144,7 @@ export const ChatInterface = ({ botName, botAvatar , mainAgent}: ChatInterfacePr
                     transition={{ delay: 0.1 }}
                     className="font-light"
                   >
-                   <Markdown remarkPlugins={[remarkGfm]} className='' children={msg.content} />
+                   <Markdown remarkPlugins={[remarkGfm]} className={'font-serif'}  children={msg.content} />
                             </motion.p>
                 </div>
               </motion.div>

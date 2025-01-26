@@ -4,9 +4,16 @@ export interface ProductState {
     isOpen: boolean;
 }
 
-const initialState: ProductState = {
-    isOpen: true,
+const isMobile = () => {
+    console.log(navigator.userAgent)
+    return /Mobi|Android/i.test(navigator.userAgent) || window.innerWidth < 768;
 };
+
+const initialState: ProductState = {
+    isOpen: !isMobile(),
+};
+
+
 
 export const productSlice = createSlice({
     name: 'chatbox',

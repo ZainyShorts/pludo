@@ -21,6 +21,7 @@ export default {
   			'3xl': '1980px'
   		},
   		fontFamily: {
+			playwrite: ['Playwrite', 'cursive'], 
   			zentry: [
   				'zentry',
   				'sans-serif'
