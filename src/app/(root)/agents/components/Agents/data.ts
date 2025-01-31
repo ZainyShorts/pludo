@@ -16,14 +16,14 @@ import {
     Palette,
     Heart
   } from 'lucide-react';
-  
+  import Avatars from '@/app/components/Images/Avatars';
   export const agents = [
     {
       name: 'Ace',
       role: 'Business Development',
       icon: Brain,
       avatar:
-        '/images/Avatars/Avatar.png',
+      Avatars.Ace,
       description: 'Expert in marketing strategies and competitor analysis',
       features: [
         'Generate detailed and actionable marketing strategies',
@@ -37,7 +37,7 @@ import {
       role: 'Customer Support',
       icon: MessageSquare,
       avatar:
-        '/images/Avatars/Avatar2.png',
+        Avatars.Cora,
       description: 'Dedicated to providing exceptional customer support',
       features: [
         'Provide instant responses to customer queries via chat and email',
@@ -50,7 +50,7 @@ import {
       role: 'eCommerce Specialist',
       icon: Share2,
       avatar:
-        '/images/Avatars/Avatar3.png',
+        Avatars.Echo,
       description: 'Optimizes online stores for maximum performance',
       features: [
         'Write high-converting product descriptions and design engaging landing pages',
@@ -63,7 +63,7 @@ import {
       role: 'Data Analyst',
       icon: Layers,
       avatar:
-        '/images/Avatars/Avatar4.png',
+        Avatars.Delta,
       description: 'Transforms raw data into actionable insights',
       features: [
         'Generate balance sheets, profit/loss statements, and other financial reports',
@@ -76,7 +76,7 @@ import {
       role: 'Email Marketing',
       icon: Mail,
       avatar:
-        '/images/Avatars/Avatar5.png',
+      Avatars.Ember,
       description: 'Creates engaging email campaigns that convert',
       features: [
         'Automate the creation of email campaigns, calendars, and workflows',
@@ -89,7 +89,7 @@ import {
       role: 'Personal Development Coach',
       icon: UserCircle,
       avatar:
-        '/images/Avatars/Avatar6.png',
+      Avatars.Gala,
       description: 'Your personal coach for growth and development',
       features: [
         'Develop personalized meal and workout plans',
@@ -102,7 +102,7 @@ import {
       role: 'Sales Manager',
       icon: DollarSign,
       avatar:
-        '/images/Avatars/Avatar7.png',
+        Avatars.Maverik,
       description: 'Expert in sales strategies and customer acquisition',
       features: [
         'Generate persuasive cold email scripts and follow-ups',
@@ -115,7 +115,7 @@ import {
       role: 'Copywriter',
       icon: PenTool,
       avatar:
-        '/images/Avatars/Avatar8.png',
+        Avatars.Quill,
       description: 'Crafts compelling content that engages and converts',
       features: [
         'Write engaging ad copy, blogs, newsletters, and social media posts',
@@ -125,10 +125,10 @@ import {
     },
     {
       name: 'Ryder',
-      role: 'Recruiter',
+      role: 'Recruiter', 
       icon: Briefcase,
       avatar:
-        '/images/Avatars/Avatar9.png',
+        Avatars.Ryder,
       description: 'Finds and retains top talent for your organization',
       features: [
         'Screen resumes with tailored filters for role-specific qualifications',
@@ -141,7 +141,7 @@ import {
       role: 'SEO Specialist',
       icon: Search,
       avatar:
-        '/images/Avatars/Avatar10.png',
+        Avatars.Sage,
       description: 'Boosts your online presence with effective SEO strategies',
       features: [
         'Write SEO-optimized blogs to improve website visibility',
@@ -154,7 +154,7 @@ import {
       role: 'Social Media Strategist',
       icon: Instagram,
       avatar:
-        '/images/Avatars/Avatar11.png',
+        Avatars.Lumen,
       description: 'Maximizes your social media impact',
       features: [
         'Create consistent and engaging content calendars',
@@ -167,7 +167,7 @@ import {
       role: 'Virtual Assistant',
       icon: ClipboardList,
       avatar:
-        '/images/Avatars/Avatar12.png',
+        Avatars.Vera,
       description: 'Supports your daily tasks with efficiency',
       features: [
         'Manage tasks like trip planning and financial reporting',
@@ -180,7 +180,7 @@ import {
       role: 'Education Specialist',
       icon: GraduationCap,
       avatar:
-        '/images/Avatars/Avatar13.png',
+      Avatars.Aria,
       description: 'Enhances learning experiences with tailored plans',
       features: [
         'Create personalized learning plans for all skill levels',
@@ -193,7 +193,7 @@ import {
       role: 'Event Planner',
       icon: Calendar,
       avatar:
-        '/images/Avatars/Avatar14.png',
+      Avatars.Drift,
       description: 'Plans memorable events with precision',
       features: [
         'Plan corporate and social events with detailed schedules',
@@ -206,7 +206,7 @@ import {
       role: 'Creative Designer',
       icon: Palette,
       avatar:
-        '/images/Avatars/Avatar15.png',
+      Avatars.Neon,
       description: 'Transforms ideas into stunning visuals',
       features: [
         'Design templates for presentations and brochures',
@@ -219,7 +219,7 @@ import {
       role: 'Health & Wellness Advisor',
       icon: Heart,
       avatar:
-        '/images/Avatars/Avatar6.png',
+      Avatars.Pulse,
       description: 'Promotes better health and well-being',
       features: [
         'Offer tailored fitness routines and mental health advice',
@@ -232,7 +232,7 @@ import {
       role: 'Customizable Support Agent',
       icon: UserCircle,
       avatar:
-        '/images/Avatars/Avatar3.png',
+      Avatars.Nova,
       description: 'Adaptable to meet your unique needs',
       features: [
         'Allow users to upload specific data and train the agent',

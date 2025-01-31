@@ -41,13 +41,15 @@ export default function MarketingSection({
           </div>
 
           <div className="flex-1 flex p-4 items-center justify-end mt-8 md:mt-0">
-            <Image
-              width={200}
-              height={200}
-              src={mainCard.image}
-              alt={mainCard.title}
-              className="w-auto h-[250px] sm:h-[300px] md:h-[400px] lg:h-[500px] object-contain"
-            />
+          <Image
+  width={500}
+  height={500}
+  src={mainCard.image}
+  alt={mainCard.title}
+  quality={100}
+  sizes="(max-width: 640px) 250px, (max-width: 768px) 300px, (max-width: 1024px) 400px, 500px"
+  className="w-auto h-[250px] sm:h-[300px] md:h-[400px] lg:h-[500px] object-contain"
+/>
           </div>
         </div>
       </div>

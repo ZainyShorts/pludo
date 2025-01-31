@@ -1,10 +1,11 @@
+import Avatars from "../Images/Avatars";
 export const marketingDataRobots = [
     {
       mainCard: {
         title: "Ace",
         description: "Expert in marketing strategies and competitor analysis",
         keyPoints : ['Generate detailed and actionable marketing strategies','Analyze competitors by identifying strengths, weaknesses, opportunities, and threats','Develop comprehensive product launch plans with timelines and KPIs','Craft personalized investor updates and reports'],  
-        image: "/images/Avatars/Avatar2.png",
+        image:Avatars.Ace,
       },
       subCard1: {
         title: "Cora",
@@ -12,7 +13,7 @@ export const marketingDataRobots = [
         keyPoints : ['Provide instant responses to customer queries via chat and email',
 'Create FAQ sections, user manuals, and troubleshooting guides',
 'Analyze customer feedback to generate actionable support improvement reports'],  
-        image: "/images/Avatars/Avatar.png",
+        image: Avatars.Cora,
       },
       subCard2: {
         title: "Echo",
@@ -20,7 +21,7 @@ export const marketingDataRobots = [
         keyPoints : ['Write high-converting product descriptions and design engaging landing pages',
           'Perform store audits and recommend optimization strategies',
           'Identify winning product ideas and calculate profit margins'], 
-        image: "/images/Avatars/Avatar3.png",
+        image: Avatars.Echo,
       },
     },
     {
@@ -30,7 +31,7 @@ export const marketingDataRobots = [
         keyPoints : ['Generate balance sheets, profit/loss statements, and other financial reports',
           'Forecast future sales trends and revenue streams based on current data',
           'Calculate ROI for projects and offer actionable insights'], 
-        image: "/images/Avatars/Avatar4.png",
+        image: Avatars.Delta,
       },
       subCard1: {
         title: "Ember",
@@ -46,7 +47,7 @@ export const marketingDataRobots = [
         keyPoints:['Generate persuasive cold email scripts and follow-ups',
           'Create legally sound sales contracts and comprehensive incentive plans',
           'Provide expert negotiation guidance and discovery call frameworks'],
-        image: "/images/Avatars/Avatar16.png",
+        image: Avatars.Maverik,
       },
        },
   

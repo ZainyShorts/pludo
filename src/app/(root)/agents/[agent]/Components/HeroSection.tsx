@@ -82,12 +82,14 @@ const HeroSection: React.FC<HeroSectionProps> = ({ Name }) => {
             <div className="relative">
               <div className="absolute inset-0 rounded-3xl"></div>
               <Image
-                width={200}
-                height={200}
-                src={data.avatar}
-                alt={data.name}
-                className="w-full h-auto max-w-[600px] mx-auto transform translate-y-8"
-              />
+  width={600}
+  height={600}
+  src={data.avatar}
+  alt={data.name}
+  quality={100}
+  sizes="(max-width: 600px) 100vw, 600px"
+  className="w-full h-auto max-w-[600px] mx-auto transform translate-y-8 object-contain"
+/>
             </div>
           </div>
         </div>

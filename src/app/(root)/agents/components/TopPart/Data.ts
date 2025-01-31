@@ -1,9 +1,10 @@
+import Avatars from "@/app/components/Images/Avatars"
 export const teamMembers = [
     {
       name: 'Ace',
       role: 'Business Developer',
       color: 'text-[#4A90E2]',
-      image: '/images/Avatars/Avatar2.png'
+      image: Avatars.Ace
     },
     {
       name: 'Gala',
@@ -15,18 +16,18 @@ export const teamMembers = [
       name: 'Delta',
       role: 'eCommerce Manager',
       color: 'text-[#E67E22]',
-      image: '/images/Avatars/Avatar4.png'
+      image: Avatars.Delta
     },
     {
       name: 'Ember',
       role: 'Data Analyst',
       color: 'text-[#C5A455]',
-      image: '/images/Avatars/Avatar5.png'
+      image: Avatars.Ember
     },
     {
       name: 'Aria',
       role: 'Personal Coach',
       color: 'text-[#27AE60]',
-      image: '/images/Avatars/Avatar14.png'
+      image: Avatars.Aria
     }
   ]
