@@ -70,7 +70,7 @@ export default function Footer({ theme }: Props) {
             <h3 className={`text-base font-bold ${isLightTheme ? "text-gray-900" : "text-gray-300"}`}>Company</h3>
             <nav className="flex flex-col gap-2">
               <Link
-                href="#"
+                href="/about"
                 className={`${isLightTheme ? "text-gray-600 hover:text-gray-900" : "text-gray-300 hover:text-white"} transition-colors`}
               >
                 About Pludo
