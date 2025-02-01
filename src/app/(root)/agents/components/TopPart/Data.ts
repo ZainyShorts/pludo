@@ -1,4 +1,4 @@
-import Avatars from "@/app/components/Images/Avatars"
+import Avatars from "@/lib/Avatars"
 export const teamMembers = [
     {
       name: 'Ace',

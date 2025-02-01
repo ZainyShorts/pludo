@@ -147,7 +147,7 @@ export default function Home() {
                 </span>
 
                 <Image
-                src="/images/home-avatar.png"
+                src="/images/Avatars/6.png"
                 alt="Deep Space"
                 // layout="fill"
                 width={150}
@@ -159,6 +159,7 @@ export default function Home() {
                 </div>
               </motion.h1>
 
+              
               {/* Subtitle with Glow Effect */}
               <motion.p 
                 initial={{ opacity: 0, y: 20 }}

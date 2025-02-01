@@ -43,7 +43,7 @@ export default function Navbar() {
   const menuItems = [
     { name: 'Agents', icon: Users, href: '/agents' },
     { name: 'Pricing', icon: CreditCard, href: '/pricing' },
-    // { name: 'Blog', icon: BookOpen, href: '/blog' },
+    { name: 'About', icon: BookOpen, href: '/about' },
     { name: 'Contact', icon: Mail, href: '/contact' },
   ]
 

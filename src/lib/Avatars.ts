@@ -12,7 +12,13 @@ const Avatars = {
   Ryder: '/images/Avatars/Ryder.png',
   Sage: '/images/Avatars/Sage.png',
   Echo: '/images/Avatars/Echo.png', 
-  Vera: '/images/Avatars/Vera.png'
+  Vera: '/images/Avatars/Vera.png',
+  test1: '/images/Avatars/1.png',
+  test2: '/images/Avatars/2.png',
+  test3: '/images/Avatars/3.png',
+  test4: '/images/Avatars/4.png',
+  test5: '/images/Avatars5.png',
+  test7: '/images/Avatars/7.png',
 };
 
 export default Avatars;

@@ -1,4 +1,4 @@
-import Avatars from "../Images/Avatars";
+import Avatars from "../../../lib/Avatars";
 export const marketingDataRobots = [
     {
       mainCard: {
