@@ -29,7 +29,8 @@ import {
   Settings, 
 } from "lucide-react"  
 import { Link, Apple, Heart, Sun } from "lucide-react";
-import {  ElementType } from "react";
+import {  ElementType } from "react"; 
+import Avatars from "@/lib/Avatars";
 export interface SubAgent {
   id: string;
   name: string;
@@ -47,7 +48,7 @@ export const agentsWithSubAgents: AgentWithSubAgents[] = [
   {
     name: "Ace",
     role: "Business Analyst",
-    image: "/images/Avatars/Avatar10.png",
+    image: Avatars.Ace,
     subAgents: [
       {
         id: "ace-1",
@@ -78,7 +79,7 @@ export const agentsWithSubAgents: AgentWithSubAgents[] = [
   {
     name: "Cora",
     role: "Customer Support",
-    image: "/images/Avatars/Avatar2.png",
+    image: Avatars.Cora,
     subAgents: [
       {
         id: "cora-1",
@@ -109,7 +110,7 @@ export const agentsWithSubAgents: AgentWithSubAgents[] = [
   {
     name: "Echo",
     role: "eCommerce Specialist",
-    image: "/images/Avatars/Avatar3.png",
+    image: Avatars.Echo,
     subAgents: [
       {
         id: "echo-1",
@@ -135,7 +136,7 @@ export const agentsWithSubAgents: AgentWithSubAgents[] = [
   {
     name: "Delta",
     role: "Data Analyst",
-    image: "/images/Avatars/Avatar4.png",
+    image: Avatars.Delta,
     subAgents: [
       {
         id: "delta-1",
@@ -166,7 +167,7 @@ export const agentsWithSubAgents: AgentWithSubAgents[] = [
   {
     name: "Ember",
     role: "Email Marketing",
-    image: "/images/Avatars/Avatar5.png",
+    image: Avatars.Ember,
     subAgents: [
       {
         id: "ember-1",
@@ -197,7 +198,7 @@ export const agentsWithSubAgents: AgentWithSubAgents[] = [
   {
     name: "Gala",
     role: "Personal Development Coach",
-    image: "/images/Avatars/Avatar6.png",
+    image: Avatars.Gala,
     subAgents: [
       {
         id: "gala-1",
@@ -228,7 +229,7 @@ export const agentsWithSubAgents: AgentWithSubAgents[] = [
   {
     name: "Maverik",
     role: "Sales Manager",
-    image: "/images/Avatars/Avatar7.png",
+    image: Avatars.Maverik,
     subAgents: [
       { id: "maverik-1", name: "Team Management Agent", description: "Leads and trains the sales team.", icon: Users },
       {
@@ -254,7 +255,7 @@ export const agentsWithSubAgents: AgentWithSubAgents[] = [
   {
     name: "Quill",
     role: "Copy Writer",
-    image: "/images/Avatars/Avatar8.png",
+    image: Avatars.Quill,
     subAgents: [
       {
         id: "quill-1",
@@ -280,7 +281,7 @@ export const agentsWithSubAgents: AgentWithSubAgents[] = [
   {
     name: "Ryder",
     role: "Recruiter",
-    image: "/images/Avatars/Avatar9.png",
+    image: Avatars.Ryder,
     subAgents: [
       {
         id: "ryder-1",
@@ -311,7 +312,7 @@ export const agentsWithSubAgents: AgentWithSubAgents[] = [
   {
     name: "Sage",
     role: "SEO Specialist",
-    image: "/images/Avatars/Avatar10.png",
+    image: Avatars.Sage,
     subAgents: [
       {
         id: "sage-1",
@@ -337,7 +338,7 @@ export const agentsWithSubAgents: AgentWithSubAgents[] = [
   {
     name: "Lumen",
     role: "Social Media Specialist",
-    image: "/images/Avatars/Avatar11.png",
+    image: Avatars.Lumen,
     subAgents: [
       {
         id: "lumen-1",
@@ -368,7 +369,7 @@ export const agentsWithSubAgents: AgentWithSubAgents[] = [
   {
     name: "Vera",
     role: "Virtual Assistant",
-    image: "/images/Avatars/Avatar12.png",
+    image: Avatars.Vera,
     subAgents: [
       {
         id: "vera-1",
@@ -399,7 +400,7 @@ export const agentsWithSubAgents: AgentWithSubAgents[] = [
   {
     name: "Aria",
     role: "Education Specialist",
-    image: "/images/Avatars/Avatar13.png",
+    image: Avatars.Aria,
     subAgents: [
       {
         id: "aria-1",
@@ -430,7 +431,7 @@ export const agentsWithSubAgents: AgentWithSubAgents[] = [
   {
     name: "Drift",
     role: "Event Planner",
-    image: "/images/Avatars/Avatar14.png",
+    image: Avatars.Drift,
     subAgents: [
       {
         id: "drift-1",
@@ -461,7 +462,7 @@ export const agentsWithSubAgents: AgentWithSubAgents[] = [
   {
     name: "Neon",
     role: "Creative Designer",
-    image: "/images/Avatars/Avatar15.png",
+    image: Avatars.Neon,
     subAgents: [
       { id: "neon-1", name: "Graphic Design Agent", description: "Creates captivating visual designs.", icon: Palette },
       {
@@ -477,7 +478,7 @@ export const agentsWithSubAgents: AgentWithSubAgents[] = [
   {
     name: "Pulse",
     role: "Health & Wellness Advisor",
-    image: "/images/Avatars/Avatar16.png",
+    image: Avatars.Pulse,
     subAgents: [
       {
         id: "pulse-1",
@@ -508,7 +509,7 @@ export const agentsWithSubAgents: AgentWithSubAgents[] = [
   {
     name: "Nova",
     role: "Customizable Support Agent",
-    image: "/images/Avatars/Avatar11.png",
+    image: Avatars.Nova,
     subAgents: [
       {
         id: "nova-1",

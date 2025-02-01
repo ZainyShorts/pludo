@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-// import { ReactMic } from 'react-mic'
+import { ReactMic } from 'react-mic'
 import { Mic, ImageIcon, Send, X } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
@@ -219,14 +219,14 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             </Button>
           </div>
         </div>
-        {/* <ReactMic
+        <ReactMic
           record={isRecording}
           className="hidden"
           onStop={onStop}
           onData={onData}
           strokeColor="#000000"
           backgroundColor="#FF4081"
-        /> */}
+        />
       </motion.div>
     </TooltipProvider>
   )
