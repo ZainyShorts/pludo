@@ -10,19 +10,19 @@ export const teamMembers = [
       name: 'Gala',
       role: 'Customer Support',
       color: 'text-[#2D5BDE]',
-      image: '/images/Avatars/Avatar7.png'
+      image: Avatars.Gala
     },
     {
-      name: 'Delta',
+      name: 'Sage',
       role: 'eCommerce Manager',
       color: 'text-[#E67E22]',
-      image: Avatars.Delta
+      image: Avatars.Sage
     },
     {
-      name: 'Ember',
+      name: 'Neon',
       role: 'Data Analyst',
       color: 'text-[#C5A455]',
-      image: Avatars.Ember
+      image: Avatars.Neon
     },
     {
       name: 'Aria',

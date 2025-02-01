@@ -39,7 +39,7 @@ export const marketingDataRobots = [
         keyPoints:['Automate the creation of email campaigns, calendars, and workflows',
           'Design emails for abandoned carts, customer win-backs, and special promotions',
           'Provide post-purchase email flows that boost customer satisfaction'],
-        image: "/images/Avatars/Avatar5.png",
+        image: Avatars.Ember,
       },
       subCard2: {
         title: "Maverick",

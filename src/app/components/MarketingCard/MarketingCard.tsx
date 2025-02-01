@@ -17,8 +17,8 @@ export default function MarketingSection({
             
     <div className="w-full flex flex-col items-center justify-center p-4 space-y-4">
       {/* Main Card */}
-      <div className="rounded-3xl bg-white/10 backdrop-blur-sm p-6 md:p-8 shadow-lg border border-white/30 overflow-hidden relative h-auto w-full lg:w-[90%] flex flex-col md:flex-row">
-        <div className="p-8 flex flex-col md:flex-row items-center justify-between flex-1">
+      <div className="rounded-3xl bg-white/10 backdrop-blur-sm pl-4 pt-4 pr-4 pb-0  md:pl-6 md:pt-6 md:pr-6 md:pb-0 shadow-lg border border-white/30 overflow-hidden relative h-auto w-full lg:w-[90%] flex flex-col md:flex-row">
+        <div className="pl-8 pt-8 pr-8 pb-0 flex flex-col md:flex-row items-center justify-between flex-1">
           {/* Text Content */}
           <div className="flex md:pl-16 flex-col items-center md:items-start text-center md:text-left">
             <h2 className="text-3xl md:text-5xl font-bold mb-3 text-white">
@@ -40,7 +40,7 @@ export default function MarketingSection({
             </button>
           </div>
 
-          <div className="flex-1 flex p-4 items-center justify-end mt-8 md:mt-0">
+          <div className="flex-1 flex p-0 items-center justify-end mt-8 md:mt-0">
           <Image
   width={500}
   height={500}
@@ -56,9 +56,9 @@ export default function MarketingSection({
 
       <div className="grid md:grid-cols-2 gap-4 w-full lg:w-[90%]">
         <div 
-          className="bg-white/10 backdrop-blur-md rounded-3xl p-6 md:p-8 shadow-lg border border-white/30 overflow-hidden relative flex flex-col"
+          className="bg-white/10 backdrop-blur-md rounded-3xl pl-4 pt-4 pr-4 pb-0  md:pl-6 md:pt-6 md:pr-6 md:pb-0 shadow-lg border border-white/30 overflow-hidden relative flex flex-col"
         >
-          <div className="p-8 flex flex-col flex-1">
+          <div className="pl-8 pr-8 pt-8 pb-0 flex flex-col flex-1">
             <div className="flex flex-col items-center text-center">
               <h2 className="text-2xl font-bold mb-3 text-white">
                 {subCard1.title}
@@ -92,9 +92,9 @@ export default function MarketingSection({
 
         {/* Sub Card 2 */}
         <div 
-          className="rounded-3xl bg-white/10 backdrop-blur-md p-6 md:p-8 shadow-lg border border-white/30 overflow-hidden relative flex flex-col"
+          className="rounded-3xl bg-white/10 backdrop-blur-md pl-4 pt-4 pr-4 pb-0  md:pl-6 md:pt-6 md:pr-6 md:pb-0 shadow-lg border border-white/30 overflow-hidden relative flex flex-col"
         >
-          <div className="p-8 flex flex-col flex-1">
+          <div className="pl-8 pr-8 pt-8 pb-0 flex flex-col flex-1">
             <div className="flex flex-col items-center text-center">
               <h2 className="text-2xl font-bold mb-3 text-white">
                 {subCard2.title}
@@ -116,11 +116,13 @@ export default function MarketingSection({
               </button>
             </div>
             <div className="flex-1 flex items-end justify-center mt-10">
-              <img
+            <Image
                 src={subCard2.image}
+                height={300} 
+                width={300}
                 alt={subCard2.title}
                 className="w-auto h-[300px] md:h-[500px] object-contain"
-              />
+              ></Image>
             </div>
           </div>
         </div>
