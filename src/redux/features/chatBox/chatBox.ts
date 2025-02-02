@@ -4,13 +4,13 @@ export interface ProductState {
     isOpen: boolean;
 }
 
-const isMobile = () => {
-    console.log(navigator.userAgent)
-    return /Mobi|Android/i.test(navigator.userAgent) || window.innerWidth < 768;
-};
+// const isMobile = () => {
+//     console.log(navigator.userAgent)
+//     return /Mobi|Android/i.test(navigator.userAgent) || window.innerWidth < 768;
+// };
 
 const initialState: ProductState = {
-    isOpen: !isMobile(),
+    isOpen: false,
 };
 
 
