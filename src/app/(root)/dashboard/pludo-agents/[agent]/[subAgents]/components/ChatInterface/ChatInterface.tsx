@@ -47,24 +47,26 @@ export const ChatInterface = ({ botName, botAvatar , mainAgent}: ChatInterfacePr
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
-  const handleSendImage = (image: File) => {
-    console.log('Image:', image)
-  }
-
   const handleSendAudio = (audio: Blob) => {
     console.log('Audio:', audio)
     const url = URL.createObjectURL(audio)
     const audio_element = new Audio(url)
     audio_element.play()
   }
+  const handleSendImage = (image: File , url : string) => {
+    console.log('Image:', image) 
+    console.log('url', url);
+  }
 
-  const handleSendMessage = async (message: string) => {
-    console.log(mainAgent , subAgent);
+
+  const handleSendMessage = async (message: string , imageUrl?:string) => {
+    const combinedMessage = imageUrl ? `${message} ${imageUrl}` : message; 
+    console.log(imageUrl? imageUrl : ' no image ')
     const userMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        sender: 'user',
-        content: message.trim()
-      } 
+      id: (Date.now() + 1).toString(),
+      sender: 'user',
+      content: combinedMessage.trim(),
+    };
       dispatch(sendMessage(userMessage)); 
       const data = { 
         message: message, 
@@ -168,8 +170,8 @@ export const ChatInterface = ({ botName, botAvatar , mainAgent}: ChatInterfacePr
               onSendMessage={handleSendMessage}
               onSendImage={handleSendImage}
               onSendAudio={handleSendAudio}
-              allowImage={false}
-              allowAudio={false}
+              allowImage={true}
+              allowAudio={true}
             />
           </div>
         </div>

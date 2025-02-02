@@ -47,7 +47,7 @@ const SubRoles: React.FC<Prop> = ({ name }) => {
   }
 
   return (
-    <div className="h-[500px] bg-gradient-to-br from-black to-purple-900 text-white p-6 sm:p-8 md:p-12">
+    <div className="h-[500px] bg-gradient-to-br from-black to-black text-white p-6 sm:p-8 md:p-12">
       <div className="max-w-7xl mx-auto">
         <h2 className="text-5xl font-bold mb-12 text-center bg-gradient-to-r from-white to-purple-400 text-transparent bg-clip-text">
           {details?.role || "Role Details"}

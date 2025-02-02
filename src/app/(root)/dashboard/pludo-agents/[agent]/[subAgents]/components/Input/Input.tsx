@@ -1,21 +1,25 @@
-'use client'
+"use client"
 
-import { useState, useRef, useCallback, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { ReactMic } from 'react-mic'
-import { Mic, ImageIcon, Send, X } from 'lucide-react'
+import { useState, useRef, useCallback, useEffect } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import { ReactMic } from "react-mic"
+import { Mic, ImageIcon, Send, X, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+  resetTextareaHeight,
+  adjustTextareaHeight,
+  handleImageUpload,
+  handleCancelImage,
+  triggerImageUpload,
+  handleSendMessage as sendMessage,
+  deleteFromAWS,
+} from "./functios"
 
 interface ChatInputProps {
-  onSendMessage: (message: string) => void
-  onSendImage: (image: File) => void
+  onSendMessage: (message: string , imageUrl?:string) => void
+  onSendImage: (image: File, awsUrl: string | null) => void
   onSendAudio: (audio: Blob) => void
   allowImage: boolean
   allowAudio: boolean
@@ -28,89 +32,72 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   allowImage,
   allowAudio,
 }) => {
-  const [input, setInput] = useState('')
+  const [input, setInput] = useState("")
   const [isRecording, setIsRecording] = useState(false)
-  const [selectedImage, setSelectedImage] = useState<{ file: File; preview: string } | null>(null)
+  const [selectedImage, setSelectedImage] = useState<{ file: File; preview: string; awsUrl: string | null } | null>(
+    null,
+  )
+  const [uploadProgress, setUploadProgress] = useState(0)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const resetTextareaHeight = useCallback(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = '40px'
-    }
-  }, [])
-
-  const adjustTextareaHeight = useCallback(() => {
-    if (textareaRef.current) {
-      resetTextareaHeight()
-      const scrollHeight = textareaRef.current.scrollHeight
-      textareaRef.current.style.height = `${Math.min(scrollHeight, 150)}px`
-    }
-  }, [resetTextareaHeight])
+  const resetTextareaHeightCallback = useCallback(() => resetTextareaHeight(textareaRef as any), [])
+  const adjustTextareaHeightCallback = useCallback(() => adjustTextareaHeight(textareaRef as any), [])
 
   useEffect(() => {
     if (!input.trim()) {
-      resetTextareaHeight()
+      resetTextareaHeightCallback()
     }
-  }, [input, resetTextareaHeight])
+  }, [input, resetTextareaHeightCallback])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInput(e.target.value)
-    adjustTextareaHeight()
+    adjustTextareaHeightCallback()
   }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSendMessage();
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault()
+      handleSendMessage()
     }
   }
 
   const handleSendMessage = () => {
-    if (input.trim() || selectedImage) {
-      if (input.trim()) {
-        onSendMessage(input)
-      }
-      if (selectedImage) {
-        onSendImage(selectedImage.file)
-        setSelectedImage(null)
-      }
-      setInput('')
-      resetTextareaHeight()
-    }
+    sendMessage(
+      input,
+      selectedImage,
+      onSendMessage,
+      onSendImage,
+      setInput,
+      setSelectedImage,
+      resetTextareaHeightCallback,
+    )
   }
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      setSelectedImage({
-        file,
-        preview: URL.createObjectURL(file)
-      })
-    }
-  }
-
-  const handleCancelImage = () => {
-    if (selectedImage) {
-      URL.revokeObjectURL(selectedImage.preview)
-      setSelectedImage(null)
-    }
-  }
-
-  const handleStartRecording = () => {
-    setIsRecording(true)
-  }
-
-  const handleStopRecording = () => {
-    setIsRecording(false)
-  }
+  const handleStartRecording = () => setIsRecording(true)
+  const handleStopRecording = () => setIsRecording(false)
 
   const onData = (recordedBlob: Blob) => {
     // Visualization data
   }
 
-  const onStop = (recordedBlob: { blob: Blob; }) => {
+  const onStop = (recordedBlob: { blob: Blob }) => {
     onSendAudio(recordedBlob.blob)
   }
+
+  useEffect(() => {
+    const handleUnload = async () => {
+      if (selectedImage && selectedImage.awsUrl) {
+        await deleteFromAWS(selectedImage.file.name);
+      }
+    }
+
+    window.addEventListener("beforeunload", handleUnload)
+
+    return () => {
+      window.removeEventListener("beforeunload", handleUnload)
+    }
+  }, [selectedImage])
 
   return (
     <TooltipProvider>
@@ -125,22 +112,35 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             {selectedImage && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
+                animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
                 className="p-3"
               >
                 <div className="relative w-24 h-24 rounded-lg overflow-hidden group/image">
-                  <img 
-                    src={selectedImage.preview || "/placeholder.svg"} 
-                    alt="Selected" 
+                  <img
+                    src={selectedImage.preview || "/placeholder.svg"}
+                    alt="Selected"
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/image:opacity-100 transition-opacity duration-200" />
+                  {uploadProgress < 100 && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+                      <Loader2 className="w-6 h-6 text-white animate-spin" />
+                    </div>
+                  )}
                   <Button
                     size="icon"
                     variant="destructive"
                     className="absolute top-1 right-1 w-5 h-5 rounded-full opacity-0 group-hover/image:opacity-100 transition-opacity duration-200"
-                    onClick={handleCancelImage}
+                    onClick={() => {
+                      if (selectedImage && selectedImage.awsUrl) {
+                        const filename = selectedImage.awsUrl.split("/").pop()
+                        if (filename) {
+                          deleteFromAWS(filename)
+                        }
+                      }
+                      handleCancelImage(selectedImage, setSelectedImage)
+                    }}
                   >
                     <X className="w-3 h-3" />
                   </Button>
@@ -148,25 +148,18 @@ export const ChatInput: React.FC<ChatInputProps> = ({
               </motion.div>
             )}
           </AnimatePresence>
-          
+
           <div className="flex items-center gap-2 p-2 w-full">
             {allowImage && (
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     className="h-9 w-9 rounded-full hover:bg-white/10"
+                    onClick={() => triggerImageUpload(fileInputRef as React.RefObject<HTMLInputElement>)}
                   >
-                    <label className="cursor-pointer">
-                      <ImageIcon className="w-5 h-5 text-white/60 hover:text-white/80 transition-colors duration-200" />
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageUpload}
-                        className="hidden"
-                      />
-                    </label>
+                    <ImageIcon className="w-5 h-5 text-white/60 hover:text-white/80 transition-colors duration-200" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent className="bg-white/10 backdrop-blur-lg border-white/10">
@@ -174,6 +167,13 @@ export const ChatInput: React.FC<ChatInputProps> = ({
                 </TooltipContent>
               </Tooltip>
             )}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={(e) => handleImageUpload(e, setSelectedImage, setUploadProgress)}
+              className="hidden"
+            />
             {allowAudio && (
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -181,24 +181,22 @@ export const ChatInput: React.FC<ChatInputProps> = ({
                     variant="ghost"
                     size="icon"
                     className={`h-9 w-9 rounded-full transition-all duration-300 ${
-                      isRecording 
-                        ? 'bg-red-500/20 hover:bg-red-500/30' 
-                        : 'hover:bg-white/10'
+                      isRecording ? "bg-red-500/20 hover:bg-red-500/30" : "hover:bg-white/10"
                     }`}
                     onMouseDown={handleStartRecording}
                     onMouseUp={handleStopRecording}
                     onTouchStart={handleStartRecording}
                     onTouchEnd={handleStopRecording}
                   >
-                    <Mic className={`w-5 h-5 transition-colors duration-200 ${
-                      isRecording 
-                        ? 'text-red-500' 
-                        : 'text-white/60 hover:text-white/80'
-                    }`} />
+                    <Mic
+                      className={`w-5 h-5 transition-colors duration-200 ${
+                        isRecording ? "text-red-500" : "text-white/60 hover:text-white/80"
+                      }`}
+                    />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent className="bg-white/10 backdrop-blur-lg border-white/10">
-                  <p>{isRecording ? 'Recording...' : 'Record Audio'}</p>
+                  <p>{isRecording ? "Recording..." : "Record Audio"}</p>
                 </TooltipContent>
               </Tooltip>
             )}
