@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import AgentDetails from './components/HeroSection';
 import SubRoles from './components/subRoles';
+import Integrations from './components/Integrations';
 
 type Params = { 
   agent?: string;
@@ -19,7 +20,8 @@ const Page = () => {
   return (
     <div>
       <AgentDetails name={agent} /> 
-      <SubRoles name={agent}/>
+      <SubRoles name={agent}/> 
+      <Integrations/>
     </div>
   );
 };

@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card"
 import type { Agent } from './dummyData'
 import { useState } from "react" 
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 
 interface AgentCardProps {
   agent: Agent
@@ -64,10 +65,12 @@ export function Agentcard({ agent }: AgentCardProps) {
             "absolute inset-0 rounded-xl transition-transform duration-500",
             isHovered && "scale-105"
           )}>
-            <img
-              src={agent.image}
+            <Image
+              src={agent.image} 
+              height={400} 
+              width={400}
               alt={agent.name}
-              className="h-full w-full object-cover object-center"
+              className="h-full w-full object-contain object-center"
             />
           </div>
 
