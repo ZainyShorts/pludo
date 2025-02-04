@@ -1,31 +1,36 @@
-import { createSlice } from '@reduxjs/toolkit';
-import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit"
+import type { PayloadAction } from "@reduxjs/toolkit"
 
-interface Message { 
-    id: string,
-    sender: string,
-    content: string,
+export interface MessageContent {
+  text?: string
+  image?: string
+  audio?: string
 }
-export interface messageState {
-    messages: Message[];
-} 
 
+export interface Message {
+  id: string
+  sender: string
+  content: MessageContent
+}
 
-const initialState: messageState = {
-    messages: [],
-};
+export interface MessageState {
+  messages: Message[]
+}
+
+const initialState: MessageState = {
+  messages: [],
+}
 
 export const messageSlice = createSlice({
-    name: 'message',
-    initialState,
-    reducers: {
-       sendMessage : (state, action : PayloadAction<Message>) => { 
-         state.messages.push(action.payload) 
-       },  
-     
-    }, 
+  name: "message",
+  initialState,
+  reducers: {
+    sendMessage: (state, action: PayloadAction<Message>) => {
+      state.messages.push(action.payload)
+    },
+  },
+})
 
-});
+export const { sendMessage } = messageSlice.actions
+export default messageSlice.reducer
 
-export const { sendMessage } = messageSlice.actions;
-export default messageSlice.reducer;

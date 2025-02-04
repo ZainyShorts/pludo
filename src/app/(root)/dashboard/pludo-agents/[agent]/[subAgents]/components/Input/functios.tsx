@@ -1,8 +1,7 @@
 import type { RefObject } from "react"
 import type React from "react"    
 import axios from 'axios';
-
-
+import { MessageContent } from "./types";
  const url = process.env.NEXT_PUBLIC_PLUDO_SERVER;
 export const resetTextareaHeight = (textareaRef: RefObject<HTMLTextAreaElement>) => {
   if (textareaRef.current) {
@@ -29,30 +28,50 @@ export const handleCancelImage = async (
   }
 }
 
-export const handleSendMessage = ( 
+export const handleSendMessage = (
   input: string,
   selectedImage: { file: File; preview: string; awsUrl: string | null } | null,
-  onSendMessage: (message: string , imageUrl? : string ) => void, 
-  onSendImage: (image: File, awsUrl: string | null) => void,
+  audio: Blob | null,
+  onSendMessage: (content: MessageContent) => void,
   setInput: (input: string) => void,
-  setSelectedImage: (image: { file: File; preview: string; awsUrl: string | null } | null) => void, 
-  resetTextareaHeight: () => void,
-) => { 
-  console.log(selectedImage?.preview);
-  if (input.trim() && selectedImage) {
-      onSendMessage(input,selectedImage.preview as string)
-      setSelectedImage(null)
-    }   
-    else if (!input.trim() && selectedImage) { 
-      onSendMessage(selectedImage.preview as string);
-    } 
-    else if (input.trim() && !selectedImage) { 
-      onSendMessage(input);
-    } 
-      // console.log(selectedImage);
-    setInput("")
-    resetTextareaHeight()
+  setSelectedImage: (image: { file: File; preview: string; awsUrl: string | null } | null) => void,
+  setAudio: (audio: Blob | null) => void,  
+  resetTextareaHeightCallback: () => void, 
+  
+) => {
+  const content: MessageContent = {}
+
+  if (input.trim()) {
+    content.text = input.trim()
   }
+
+  if (selectedImage) {
+    content.image = selectedImage.awsUrl || selectedImage.preview
+  }
+
+  if (audio) {
+    const audioUrl = URL.createObjectURL(audio)
+    content.audio = audioUrl
+  }
+
+  if (Object.keys(content).length === 0) {
+    console.log("Attempted to send an empty message")
+    return
+  }
+
+  try {
+    onSendMessage(content)
+  } catch (error) {
+    console.error("Failed to send message:", error)
+  }
+
+  setInput("")
+  setSelectedImage(null)
+  setAudio(null)
+  resetTextareaHeightCallback()
+}
+
+
 
 
 export const handleImageUpload = async (
@@ -71,7 +90,7 @@ export const handleImageUpload = async (
     try {
       const { awsUrl , key } = await uploadImageToAWS(file, setUploadProgress);
       console.log(`${process.env.NEXT_PUBLIC_AWS_S3_BUCKET_URL}`+key);
-      setSelectedImage((prevState) => {
+      setSelectedImage((prevState ) => {
         if (prevState) {
           return { ...prevState, preview: `${process.env.NEXT_PUBLIC_AWS_S3_BUCKET_URL}`+key, awsUrl: awsUrl };
         }
