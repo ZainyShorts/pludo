@@ -49,51 +49,52 @@ const HeroSection: React.FC<HeroSectionProps> = ({ Name }) => {
 
   return (
     <>
-      <div className="relative min-h-screen pt-24 overflow-hidden" style={{ background: bgColor }}>
-        <div
-          className="absolute inset-0 text-[25vw] font-bold text-white/10 select-none flex items-center justify-center"
-          style={{ zIndex: 1 }}
-        >
-          {data.name}
-        </div>
+      <div className="relative  pt-24 overflow-hidden" style={{ background: bgColor }}>
+      <div
+        className="absolute inset-0 text-[20vw] font-bold text-white/10 select-none flex items-center justify-center"
+        style={{ zIndex: 1 }}
+      >
+        {data.name}
+      </div>
 
-        <div className="container relative mx-auto px-4 py-8" style={{ zIndex: 2 }}>
-          <div className="flex items-center justify-between mb-16">
-            <h2 className="text-xl font-medium text-white/90">
-              {data.name} <span className="text-white/60">({data.role})</span>
-            </h2>
-            <Link href={'/pricing'}>
-            <Button  variant="secondary" className="rounded-full px-6 py-2 bg-white/10 hover:bg-white/20 text-white border-none">
+      <div className="container relative mx-auto px-4 py-0" style={{ zIndex: 2 }}>
+        <div className="flex items-center justify-between mb-1">
+          <h2 className="text-xl font-medium text-white/90">
+            {data.name} <span className="text-white/60">({data.role})</span>
+          </h2>
+          <Link href={"/pricing"}>
+            <Button
+              variant="secondary"
+              className="rounded-full px-6 py-2 bg-white/10 hover:bg-white/20 text-white border-none"
+            >
               Buy now →
             </Button>
-            </Link>
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-12  items-center">
+          <div className="relative">
+            <h1 className="text-5xl md:text-7xl  font-bold text-white mb-0 transform  leading-tight">
+              {data.subtitle}
+            </h1>
+            <p className="text-xl transform mt-8  md:text-2xl text-white/80 max-w-2xl">{data.role}</p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="relative">
-              <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-8 leading-tight">
-                {data.subtitle}
-              </h1>
-              <p className="text-xl md:text-2xl text-white/80 max-w-2xl">
-                {data.role}
-              </p>
-            </div>
-
-            <div className="relative">
-              <div className="absolute inset-0 rounded-3xl"></div>
-              <Image
-  width={600}
-  height={600}
-  src={data.avatar}
-  alt={data.name}
-  quality={100}
-  sizes="(max-width: 600px) 100vw, 600px"
-  className="w-full h-auto max-w-[600px] mx-auto transform translate-y-8 object-contain"
-/>
-            </div>
+          <div className="relative  ">
+            <div className="absolute inset-0 rounded-3xl"></div>
+            <Image
+              width={600}
+              height={600}
+              src={data.avatar || "/placeholder.svg"}
+              alt={data.name}
+              quality={100}
+              sizes="(max-width: 600px) 100vw, 600px"
+              className="w-full h-auto max-w-[600px] mx-auto transform object-contain mb-0"
+            />
           </div>
         </div>
       </div>
+    </div>
 
       <section className="py-36">
         <div className="container mx-auto px-4 w-full lg:w-[70%] lg:h-[50vh] flex items-center flex-col justify-center text-center">
