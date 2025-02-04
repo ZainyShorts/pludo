@@ -76,7 +76,8 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ botName, botAvatar
     const data = {
       message: JSON.stringify(content),
       threadId: threadID,
-    }
+    } 
+    console.log('msg',content)
 
     setIsTyping(true)
     await createMessage(data)

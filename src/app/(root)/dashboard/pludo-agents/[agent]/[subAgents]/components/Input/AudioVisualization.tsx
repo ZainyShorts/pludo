@@ -35,7 +35,7 @@ export const AudioVisualization: React.FC<AudioVisualizationProps> = ({ audioDat
     const centerY = height / 2;
     
     // Responsive bar count based on screen width
-    const barCount = Math.max(16, Math.min(48, Math.floor(width / 24)));
+    const barCount = Math.max(16, Math.min(48, Math.floor(width / 12)));
     const barWidth = (width / barCount) * 0.8;
     const maxBarHeight = height * 0.8;
     const smoothingFactor = 0.3;
@@ -59,8 +59,8 @@ export const AudioVisualization: React.FC<AudioVisualizationProps> = ({ audioDat
       // Responsive background glow
       const glowRadius = Math.min(width, height) / 2;
       const bgGradient = ctx.createRadialGradient(
-        width/2, height/2, 0,
-        width/2, height/2, glowRadius
+        width, height/2, 0,
+        width, height/2, glowRadius
       );
       bgGradient.addColorStop(0, 'rgba(167, 139, 250, 0.1)');
       bgGradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
