@@ -2,12 +2,11 @@
 
 import { useState, useRef, useCallback, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { ReactMic } from "react-mic"
-import { Mic, ImageIcon, Send, X, Loader2, Trash2, StopCircle } from "lucide-react"
+import { Mic, ImageIcon, Send, X, Loader2,FileAudio, Trash2, StopCircle, Pause, Play } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip" 
-import type { AudioVisualizerProps, AudioData } from "./Audio"
+import { Badge } from "@/components/ui/badge"
 import {
   resetTextareaHeight,
   adjustTextareaHeight,
@@ -18,7 +17,9 @@ import {
   deleteFromAWS,
 } from "./functios"
 import type { MessageContent } from "./types"
-import { AudioVisualization } from "./AudioVisualization"
+import AudioVisualization from "./AudioVisualization"
+import { useAudioRecording } from "./useAudioRecording"
+import type React from "react" // Added import for React
 
 interface ChatInputProps {
   onSendMessage: (content: MessageContent) => void
@@ -27,17 +28,28 @@ interface ChatInputProps {
 }
 
 export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, allowImage, allowAudio }) => {
-  const [input, setInput] = useState<any>("")
-  const [isRecording, setIsRecording] = useState<boolean>(false)
+  const [input, setInput] = useState<string>("")
   const [selectedImage, setSelectedImage] = useState<{ file: File; preview: string; awsUrl: string | null } | null>(
     null,
   )
   const [uploadProgress, setUploadProgress] = useState(0)
-  const [audio, setAudio] = useState<Blob | null>(null)
-  const [audioUrl, setAudioUrl] = useState<string | null>(null)
-  const [audioData, setAudioData] = useState<Uint8Array>(new Uint8Array(64).fill(0))
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const audioRef = useRef<HTMLAudioElement>(null)
+
+  const {
+    isRecording,
+    isPaused,
+    audioChunks,
+    audioUrl,
+    audioData,
+    recordingTime,
+    handleStartRecording,
+    handlePauseRecording,
+    handleResumeRecording,
+    handleStopRecording,
+    handleDeleteAudio,
+  } = useAudioRecording()
 
   const resetTextareaHeightCallback = useCallback(() => resetTextareaHeight(textareaRef as any), [])
   const adjustTextareaHeightCallback = useCallback(() => adjustTextareaHeight(textareaRef as any), [])
@@ -61,71 +73,18 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, allowImage,
   }
 
   const handleSendMessage = () => {
+    const audioBlob = new Blob(audioChunks, { type: "audio/webm" })
     sendMessage(
       input,
       selectedImage,
-      audio,
+      audioBlob,
       onSendMessage,
       setInput,
       setSelectedImage,
-      setAudio,
+      () => {},
       resetTextareaHeightCallback,
     )
-    setAudioUrl(null)
-  }
-
-  const handleStartRecording = () => setIsRecording(true)
-  const handleStopRecording = () => setIsRecording(false) 
-  const [recordingTime, setRecordingTime] = useState<number>(0); 
-  useEffect(()=> {  
-    if (isRecording) {  
-    
-      if (isRecording) {
-       const intervalId = setInterval(() => {
-          setRecordingTime((prev) => {
-            if (prev < 30) {
-              return prev + 1; 
-            } else {
-              clearInterval(intervalId);  
-              setIsRecording(false);
-              return prev = 0; 
-            }
-          });
-        }, 1000);  
-    return () => { 
-      clearInterval(intervalId);
-    } 
-  } 
-}
-  },[isRecording])
-
-  const onData = useCallback((recordedBlob: any) => {
-    if (recordedBlob && recordedBlob.blob) {
-      recordedBlob.blob.arrayBuffer().then((arrayBuffer : any) => {
-        const audioData = new Uint8Array(arrayBuffer)
-        if (audioData.length > 0) {
-          const visualizationData = new Uint8Array(64)
-          const step = Math.max(1, Math.floor(audioData.length / 64))
-          for (let i = 0; i < 64; i++) {
-            visualizationData[i] = audioData[i * step]
-          }
-          setAudioData(visualizationData)
-        } 
-     
-    
-      })
-    }
-  }, [])
-
-
-  const onStop = (recordedBlob: { blob: Blob }) => {
-    setAudio(recordedBlob.blob)
-    setAudioUrl(URL.createObjectURL(recordedBlob.blob))
-  }
-
-  const handleDeleteAudio = () => {
-    setAudio(null)
-    setAudioUrl(null)
+    handleDeleteAudio()
   }
 
   useEffect(() => {
@@ -150,7 +109,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, allowImage,
         transition={{ duration: 0.3 }}
         className="relative z-20 w-full max-w-7xl mx-auto"
       >
-        <div className="group bg-gradient-to-br from-white/20 via-white/10 to-transparent backdrop-blur-xl rounded-2xl shadow-lg border border-white/20 transition-all duration-300 hover:border-white/30">
+        <div className="group bg-gradient-to-br from-indigo-500/20 via-purple-500/20 to-pink-500/20 backdrop-blur-xl rounded-2xl shadow-lg border border-white/20 transition-all duration-300 hover:border-white/30">
           <AnimatePresence>
             {selectedImage && (
               <motion.div
@@ -251,7 +210,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, allowImage,
             <Button
               onClick={handleSendMessage}
               size="icon"
-              className="h-9 w-9 bg-gradient-to-r from-purple-500/80 to-fuchsia-500/80 hover:from-purple-500 hover:to-fuchsia-500 text-white rounded-full transition-all duration-300 shadow-lg hover:shadow-purple-500/25 backdrop-blur-sm"
+              className="h-9 w-9 bg-gradient-to-r from-indigo-500/80 to-pink-500/80 hover:from-indigo-500 hover:to-pink-500 text-white rounded-full transition-all duration-300 shadow-lg hover:shadow-indigo-500/25 backdrop-blur-sm"
             >
               <Send className="w-4 h-4" />
             </Button>
@@ -263,18 +222,47 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, allowImage,
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.8 }}
                 transition={{ duration: 0.3 }}
-                className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-4 p-4 bg-gradient-to-r from-purple-500/40 to-fuchsia-500/40 backdrop-blur-lg rounded-lg shadow-lg border border-white/20"
+                className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-4 p-4 bg-gradient-to-r from-indigo-500/40 to-pink-500/40 backdrop-blur-lg rounded-lg shadow-lg border border-white/20"
               >
-                <div className="flex items-center space-x-2 mb-2">
-                  <div className="w-4 h-4 bg-red-500 rounded-full animate-pulse" /> 
-                  <p className="text-white">{recordingTime}</p>
-                </div> 
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-4 bg-red-500 rounded-full animate-pulse" />
+                    <p className="text-white font-medium">{recordingTime}s</p>
+                  </div>
+                  <div className="flex space-x-2">
+                    {isPaused ? (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={handleResumeRecording}
+                        className="hover:text-white bg-white text-black border-white/20 hover:bg-white/10"
+                      >
+                        <Play className="w-4 h-4 mr-1" />
+                        Resume
+                      </Button>
+                    ) : (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={handlePauseRecording}
+                        className="hover:text-white bg-white text-black border-white/20 hover:bg-white/10"
+                      >
+                        <Pause className="w-4 h-4 mr-1" />
+                        Pause
+                      </Button>
+                    )}
+                    <Button size="sm" variant="destructive" onClick={handleStopRecording}>
+                      <StopCircle className="w-4 h-4 mr-1" />
+                      Stop
+                    </Button>
+                  </div>
+                </div>
                 <AudioVisualization audioData={audioData} />
               </motion.div>
             )}
           </AnimatePresence>
           <AnimatePresence>
-            {audioUrl && (
+            {audioUrl && !isRecording && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
@@ -282,23 +270,20 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, allowImage,
                 className="p-3"
               >
                 <div className="flex items-center space-x-2 bg-white/10 rounded-lg p-2">
-                  <audio src={audioUrl} controls className="w-full" />
-                  <Button size="icon" variant="destructive" onClick={handleDeleteAudio} className="flex-shrink-0">
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
+                  <FileAudio className="w-6 h-6 text-blue-400" />
+                  <span className="text-sm text-white/80">Audio recording</span>
+                  <Badge
+                    variant="secondary"
+                    className="ml-auto cursor-pointer hover:bg-red-500/20 transition-colors duration-200"
+                    onClick={handleDeleteAudio}
+                  >
+                    <X className="w-3 h-3" />
+                  </Badge>
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
         </div>
-        <ReactMic
-          record={isRecording}
-          className="hidden"
-          onStop={onStop}
-          onData={onData}
-          strokeColor="#000000"
-          backgroundColor="#FF4081"
-        />
       </motion.div>
     </TooltipProvider>
   )

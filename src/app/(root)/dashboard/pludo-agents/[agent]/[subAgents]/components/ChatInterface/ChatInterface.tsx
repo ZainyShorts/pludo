@@ -63,7 +63,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ botName, botAvatar
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }, [chatEndRef]) //Corrected dependency
+  }, [messages]) 
 
   const handleSendMessage = async (content: MessageContent) => {
     const userMessage: Message = {
