@@ -1,101 +1,94 @@
-import Image from 'next/image';
-import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import  ProductCard  from './components/product-card'
-import DataSetter from './components/data-setter';
-import Header from './custom/header';
+// 'use client'
+// import { useState, useEffect } from 'react';
 
+// export default function SSEPage() {
+//   const [messages, setMessages] = useState<any>([]);
+//   useEffect(() => {
+//     // Create an EventSource to listen to SSE events
+//     const eventSource = new EventSource('http://localhost:3011/openai/stream');
+//     // Handle incoming messages
+//     eventSource.onmessage = (event:any) => {
+//         console.log(event.data)
+//     //   const data = JSON.parse(event.data);
+//       setMessages((prevMessages:any) => [...prevMessages, event.data]);
+//     };
+//     // Handle errors
+//     eventSource.onerror = () => {
+//       console.error('Error connecting to SSE server.');
+//       eventSource.close();
+//     };
+//     // Cleanup on unmount
+//     return () => {
+//       eventSource.close();
+//     };
+//   }, []);
+//   return (
+//     <div style={{ padding: '20px' }}>
+//       <h1>Server-Sent Events (SSE) with Next.js</h1>
+//       <div>
+//         {messages.map((message:any, index:number) => (
+//           <p key={index}>Message received at: {message}</p>
+//         ))}
+//       </div>
+//     </div>
+//   );
+// }
 
-type Product = {
-    id: string;
-    name: string;
-    description: string;
-    image: string;
-    price: number;
-};
-const products: Product[] = [
-    {
-        id: '1',
-        name: 'Margarita Pizza',
-        description: 'This is a very tasty pizza',
-        image: 'https://images.pexels.com/photos/7784602/pexels-photo-7784602.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
-        price: 500,
-    },
-    {
-        id: '2',
-        name: 'Margarita Pizza',
-        description: 'This is a very tasty pizza',
-        image: 'https://images.pexels.com/photos/7784602/pexels-photo-7784602.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
-        price: 500,
-    },
-    {
-        id: '3',
-        name: 'Margarita Pizza',
-        description: 'This is a very tasty pizza',
-        image: 'https://images.pexels.com/photos/7784602/pexels-photo-7784602.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
-        price: 500,
-    },
-    {
-        id: '4',
-        name: 'Margarita Pizza',
-        description: 'This is a very tasty pizza',
-        image: 'https://images.pexels.com/photos/7784602/pexels-photo-7784602.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
-        price: 500,
-    },
-    {
-        id: '5',
-        name: 'Margarita Pizza',
-        description: 'This is a very tasty pizza',
-        image: 'https://images.pexels.com/photos/7784602/pexels-photo-7784602.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
-        price: 500,
-    },
-];
+'use client'
+import { useState } from 'react';
 
-export default function Home() {
-    // In real life it will come from external apis -> fetch.
-    const data = {
-        id: 1,
-        title: 'computer',
-    };
+export default function SSEPage() {
+  const [messages, setMessages] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
 
+  const sendDataAndStreamResponse = async () => {
+    setMessages([]);
+    setLoading(true);
 
+    try {
+      const response = await fetch('http://localhost:3011/openai/stream', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+             assistantType:"BUSINESS_DEVELOPMENT",
+             subType:"STRATEGIC_PLANNING_AGENT", 
+             userPrompt:"cat",
+             token: 20
+             }), // Customize payload
+      });
 
-    return (
-        <>
-            <Header/>
-        <div className='mx-32'>
-            <DataSetter data={data} />
-           
-            <section>
-                <div className="container py-12">
-                    <Tabs defaultValue="pizza">
-                        <TabsList>
-                            <TabsTrigger value="pizza" className="text-md">
-                                Pizza
-                            </TabsTrigger>
-                            <TabsTrigger value="beverages" className="text-md">
-                                Beverages
-                            </TabsTrigger>
-                        </TabsList>
-                        <TabsContent value="pizza">
-                            <div className="grid grid-cols-4 gap-6 mt-6">
-                                {products.map((product) => (
-                                    <ProductCard product={product} key={product.id} />
-                                ))}
-                            </div>
-                        </TabsContent>
-                        <TabsContent value="beverages">
-                            <div className="grid grid-cols-4 gap-6 mt-6">
-                                {products.map((product:any) => (
-                                    <ProductCard product={product} key={product.id} />
-                                ))}
-                            </div>
-                        </TabsContent>
-                    </Tabs>
-                </div>
-            </section>
+      if (!response.body) {
+        throw new Error('No response body');
+      }
 
-        </div>
-        </>
-    );
+    const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value, { stream: true });
+        setMessages((prev) => [...prev, chunk]);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div style={{ padding: '20px' }}>
+      <h1>Streaming Response with Fetch</h1>
+      <button onClick={sendDataAndStreamResponse} disabled={loading}>
+        {loading ? 'Streaming...' : 'Start Streaming'}
+      </button>
+      <div>
+        {messages.map((message, index) => (
+          <p key={index}>{message}</p>
+        ))}
+      </div>
+    </div>
+  );
 }
