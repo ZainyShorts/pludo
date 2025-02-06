@@ -9,11 +9,13 @@ export const useAIFunctions = () => {
     const res =  await fetchData(`${API_URL}/openai/createThread`,'GET');  
     return res?.data?.id;
     }  
-    const AudioToText = async (audio : any ) => {  
-      const data = new FormData(); 
-     data.append('file', audio); 
+    const AudioToText = async (audio : File ) => {  
+        const form = new FormData(); 
+        form.append('file', audio); 
+        console.log(audio);
+
       try { 
-      const res = await axios.post(`${API_URL}/openai/speechToText`,data); 
+      const res = await axios.post(`${API_URL}/openai/speechToText`,form); 
       return res;
       }
       catch (e) { 

@@ -74,7 +74,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ botName, botAvatar
 
         const webmBlob = new Blob([audioBlob], { type: "audio/webm" })
 
-        const text: any = await AudioToText(webmBlob)
+        const text: any = await AudioToText(webmBlob as File)
         console.log("text", text)
         if (text.data.data !== "") {
           content.text = (content.text || "") + text
@@ -136,7 +136,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ botName, botAvatar
 
         const webmBlob = new Blob([audioBlob], { type: "audio/webm" })
 
-        const text: any = await AudioToText(webmBlob)
+        const text: any = await AudioToText(webmBlob as File)
         console.log("text", text)
         if (text.data.data !== "") {
           content.text = (content.text || "") + text
