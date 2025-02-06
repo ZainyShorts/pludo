@@ -12,7 +12,6 @@ export const useAIFunctions = () => {
     const AudioToText = async (audio : any ) => {  
       const data = new FormData(); 
      data.append('file', audio); 
-     console.log('file',audio)
       try { 
       const res = await axios.post(`${API_URL}/openai/speechToText`,data); 
       return res;
@@ -31,8 +30,9 @@ export const useAIFunctions = () => {
       throw error
     }
   }
-  const createMessageWithImage = async (data: any) => { 
-    try {
+  const createMessageWithImage = async (data: any ) => {    
+   
+    try { 
       const res = await axios.post(`${API_URL}/openai/streamImgToText`, data) 
       return res 
     } catch (error) {

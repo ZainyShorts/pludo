@@ -3,10 +3,10 @@
 import { useState, useRef, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { ChatInput } from "../Input/Input"
-import { Sparkles, Play, Pause } from "lucide-react"
+import { Sparkles, Play, Pause ,Volume2 ,Files } from "lucide-react"
 import { sendMessage } from "@/redux/features/openAI/messageSlice"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
-import { ChatHeader } from "../Chat-header/Chat-header"
+import { ChatHeader } from "../Chat-header/Chat-header" 
 import { TypingLoader } from "../typing-Loader/Typing-Loader"
 import { useAIFunctions } from "./Functions/Functions"
 import Markdown from "react-markdown"
@@ -33,7 +33,7 @@ interface ChatInterfaceProps {
 
 export const ChatInterface: React.FC<ChatInterfaceProps> = ({ botName, botAvatar, mainAgent }) => {
   const dispatch = useAppDispatch()
-  const { createThread, createMessage, deleteThread, AudioToText ,createMessageWithImage } = useAIFunctions()
+  const { createThread, createMessage, deleteThread, AudioToText, createMessageWithImage } = useAIFunctions()
   const messages = useAppSelector((state: { message: { messages: Message[] } }) => state.message.messages)
   const [isTyping, setIsTyping] = useState<boolean>(false)
   const [subAgent, setSubAgent] = useState<string>("")
@@ -65,58 +65,115 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ botName, botAvatar
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [messages])
-    
-
 
   const handleSendMessage = async (content: MessageContent) => {
-    if (content.audio) {
-      const audioUrl = URL.createObjectURL(content.audio as any);
-  
-      const text = await AudioToText(content.audio);
-  
-      content.audio = audioUrl;
-  
-      content.text = (content.text || '') + text; 
-  
-      console.log('Audio to text:', text); 
-      console.log('Audio URL:', content.audio); 
-  }
-  
-    const userMessage: Message = {
-      id: (Date.now() + 1).toString(),
-      sender: "user",
-      content,
+    if (!content.url) {
+      if (content.audio) {
+        const response = await fetch(content.audio)
+        const audioBlob = await response.blob()
+
+        const webmBlob = new Blob([audioBlob], { type: "audio/webm" })
+
+        const text: any = await AudioToText(webmBlob)
+        console.log("text", text)
+        if (text.data.data !== "") {
+          content.text = (content.text || "") + text
+        }
+
+        // console.log('Audio to text:', text);
+        console.log("Audio URL:", content.audio)
+      }
+
+      const userMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        sender: "user",
+        content,
+      }
+
+      dispatch(sendMessage(userMessage))
+      const data = {
+        assistantType: mainAgent,
+        subType: subAgent,
+        userPrompt: JSON.stringify(content.text),
+        token: 100,
+      }
+
+      setIsTyping(true)
+      const res = await createMessage(data)
+      const responseText = res.data
+
+      const lines = responseText.split("\n")
+
+      const messages = lines
+        .filter((line: any) => line.startsWith("data:"))
+        .map((line: any) => line.replace("data:", "").trim())
+
+      const fullMessage = messages.join(" ")
+
+      const botMessage = {
+        id: (Date.now() + 1).toString(),
+        sender: "bot",
+        content: { text: fullMessage },
+      }
+
+      console.log(botMessage)
+      dispatch(sendMessage(botMessage))
+      setIsTyping(false)
     }
-  
-  
-  
-    dispatch(sendMessage(userMessage))
-    const data = {
-      assistantType: mainAgent,
-      subType: subAgent,
-      userPrompt: JSON.stringify(content.text), 
-      token: 100,
+    if (content.url) {
+      const userMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        sender: "user",
+        content,
+      }
+      dispatch(sendMessage(userMessage)) 
+      setIsTyping(true)
+
+
+      if (content.audio) {
+        const response = await fetch(content.audio)
+        const audioBlob = await response.blob()
+
+        const webmBlob = new Blob([audioBlob], { type: "audio/webm" })
+
+        const text: any = await AudioToText(webmBlob)
+        console.log("text", text)
+        if (text.data.data !== "") {
+          content.text = (content.text || "") + text
+        }
+
+        console.log("Audio URL:", content.audio)
+      }
+
+      const data = {
+        assistantType: mainAgent,
+        subType: subAgent,
+        userPrompt: content.text,
+        url: content.url,
+        token: 100,
+      }
+
+      const response = await createMessageWithImage(data)
+      console.log(response)
+
+
+      const lines = response.data.split("\n")
+
+      const messages = lines
+        .filter((line: any) => line.startsWith("data:"))
+        .map((line: any) => line.replace("data:", "").trim())
+
+      const fullMessage = messages.join(" ")
+
+      const botMessage = {
+        id: (Date.now() + 1).toString(),
+        sender: "bot",
+        content: { text: fullMessage },
+      }
+
+      dispatch(sendMessage(botMessage))
+      setIsTyping(false)
     }
-
-    setIsTyping(true)
-    const res = await createMessage(data)
-    const responseText = res.data
-
-    const lines = responseText.split("\n")
-
-    const messages = lines.filter((line : any) => line.startsWith("data:")).map((line : any ) => line.replace("data:", "").trim())
-
-    const fullMessage = messages.join(" ")
-
-    const botMessage = {
-      id: (Date.now() + 1).toString(),
-      sender: "bot",
-      content: { text: fullMessage },
-    }
-
-    console.log(botMessage)
-    dispatch(sendMessage(botMessage))
-    setIsTyping(false)
   }
 
   useEffect(() => {
@@ -174,7 +231,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ botName, botAvatar
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.2, ease: "easeOut" }}
-                className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
+                className={`flex flex-col ${msg.sender === "user" ? "items-end" : "items-start"}`}
               >
                 <div
                   className={`max-w-[80%] p-4 rounded-2xl backdrop-blur-xl shadow-lg transform transition-all duration-200 ${
@@ -202,9 +259,15 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ botName, botAvatar
                               key={index}
                               src={img || "/placeholder.svg"}
                               alt="User uploaded image"
-                              width={300}
-                              height={200}
-                              className="rounded-lg"
+                              width={100}
+                              height={100}
+                              className="rounded-lg w-[60px] h-[60px] lg:w-[100px] lg:h-[100px] bg-slate-400"
+                              style={{ objectFit: "cover" }}
+                              loading="eager"
+                              onError={(e) => {
+                                const target = e.target as HTMLImageElement
+                                target.src = "/placeholder.svg"
+                              }}
                             />
                           ))}
                         </div>
@@ -229,6 +292,21 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ botName, botAvatar
                     <p>Empty message</p>
                   )}
                 </div>
+                {msg.sender === "bot" && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.2, duration: 0.2 }}
+                    className="mt-2 flex gap-2 ml-4"
+                  >
+                    <div className="p-1 text-white rounded-full shadow-md transition-transform hover:scale-110 cursor-pointer">
+                      <Volume2  size={18} />
+                    </div> 
+                    <div className="p-1 text-white rounded-full shadow-md transition-transform hover:scale-110 cursor-pointer">
+                      <Files   size={18} />
+                    </div>
+                  </motion.div>
+                )}
               </motion.div>
             ))
           )}

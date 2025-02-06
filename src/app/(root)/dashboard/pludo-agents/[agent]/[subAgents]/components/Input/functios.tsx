@@ -44,7 +44,7 @@ export const handleSendMessage = (
   }
 
   if (audio) {
-    content.audio = audio
+    content.audio = URL.createObjectURL(audio);  
   }
 
   if (Object.keys(content).length === 0) {
@@ -61,19 +61,24 @@ export const handleSendMessage = (
   setInput("")
   setAudio(null)
   resetTextareaHeightCallback()
-} 
+}  
+interface Image {
+  file: File;
+  preview: string;
+  awsUrl: string | null;
+}
 export const handleSendMessageWithImage = (
   input: string,
   audio: Blob | null,
   onSendMessage: (content: any) => void, 
   selectedImages : any, 
-  setSelectedImages : (url:any) => void,
+  setSelectedImages: (images: Image[]) => void,
   setInput: (input: string) => void, 
 
   setAudio: (audio: Blob | null) => void,
   resetTextareaHeightCallback: () => void,
 ) => {
-  const content: any = {}
+  const content: MessageContent = {}
 
   if (input.trim()) {
     content.text = input.trim()
@@ -84,19 +89,17 @@ export const handleSendMessageWithImage = (
     content.audio = audioUrl
   } 
   if (selectedImages.length > 0) {
-    content.url = selectedImages.map(image => (
-       image.preview
-  ));
-  }
-  
+    content.url = selectedImages.map(image => image.preview); 
+}
+
 
   if (Object.keys(content).length === 0) {
     console.log("Attempted to send an empty message")
     return
   }
-  console.log('content',content);
   try {
-    onSendMessage(content)
+    onSendMessage(content) 
+    setSelectedImages([]); 
   } catch (error) {
     console.error("Failed to send message:", error)
   }
