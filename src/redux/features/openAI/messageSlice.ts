@@ -3,7 +3,7 @@ import type { PayloadAction } from "@reduxjs/toolkit"
 
 export interface MessageContent {
   text?: string
-  image?: string
+  image?: string[]
   audio?: string
 }
 

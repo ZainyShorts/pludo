@@ -38,20 +38,18 @@ export function useAudioRecording(): AudioRecordingHook {
         }
       }
 
-      mediaRecorderRef.current.start(1000) // Collect data every second
+      mediaRecorderRef.current.start(500) 
       setIsRecording(true)
       setIsPaused(false)
       setRecordingTime(60)
       setAudioChunks([])
       setAudioUrl(null)
 
-      // Set up audio context for visualization
       audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)()
       sourceNodeRef.current = audioContextRef.current.createMediaStreamSource(stream)
       analyserRef.current = audioContextRef.current.createAnalyser()
       sourceNodeRef.current.connect(analyserRef.current)
 
-      // Start visualization loop
       visualize()
     } catch (error) {
       console.error("Error accessing microphone:", error)
@@ -116,7 +114,7 @@ export function useAudioRecording(): AudioRecordingHook {
     return () => {
       if (intervalId) clearInterval(intervalId)
     }
-  }, [isRecording, isPaused, handleStopRecording])
+  }, [isRecording, isPaused])
 
   const visualize = () => {
     if (!analyserRef.current) return

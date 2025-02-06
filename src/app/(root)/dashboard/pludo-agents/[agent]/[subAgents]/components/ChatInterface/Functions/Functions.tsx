@@ -1,5 +1,5 @@
 import useFetchHook from "@/hooks/apiCall"
-
+import axios from "axios"
 const API_URL = process.env.NEXT_PUBLIC_PLUDO_SERVER
 
 export const useAIFunctions = () => {
@@ -8,11 +8,33 @@ export const useAIFunctions = () => {
   const createThread = async () => {
     const res =  await fetchData(`${API_URL}/openai/createThread`,'GET');  
     return res?.data?.id;
-    } 
-  const createMessage = async (data: any) => {
+    }  
+    const AudioToText = async (audio : any ) => {  
+      const data = new FormData(); 
+     data.append('file', audio); 
+     console.log('file',audio)
+      try { 
+      const res = await axios.post(`${API_URL}/openai/speechToText`,data); 
+      return res;
+      }
+      catch (e) { 
+
+      }
+    }
+  const createMessage = async (data: any) => {  
     try {
-      const res = await fetchData(`${API_URL}/openai/createMessage `, "POST", data) 
-      return res
+      const res = await axios.post(`${API_URL}/openai/stream`, data)  
+
+      return res 
+    } catch (error) {
+      console.error("Error creating message:", error)
+      throw error
+    }
+  }
+  const createMessageWithImage = async (data: any) => { 
+    try {
+      const res = await axios.post(`${API_URL}/openai/streamImgToText`, data) 
+      return res 
     } catch (error) {
       console.error("Error creating message:", error)
       throw error
@@ -71,7 +93,9 @@ export const useAIFunctions = () => {
     getRun,
     getResponse,
     getReply, 
-    deleteThread,
+    deleteThread,  
+    AudioToText,
+    createMessageWithImage,
   }
 }
 

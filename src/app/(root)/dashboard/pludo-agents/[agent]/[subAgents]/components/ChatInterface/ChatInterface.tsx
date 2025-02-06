@@ -15,7 +15,7 @@ import Image from "next/image"
 
 interface MessageContent {
   text?: string
-  image?: string
+  url?: string[]
   audio?: string
 }
 
@@ -33,7 +33,7 @@ interface ChatInterfaceProps {
 
 export const ChatInterface: React.FC<ChatInterfaceProps> = ({ botName, botAvatar, mainAgent }) => {
   const dispatch = useAppDispatch()
-  const { createThread, createMessage, getRun, getResponse, getReply, deleteThread } = useAIFunctions()
+  const { createThread, createMessage, deleteThread, AudioToText ,createMessageWithImage } = useAIFunctions()
   const messages = useAppSelector((state: { message: { messages: Message[] } }) => state.message.messages)
   const [isTyping, setIsTyping] = useState<boolean>(false)
   const [subAgent, setSubAgent] = useState<string>("")
@@ -52,51 +52,69 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ botName, botAvatar
   }, [threadID, createThread])
 
   useEffect(() => {
+    function formatBotName(name: string | undefined): string {
+      if (!name) return ""
+      return name.replace(/\s+/g, "_").toUpperCase()
+    }
+
     if (botName) {
-      function formatBotName(name: string | undefined): string {
-        if (!name) return ""
-        return name.replace(/\s+/g, "_").toUpperCase()
-      }
       setSubAgent(formatBotName(botName))
     }
   }, [botName])
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }, [messages]) 
+  }, [messages])
+    
+
 
   const handleSendMessage = async (content: MessageContent) => {
+    if (content.audio) {
+      const audioUrl = URL.createObjectURL(content.audio as any);
+  
+      const text = await AudioToText(content.audio);
+  
+      content.audio = audioUrl;
+  
+      content.text = (content.text || '') + text; 
+  
+      console.log('Audio to text:', text); 
+      console.log('Audio URL:', content.audio); 
+  }
+  
     const userMessage: Message = {
       id: (Date.now() + 1).toString(),
       sender: "user",
       content,
     }
-
+  
+  
+  
     dispatch(sendMessage(userMessage))
     const data = {
-      message: JSON.stringify(content),
-      threadId: threadID,
-    } 
-    console.log('msg',content)
+      assistantType: mainAgent,
+      subType: subAgent,
+      userPrompt: JSON.stringify(content.text), 
+      token: 100,
+    }
 
     setIsTyping(true)
-    await createMessage(data)
-    const runId = await getRun(mainAgent as string, subAgent as string, threadID as string)
-    let GetResponse = await getResponse(threadID as string, runId as string)
-    while (
-      GetResponse !== "completed" &&
-      GetResponse !== "cancelled" &&
-      GetResponse !== "failed" &&
-      GetResponse !== "expired"
-    ) {
-      GetResponse = await getResponse(threadID as string, runId as string)
-    }
-    const Reply = await getReply(threadID as string)
-    const botMessage: Message = {
+    const res = await createMessage(data)
+    const responseText = res.data
+
+    const lines = responseText.split("\n")
+
+    const messages = lines.filter((line : any) => line.startsWith("data:")).map((line : any ) => line.replace("data:", "").trim())
+
+    const fullMessage = messages.join(" ")
+
+    const botMessage = {
       id: (Date.now() + 1).toString(),
       sender: "bot",
-      content: { text: Reply.trim() },
+      content: { text: fullMessage },
     }
+
+    console.log(botMessage)
     dispatch(sendMessage(botMessage))
     setIsTyping(false)
   }
@@ -177,14 +195,19 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ botName, botAvatar
                           {msg.content.text}
                         </Markdown>
                       )}
-                      {msg.content.image && (
-                        <Image
-                          src={msg.content.image || "/placeholder.svg"}
-                          alt="User uploaded image"
-                          width={300}
-                          height={200}
-                          className="rounded-lg"
-                        />
+                      {msg.content.url && msg.content.url.length > 0 && (
+                        <div className="flex flex-wrap gap-2">
+                          {msg.content.url.map((img, index) => (
+                            <Image
+                              key={index}
+                              src={img || "/placeholder.svg"}
+                              alt="User uploaded image"
+                              width={300}
+                              height={200}
+                              className="rounded-lg"
+                            />
+                          ))}
+                        </div>
                       )}
                       {msg.content.audio && (
                         <div className="flex items-center space-x-2">

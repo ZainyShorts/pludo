@@ -47,7 +47,7 @@ export interface AgentWithSubAgents {
 export const agentsWithSubAgents: AgentWithSubAgents[] = [
   {
     name: "Ace",
-    role: "Business Analyst",
+    role: "Business Development",
     image: Avatars.Ace,
     subAgents: [
       {

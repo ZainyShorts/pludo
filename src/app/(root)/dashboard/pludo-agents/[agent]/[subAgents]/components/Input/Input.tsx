@@ -2,24 +2,24 @@
 
 import { useState, useRef, useCallback, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Mic, ImageIcon, Send, X, Loader2,FileAudio, Trash2, StopCircle, Pause, Play } from "lucide-react"
+import { Mic, ImageIcon, Send, X, Loader2, FileAudio, StopCircle, Pause, Play } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip" 
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Badge } from "@/components/ui/badge"
 import {
   resetTextareaHeight,
   adjustTextareaHeight,
   handleImageUpload,
-  handleCancelImage,
   triggerImageUpload,
-  handleSendMessage as sendMessage,
+  handleSendMessage as sendMessage, 
+  handleSendMessageWithImage,
   deleteFromAWS,
 } from "./functios"
 import type { MessageContent } from "./types"
 import AudioVisualization from "./AudioVisualization"
 import { useAudioRecording } from "./useAudioRecording"
-import type React from "react" // Added import for React
+import type React from "react"
 
 interface ChatInputProps {
   onSendMessage: (content: MessageContent) => void
@@ -27,15 +27,18 @@ interface ChatInputProps {
   allowAudio: boolean
 }
 
+type ImageType = {
+  file: File
+  preview: string
+  awsUrl: string | null
+}
+
 export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, allowImage, allowAudio }) => {
   const [input, setInput] = useState<string>("")
-  const [selectedImage, setSelectedImage] = useState<{ file: File; preview: string; awsUrl: string | null } | null>(
-    null,
-  )
+  const [selectedImages, setSelectedImages] = useState<ImageType[]>([])
   const [uploadProgress, setUploadProgress] = useState(0)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
-  const audioRef = useRef<HTMLAudioElement>(null)
 
   const {
     isRecording,
@@ -72,25 +75,56 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, allowImage,
     }
   }
 
-  const handleSendMessage = () => {
-    const audioBlob = new Blob(audioChunks, { type: "audio/webm" })
+  const handleSendMessage = () => {  
+    let audioBlob = null
+    if (audioChunks && audioChunks.length > 0) {
+      audioBlob = new Blob(audioChunks, { type: "audio/webm" })
+    } 
+    if (selectedImages.length <= 0) {
     sendMessage(
       input,
-      selectedImage,
       audioBlob,
       onSendMessage,
       setInput,
-      setSelectedImage,
+      () => {},
+      resetTextareaHeightCallback,
+    )  
+  } 
+  else if (selectedImages.length > 0) { 
+    handleSendMessageWithImage( 
+      input,
+      audioBlob,
+      onSendMessage, 
+      selectedImages, 
+      setSelectedImages,
+      setInput,
       () => {},
       resetTextareaHeightCallback,
     )
+  }
     handleDeleteAudio()
+  }
+
+  const handleCancelImageWrapper = (index: number) => {
+    const imageToRemove = selectedImages[index]
+    if (imageToRemove && imageToRemove.awsUrl) {
+      const filename = imageToRemove.awsUrl.split("/").pop()
+      if (filename) {
+        deleteFromAWS(filename)
+      }
+    }
+    setSelectedImages((prev) => prev.filter((_, i) => i !== index))
   }
 
   useEffect(() => {
     const handleUnload = async () => {
-      if (selectedImage && selectedImage.awsUrl) {
-        await deleteFromAWS(selectedImage.file.name)
+      for (const image of selectedImages) {
+        if (image.awsUrl) {
+          const filename = image.awsUrl.split("/").pop()
+          if (filename) {
+            await deleteFromAWS(filename)
+          }
+        }
       }
     }
 
@@ -99,7 +133,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, allowImage,
     return () => {
       window.removeEventListener("beforeunload", handleUnload)
     }
-  }, [selectedImage])
+  }, [selectedImages])
 
   return (
     <TooltipProvider>
@@ -111,42 +145,36 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, allowImage,
       >
         <div className="group bg-gradient-to-br from-indigo-500/20 via-purple-500/20 to-pink-500/20 backdrop-blur-xl rounded-2xl shadow-lg border border-white/20 transition-all duration-300 hover:border-white/30">
           <AnimatePresence>
-            {selectedImage && (
+            {selectedImages.length > 0 && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
-                className="p-3"
+                className="p-3 flex gap-2"
               >
-                <div className="relative w-24 h-24 rounded-lg overflow-hidden group/image">
-                  <img
-                    src={selectedImage.preview || "/placeholder.svg"}
-                    alt="Selected"
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/image:opacity-100 transition-opacity duration-200" />
-                  {uploadProgress < 100 && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-                      <Loader2 className="w-6 h-6 text-white animate-spin" />
-                    </div>
-                  )}
-                  <Button
-                    size="icon"
-                    variant="destructive"
-                    className="absolute top-1 right-1 w-5 h-5 rounded-full opacity-0 group-hover/image:opacity-100 transition-opacity duration-200"
-                    onClick={() => {
-                      if (selectedImage && selectedImage.awsUrl) {
-                        const filename = selectedImage.awsUrl.split("/").pop()
-                        if (filename) {
-                          deleteFromAWS(filename)
-                        }
-                      }
-                      handleCancelImage(selectedImage, setSelectedImage)
-                    }}
-                  >
-                    <X className="w-3 h-3" />
-                  </Button>
-                </div>
+                {selectedImages.map((image, index) => (
+                  <div key={index} className="relative w-24 h-24 rounded-lg overflow-hidden group/image">
+                    <img
+                      src={image.preview || "/placeholder.svg"}
+                      alt={`Selected ${index + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/image:opacity-100 transition-opacity duration-200" />
+                    {uploadProgress < 100 && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+                        <Loader2 className="w-6 h-6 text-white animate-spin" />
+                      </div>
+                    )}
+                    <Button
+                      size="icon"
+                      variant="destructive"
+                      className="absolute top-1 right-1 w-5 h-5 rounded-full opacity-0 group-hover/image:opacity-100 transition-opacity duration-200"
+                      onClick={() => handleCancelImageWrapper(index)}
+                    >
+                      <X className="w-3 h-3" />
+                    </Button>
+                  </div>
+                ))}
               </motion.div>
             )}
           </AnimatePresence>
@@ -160,12 +188,13 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, allowImage,
                     size="icon"
                     className="h-9 w-9 rounded-full hover:bg-white/10"
                     onClick={() => triggerImageUpload(fileInputRef as React.RefObject<HTMLInputElement>)}
+                    disabled={selectedImages.length >= 3}
                   >
                     <ImageIcon className="w-5 h-5 text-white/60 hover:text-white/80 transition-colors duration-200" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent className="bg-white/10 backdrop-blur-lg border-white/10">
-                  <p>Upload Image</p>
+                  <p>{selectedImages.length >= 3 ? "Max 3 images" : "Upload Image"}</p>
                 </TooltipContent>
               </Tooltip>
             )}
@@ -173,7 +202,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, allowImage,
               ref={fileInputRef}
               type="file"
               accept="image/*"
-              onChange={(e) => handleImageUpload(e, setSelectedImage, setUploadProgress)}
+              onChange={(e)=> handleImageUpload(e, setSelectedImages as any , setUploadProgress) }
               className="hidden"
             />
             {allowAudio && (
