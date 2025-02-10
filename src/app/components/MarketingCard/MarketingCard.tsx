@@ -19,7 +19,7 @@ export default function MarketingSection({ mainCard, subCard1, subCard2 }: Marke
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="rounded-[2.5rem] bg-gradient-to-r from-purple-800/90 to-indigo-900/90 shadow-2xl border border-purple-500/30 overflow-hidden relative h-auto w-full lg:w-[90%] flex flex-col md:flex-row p-4 md:p-8"
+        className="rounded-[2.5rem] bg-gradient-to-r from-purple-800/90 to-indigo-900/90 shadow-2xl border border-purple-500/30 overflow-hidden relative min-h-auto w-full lg:w-[90%] flex flex-col md:flex-row p-4 md:p-8"
       >
         <div className="flex flex-col md:flex-row items-center justify-between flex-1 gap-8 md:gap-16">
           {/* Text Content */}
@@ -54,7 +54,7 @@ export default function MarketingSection({ mainCard, subCard1, subCard2 }: Marke
           </div>
 
           {/* Enhanced Image Container */}
-          <div className="flex-1 flex items-center justify-center md:justify-end w-full md:w-1/2 relative h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] mt-8 md:mt-0">
+          <div className="flex-1 z-40 flex items-center justify-center md:justify-end w-full md:w-1/2 relative h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] mt-8 md:mt-0"> 
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
