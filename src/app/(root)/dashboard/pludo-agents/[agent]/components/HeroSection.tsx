@@ -83,7 +83,7 @@ const AgentDetails: React.FC<Prop> = ({ name }) => {
                 src={details.image || "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Capture.PNG-ot4zH3SOVYKwvREYdebPAbajhLahkJ.png"}
                 alt="Agent profile"
                 fill
-                className="object-cover transition-transform duration-700 group-hover:scale-110"
+                className="object-fill transition-transform duration-700 group-hover:scale-110"
                 priority
                 sizes="(max-width: 708px) 288px, 500px"
               />
