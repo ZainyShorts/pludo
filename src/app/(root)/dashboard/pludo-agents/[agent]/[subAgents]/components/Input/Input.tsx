@@ -24,7 +24,8 @@ import type React from "react"
 interface ChatInputProps {
   onSendMessage: (content: MessageContent) => void
   allowImage: boolean
-  allowAudio: boolean
+  allowAudio: boolean 
+  disable:boolean
 }
 
 type ImageType = {
@@ -33,7 +34,7 @@ type ImageType = {
   awsUrl: string | null
 }
 
-export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, allowImage, allowAudio }) => {
+export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, allowImage, allowAudio ,disable }) => {
   const [input, setInput] = useState<string>("")
   const [selectedImages, setSelectedImages] = useState<ImageType[]>([])
   const [uploadProgress, setUploadProgress] = useState(0)
@@ -201,7 +202,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, allowImage,
             <input
               ref={fileInputRef}
               type="file"
-              accept="image/*"
+              accept="image/*"  
               onChange={(e)=> handleImageUpload(e, setSelectedImages as any , setUploadProgress) }
               className="hidden"
             />
@@ -230,7 +231,8 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, allowImage,
             )}
             <Textarea
               ref={textareaRef}
-              value={input}
+              value={input} 
+              disabled={disable}
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
               placeholder="Type your message..."
@@ -238,7 +240,8 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, allowImage,
             />
             <Button
               onClick={handleSendMessage}
-              size="icon"
+              size="icon" 
+              disabled={disable}
               className="h-9 w-9 bg-gradient-to-r from-indigo-500/80 to-pink-500/80 hover:from-indigo-500 hover:to-pink-500 text-white rounded-full transition-all duration-300 shadow-lg hover:shadow-indigo-500/25 backdrop-blur-sm"
             >
               <Send className="w-4 h-4" />

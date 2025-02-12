@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { ChatInput } from "../Input/Input"
 import { Sparkles, Play, Pause ,Volume2 ,Files } from "lucide-react"
-import { sendMessage } from "@/redux/features/openAI/messageSlice"
+import { sendMessage , updateBotMessage } from "@/redux/features/openAI/messageSlice"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import { ChatHeader } from "../Chat-header/Chat-header" 
 import { TypingLoader } from "../typing-Loader/Typing-Loader"
@@ -33,94 +33,142 @@ interface ChatInterfaceProps {
 
 export const ChatInterface: React.FC<ChatInterfaceProps> = ({ botName, botAvatar, mainAgent }) => {
   const dispatch = useAppDispatch()
-  const { createThread, createMessage, deleteThread, AudioToText, createMessageWithImage } = useAIFunctions()
+  const {  createMessage, AudioToText, createMessageWithImage , createMessageStream } = useAIFunctions()
   const messages = useAppSelector((state: { message: { messages: Message[] } }) => state.message.messages)
   const [isTyping, setIsTyping] = useState<boolean>(false)
   const [subAgent, setSubAgent] = useState<string>("")
   const chatEndRef = useRef<HTMLDivElement>(null)
-  const [threadID, setThreadID] = useState<string>("")
   const [audioPlaying, setAudioPlaying] = useState<string | null>(null)
 
-  useEffect(() => {
-    if (threadID === "") {
-      const create = async () => {
-        const id = await createThread()
-        setThreadID(id)
-      }
-      create()
-    }
-  }, [threadID, createThread])
+  
+  const [disable , setDisable ] = useState(false);
 
   useEffect(() => {
     function formatBotName(name: string | undefined): string {
       if (!name) return ""
-      return name.replace(/\s+/g, "_").toUpperCase()
+      return name.replace(/[-\s]+/g, "_").toUpperCase()
     }
-
+  
     if (botName) {
       setSubAgent(formatBotName(botName))
-    }
+    } 
+    console.log('sub', formatBotName(botName))
   }, [botName])
+  
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [messages])
 
-  const handleSendMessage = async (content: MessageContent) => {
-    if (!content.url) {
-      if (content.audio) {
-        const response = await fetch(content.audio)
-        const audioBlob = await response.blob()
-
-        const webmBlob = new Blob([audioBlob], { type: "audio/webm" })
-
-        const text: any = await AudioToText(webmBlob as File)
-        console.log("text", text)
-        if (text.data.data !== "") {
-          content.text = (content.text || "") + text
-        }
-
-        // console.log('Audio to text:', text);
-        console.log("Audio URL:", content.audio)
-      }
-
+  const handleSendMessage = async (content: MessageContent) => { 
+    if (!content.url) {  
+      setDisable(true);
       const userMessage: Message = {
         id: (Date.now() + 1).toString(),
         sender: "user",
         content,
       }
+       
+      dispatch(sendMessage(userMessage))  
+      let audioText = '';
+    
+      try {
+        // Handle audio processing if present
+        if (content.audio) {
+          const response = await fetch(content.audio)
+          const audioBlob = await response.blob()
+          const webmBlob = new Blob([audioBlob], { type: "audio/webm" })
+          const text: any = await AudioToText(webmBlob as File)
+          
+          if (text.data.data !== "") {
+            audioText = text.data.data
+          }
+          console.log("Audio URL:", content.audio)
+        }
+    
+        // Prepare data for API call
+        const data = {
+          assistantType: mainAgent,
+          subType: subAgent,
+          userPrompt: JSON.stringify(content.text + audioText),
+          token: 100,
+        }
+    
+    
+        // Create an initial bot message
+        const botMessageId = (Date.now() + 2).toString();
+        const initialBotMessage: Message = {
+          id: botMessageId,
+          sender: "bot",
+          content: { text: "" },
+        }
+        dispatch(sendMessage(initialBotMessage)) 
+        
+        
+        const response = await fetch(`${process.env.NEXT_PUBLIC_PLUDO_SERVER}/openai/stream`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+    
+        if (!response.body) {
+          throw new Error('No response body');
+        }
+    
+        const reader = response.body.getReader(); 
+        const decoder = new TextDecoder(); 
+        let buffer = ''; 
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          
+          const chunk = decoder.decode(value, { stream: true });
+          buffer += chunk;
+    
+          let cleanedText = '';
+          
+          const lines = buffer.split('\n');
+          buffer = lines.pop() || ''; 
+    
+          for (const line of lines) {
+            if (line.trim()) {
+              // Remove "data:" prefix and clean up the text
+              const cleanLine = line 
+                .replace(/id:\s*\d+\s*/g, '')
+                .replace(/^data:\s*/, '')   
+                .replace(/\\n/g, '\n')     // Handle escaped newlines
+                .replace(/\\\"/g, '"')     // Handle escaped quotes
+                .replace(/\\t/g, '\t')     // Handle escaped tabs
+                .replace(/\d+\\\nid:\s*\d+\\ndata:\s*/g, '') // Remove id markers 
 
-      dispatch(sendMessage(userMessage))
-      const data = {
-        assistantType: mainAgent,
-        subType: subAgent,
-        userPrompt: JSON.stringify(content.text),
-        token: 100,
+                .trim();
+    
+              if (cleanLine) {
+                cleanedText += cleanLine + ' ';
+              }
+            }
+          }
+    
+          if (cleanedText) {
+            dispatch(updateBotMessage({ 
+              id: botMessageId, 
+              chunk: cleanedText
+            })); 
+          } 
+        }
+    
+        setDisable(false);
+    
+      } catch (error) {
+        console.error('Error in message processing:', error);
+        setIsTyping(false);
+        setDisable(false);
       }
-
-      setIsTyping(true)
-      const res = await createMessage(data)
-      const responseText = res.data
-
-      const lines = responseText.split("\n")
-
-      const messages = lines
-        .filter((line: any) => line.startsWith("data:"))
-        .map((line: any) => line.replace("data:", "").trim())
-
-      const fullMessage = messages.join(" ")
-
-      const botMessage = {
-        id: (Date.now() + 1).toString(),
-        sender: "bot",
-        content: { text: fullMessage },
-      }
-
-      console.log(botMessage)
-      dispatch(sendMessage(botMessage))
-      setIsTyping(false)
     }
-    if (content.url) {
+    if (content.url) { 
+      setDisable(true);
       const userMessage: Message = {
         id: (Date.now() + 1).toString(),
         sender: "user",
@@ -128,6 +176,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ botName, botAvatar
       }
       dispatch(sendMessage(userMessage)) 
       setIsTyping(true)
+      let audiotext = '';
 
 
       if (content.audio) {
@@ -137,18 +186,17 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ botName, botAvatar
         const webmBlob = new Blob([audioBlob], { type: "audio/webm" })
 
         const text: any = await AudioToText(webmBlob as File)
-        console.log("text", text)
-        if (text.data.data !== "") {
-          content.text = (content.text || "") + text
+        console.log("text", text.data.data)
+        if (text.data.data !== "") { 
+          audiotext = text.data.data;
         }
 
-        console.log("Audio URL:", content.audio)
       }
 
       const data = {
         assistantType: mainAgent,
         subType: subAgent,
-        userPrompt: content.text,
+        userPrompt: content.text + audiotext,
         url: content.url,
         token: 100,
       }
@@ -172,15 +220,12 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ botName, botAvatar
       }
 
       dispatch(sendMessage(botMessage))
-      setIsTyping(false)
+      setIsTyping(false) 
+      setDisable(false);
     }
   }
 
-  useEffect(() => {
-    return () => {
-      deleteThread(threadID as string)
-    }
-  }, [])
+
 
   const toggleAudio = (audioUrl: string) => {
     if (audioPlaying === audioUrl) {
@@ -248,9 +293,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ botName, botAvatar
                       className="font-light space-y-2"
                     >
                       {msg.content.text && (
-                        <Markdown remarkPlugins={[remarkGfm]} className="font-serif">
-                          {msg.content.text}
-                        </Markdown>
+                        <Markdown children={msg.content.text} remarkPlugins={[remarkGfm]} className="font-serif"/>
                       )}
                       {msg.content.url && msg.content.url.length > 0 && (
                         <div className="flex flex-wrap gap-2">
@@ -322,7 +365,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ botName, botAvatar
       >
         <div className="flex items-end gap-2 w-full mx-auto">
           <div className="flex-1 relative">
-            <ChatInput onSendMessage={handleSendMessage} allowImage={true} allowAudio={true} />
+            <ChatInput onSendMessage={handleSendMessage} allowImage={true} allowAudio={true} disable= {disable} />
           </div>
         </div>
       </motion.div>

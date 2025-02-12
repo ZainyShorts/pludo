@@ -19,7 +19,7 @@ const navItems = [
   { icon: LayoutDashboard, label: "Dashboard", route: "/dashboard" },
   { icon: Users, label: "My Agents", route: "/dashboard/my-agents" },
   { icon: Briefcase, label: "Agent Suite", route: "/dashboard/pludo-agents" },
-  { icon: UserPlus, label: "Create Agent", route: "/dashboard/create" },
+  { icon: UserPlus, label: "Create Agent", route: "/dashboard/create-agent" },
   { icon: LinkIcon, label: "Integrations", route: "/dashboard/integrations" },
   { icon: BarChart2, label: "Analytics", route: "/dashboard/analytics" },
   { icon: Settings, label: "Settings", route: "/dashboard/settings" },
