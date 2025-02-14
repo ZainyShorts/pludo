@@ -1,37 +1,12 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import {  Twitter, Instagram, Mail , MailOpen  } from "lucide-react"
 import { useState } from "react" 
-import { Modal } from "./Modal/IntegrationModal" 
+import { Modal } from "./Modal/IntegrationModal"  
+import { integrations } from "./IntegrationData"
 import { SelectedIntegration } from "./SelectedIntegration/SelectedIntegration"
 
-const integrations = [
-  {
-    id: "bulkEmail",
-    name: "Bulk Emailing",
-    icon: Mail,
-    description: "Send Emails in bulk and Connect with professionals and share business updates.",
-  },
-  {
-    id: "EmailSummary",
-    name: "Email Summary",
-    icon: MailOpen,
-    description: "Engage with a broad audience and promote events.",
-  },
-  {
-    id: "Schedule",
-    name: "Schedule Email",
-    icon: Twitter,
-    description: "Share real-time updates and join trending conversations.",
-  },
-  {
-    id: "analyzar",
-    name: "Web Analyzar",
-    icon: Instagram,
-    description: "Showcase visual content and reach a younger demographic.",
-  },
-]
+
 
 export default function Integrations() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)

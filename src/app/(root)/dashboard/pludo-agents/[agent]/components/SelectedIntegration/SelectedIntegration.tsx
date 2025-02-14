@@ -1,25 +1,16 @@
-import BulkEmail from "../Integrations/Ace/BulkEmail" 
-import EmailSummary from "../Integrations/Ace/EmailSummary" 
-import EmailScheduler from "../Integrations/Ace/ScheduleEmail" 
-import WebsiteAnalyzer from "../Integrations/Ace/WebAnalyzer"
+import { integrations } from "../IntegrationData"
 
 interface SelectedIntegrationProps {
   selectedId: string | null
 }
 
-export function SelectedIntegration({ selectedId }: SelectedIntegrationProps) {
-  switch (selectedId) {
-    case "bulkEmail":
-      return <BulkEmail />  
-    case "EmailSummary" : 
-     return  <EmailSummary />  
-     case "Schedule": 
-      return <EmailScheduler/>  
-      case "analyzar": 
-      return <WebsiteAnalyzer /> 
-    // Add more cases here as you add more integrations
-    default:
-      return <div>No integration selected</div>
-  }
-}
+export function SelectedIntegration({ selectedId }: SelectedIntegrationProps) { 
+  const integration = integrations.find(int => int.id === selectedId)
 
+  if (!integration || !integration.Modal) {
+    return null 
+  }
+
+  const Modal = integration.Modal;
+  return <Modal />;
+}
