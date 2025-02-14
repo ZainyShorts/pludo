@@ -12,6 +12,7 @@ import { useAIFunctions } from "./Functions/Functions"
 import Markdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import Image from "next/image"
+import { copyToClipboard } from "@/lib/methods"
 
 interface MessageContent {
   text?: string
@@ -39,7 +40,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ botName, botAvatar
   const [subAgent, setSubAgent] = useState<string>("")
   const chatEndRef = useRef<HTMLDivElement>(null)
   const [audioPlaying, setAudioPlaying] = useState<string | null>(null)
-
+  const [tts,setTts] = useState<boolean>(false)
   
   const [disable , setDisable ] = useState(false);
 
@@ -243,6 +244,29 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ botName, botAvatar
     }
   }
 
+  function triggerTTS(inputText:string){
+    if(inputText == "") return
+    try{
+      setTts(true)
+
+      console.log(inputText)
+      const audio = new Audio(`${process.env.NEXT_PUBLIC_PLUDO_SERVER}/openai/tts/${inputText}/321231`); // API endpoint
+      console.log(audio.src);
+      // Ensure audio loads properly
+      audio.load();
+      
+      // Play audio after a short delay
+      setTimeout(() => {
+        audio.play().catch(err => console.error("Playback error:", err));
+      }, 500); 
+    }catch(e){
+      console.log(e)
+    }finally{
+      setTts(false)
+
+    }
+  }
+
   return (
     <div className="flex flex-col w-full md:w-[80%] h-[95vh] bg-gradient-to-b from-purple-950 via-gray-950 to-black">
       <div className="absolute lg:ml-64 inset-0 overflow-hidden pointer-events-none">
@@ -342,11 +366,15 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ botName, botAvatar
                     transition={{ delay: 0.2, duration: 0.2 }}
                     className="mt-2 flex gap-2 ml-4"
                   >
+                     <div 
+                        aria-disabled={tts} 
+                        onClick={!tts ? ()=>triggerTTS(msg.content.text || "") : undefined} // Prevent clicking when TTS is active
+                        className="p-1 text-white rounded-full shadow-md transition-transform hover:scale-110 cursor-pointer"
+                      >
+                        <Volume2 size={18} />
+                      </div>
                     <div className="p-1 text-white rounded-full shadow-md transition-transform hover:scale-110 cursor-pointer">
-                      <Volume2  size={18} />
-                    </div> 
-                    <div className="p-1 text-white rounded-full shadow-md transition-transform hover:scale-110 cursor-pointer">
-                      <Files   size={18} />
+                      <Files onClick={()=>copyToClipboard(msg.content.text|| "")}   size={18} />
                     </div>
                   </motion.div>
                 )}

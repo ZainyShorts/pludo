@@ -1,7 +1,7 @@
 import type { RefObject } from "react"
 import type React from "react"    
 import axios from 'axios';
-import { MessageContent  , Image} from "./types";
+import { MessageContent} from "./types";
  const url = process.env.NEXT_PUBLIC_PLUDO_SERVER; 
  
 export const resetTextareaHeight = (textareaRef: RefObject<HTMLTextAreaElement>) => {
@@ -89,7 +89,7 @@ export const handleSendMessageWithImage = (
     content.audio = audioUrl
   } 
   if (selectedImages.length > 0) {
-    content.url = selectedImages.map(image => image.preview); 
+    content.url = selectedImages.map((image:any) => image.preview); 
 }
 
 
