@@ -164,7 +164,7 @@ export const uploadImageToAWS = async (
         'Content-Type': 'application/json',
       },
     });
-    const signedUrl = response.data.msg.url;
+    const signedUrl = response.data.msg.url; 
 
     const uploadResponse = await axios.put(signedUrl, file, {
       headers: {

@@ -226,23 +226,40 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ botName, botAvatar
     }
   }
 
-
-
-  const toggleAudio = (audioUrl: string) => {
-    if (audioPlaying === audioUrl) {
-      setAudioPlaying(null)
-      const audio = new Audio(audioUrl)
-      audio.pause()
-    } else {
-      if (audioPlaying) {
-        const prevAudio = new Audio(audioPlaying)
-        prevAudio.pause()
-      }
-      setAudioPlaying(audioUrl)
-      const audio = new Audio(audioUrl)
-      audio.play()
-    }
+  const audioRef = useRef<any>([]);
+  const [currentPlaying, setCurrentPlaying] = useState<number | null>(null); 
+  const handleAudioEnded = () => { 
+    setCurrentPlaying(null);
   }
+  const togglePlayPause = (index: number) => {
+    if (currentPlaying !== null && currentPlaying !== index) {
+      audioRef.current[currentPlaying]?.pause(); 
+    }
+
+    if (audioRef.current[index]?.paused) {
+      audioRef.current[index]?.play();
+      setCurrentPlaying(index);
+    } else {
+      audioRef.current[index]?.pause();
+      setCurrentPlaying(null);
+    }
+  };
+ const toggleAudio = (audioUrl: string) => {
+  const audio = new Audio(audioUrl);
+
+  if (audioPlaying === audioUrl) {
+    audio.pause();
+    setAudioPlaying(null);
+  } else {
+    if (audioPlaying) {
+      const prevAudio = new Audio(audioPlaying);
+      prevAudio.pause();
+    }
+    setAudioPlaying(audioUrl);
+    audio.play();
+  }
+};
+
 
   function triggerTTS(inputText:string){
     if(inputText == "") return
@@ -329,7 +346,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ botName, botAvatar
                               width={100}
                               height={100}
                               className="rounded-lg w-[60px] h-[60px] lg:w-[100px] lg:h-[100px] bg-slate-400"
-                              style={{ objectFit: "cover" }}
+                              style={{ objectFit: "fill" }}
                               loading="eager"
                               onError={(e) => {
                                 const target = e.target as HTMLImageElement
@@ -341,16 +358,15 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ botName, botAvatar
                       )}
                       {msg.content.audio && (
                         <div className="flex items-center space-x-2">
-                          <button
-                            onClick={() => toggleAudio(msg.content.audio as string)}
+                          <audio 
+                            ref={(el) => (audioRef.current[index] = el)} 
+                            onEnded={handleAudioEnded}
+                            src={msg.content.audio}
                             className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors"
-                          >
-                            {audioPlaying === msg.content.audio ? (
-                              <Pause className="w-4 h-4" />
-                            ) : (
-                              <Play className="w-4 h-4" />
-                            )}
-                          </button>
+                         />
+                             <button onClick={() => togglePlayPause(index)}>
+            {currentPlaying === index ? <Pause className="h-4 w-4"/> : <Play className="h-4 w-4"/>}
+          </button>
                           <span>Audio message</span>
                         </div>
                       )}

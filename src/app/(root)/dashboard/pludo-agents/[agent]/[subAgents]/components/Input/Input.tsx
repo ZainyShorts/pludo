@@ -20,6 +20,7 @@ import type { MessageContent } from "./types"
 import AudioVisualization from "./AudioVisualization"
 import { useAudioRecording } from "./useAudioRecording"
 import type React from "react"
+import Image from "next/image"
 
 interface ChatInputProps {
   onSendMessage: (content: MessageContent) => void
@@ -71,12 +72,15 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, allowImage,
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault()
-      handleSendMessage()
+      e.preventDefault();  
+      handleSendMessage();
     }
   }
 
-  const handleSendMessage = () => {  
+  const handleSendMessage = () => {   
+    if (isRecording) { 
+      handleStopRecording();
+    }
     let audioBlob = null
     if (audioChunks && audioChunks.length > 0) {
       audioBlob = new Blob(audioChunks, { type: "audio/webm" })
@@ -154,11 +158,13 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, allowImage,
                 className="p-3 flex gap-2"
               >
                 {selectedImages.map((image, index) => (
-                  <div key={index} className="relative w-24 h-24 rounded-lg overflow-hidden group/image">
-                    <img
-                      src={image.preview || "/placeholder.svg"}
+                  <div key={index} className="relative rounded-lg overflow-hidden group/image">
+                    <Image
+                      src={image.preview || "/placeholder.svg"} 
+                      width={200} 
+                      height={200}
                       alt={`Selected ${index + 1}`}
-                      className="w-full h-full object-cover"
+                      className="w-24 h-24  object-fill"
                     />
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/image:opacity-100 transition-opacity duration-200" />
                     {uploadProgress < 100 && (
@@ -232,7 +238,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, allowImage,
             <Textarea
               ref={textareaRef}
               value={input} 
-              disabled={disable}
+              disabled={disable }
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
               placeholder="Type your message..."

@@ -1,8 +1,8 @@
 "use client"
 
-import { MoreVertical, Settings } from 'lucide-react' 
+import {  Settings } from 'lucide-react' 
 import { useAppDispatch} from '@/redux/hooks' 
-import { toggleSidebar } from '@/redux/features/chatBox/chatBox'
+import { toggleSidebar } from '@/redux/features/chatBox/chatBox' 
 import { Button } from "@/components/ui/button"
 
 interface ChatHeaderProps {
@@ -37,13 +37,7 @@ export const ChatHeader = ({ botName = 'Bot', botAvatar }: ChatHeaderProps) => {
       </div>
       
       <div className="flex items-center gap-1">
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          className="text-white/80 hover:text-white hover:bg-white/10 transition-colors duration-200"
-        >
-          <MoreVertical className="h-5 w-5" />
-        </Button>
+    
         <Button 
           variant="ghost" 
           size="icon" 

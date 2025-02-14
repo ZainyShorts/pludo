@@ -2,7 +2,8 @@
 
 import * as React from "react"
 import { Settings2, History, Twitter, Linkedin, ChevronRight, X, Plus } from "lucide-react"
-import { toggleSidebar } from "@/redux/features/chatBox/chatBox"
+import { toggleSidebar } from "@/redux/features/chatBox/chatBox" 
+import { setEmpty } from '@/redux/features/openAI/messageSlice'
 import { useAppSelector, useAppDispatch } from "@/redux/hooks"
 import { Button } from "@/components/ui/button"
 import { motion, AnimatePresence } from "framer-motion"
@@ -14,7 +15,11 @@ interface CompactAgentSidebarProps {
 }
 
 export function CompactAgentSidebar({ botName, botAvatar, mainAgent }: CompactAgentSidebarProps) {
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();  
+  const handleClearChat = () => { 
+   dispatch(setEmpty());
+  }
+  
   const isOpen = useAppSelector((state) => state.chatbox.isOpen)
 
   return (
@@ -105,12 +110,14 @@ export function CompactAgentSidebar({ botName, botAvatar, mainAgent }: CompactAg
 
                 {/* New Chat Button */}
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-                  <Button
+                  <Button 
+                   onClick={handleClearChat}
                     className="w-full h-10 mb-4 bg-white/10 hover:bg-white/20 text-white border border-white/20 
                              hover:border-white/30 rounded-xl transition-all hover:text-gray-200 duration-200 backdrop-blur-sm
                              flex items-center justify-center gap-2 shadow-lg hover:shadow-purple-500/20"
-                    variant="ghost"
-                  >
+                    variant="default"
+                  > 
+                   
                     <Plus className="h-4 w-4" />
                     <span>New Chat</span>
                   </Button>

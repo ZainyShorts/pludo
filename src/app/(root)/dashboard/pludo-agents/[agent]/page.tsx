@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import AgentDetails from './components/HeroSection';
 import SubRoles from './components/subRoles';
-import Integrations from './components/Integrations';
+import Integrations from './components/IntegrationComponent';
 
 type Params = { 
   agent?: string;
