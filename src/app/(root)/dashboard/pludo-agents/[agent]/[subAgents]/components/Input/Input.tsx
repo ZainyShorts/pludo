@@ -260,12 +260,12 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, allowImage,
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.8 }}
                 transition={{ duration: 0.3 }}
-                className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-4 p-4 bg-gradient-to-r from-indigo-500/40 to-pink-500/40 backdrop-blur-lg rounded-lg shadow-lg border border-white/20"
+                className="absolute bottom-full mr-12 left-4 mb-4 p-4 h-24 bg-gradient-to-r from-indigo-500/40 to-pink-500/40 backdrop-blur-lg rounded-lg shadow-lg border border-white/20"
               >
-                <div className="flex items-center justify-between mb-2">
+                <div className="flex pr-4 items-center justify-between mb-2">
                   <div className="flex items-center space-x-2">
-                    <div className="w-4 h-4 bg-red-500 rounded-full animate-pulse" />
-                    <p className="text-white font-medium">{recordingTime}s</p>
+                    <div className="w-4 h-4 pr-2 bg-red-500 rounded-full animate-pulse" />
+                    <p className="text-white font-medium pr-2">{recordingTime}s</p>
                   </div>
                   <div className="flex space-x-2">
                     {isPaused ? (

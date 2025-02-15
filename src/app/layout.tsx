@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { AuthProvider } from "@descope/nextjs-sdk";
 import { ApolloProvider } from "@/providers/ApolloPovider";
-import StoreProvider from "@/providers/StoreProvider";
+import StoreProvider from "@/providers/StoreProvider"; 
+import { ToastProvider } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -19,8 +20,9 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <StoreProvider>
-          <AuthProvider projectId={process.env.DESCOPE_PROJECT_ID as string}>
-            <ApolloProvider>{children}</ApolloProvider>
+          <AuthProvider projectId={process.env.DESCOPE_PROJECT_ID ?? ""}>
+            <ApolloProvider>{children}</ApolloProvider>  
+            <ToastProvider/>
           </AuthProvider>
         </StoreProvider>
       </body>

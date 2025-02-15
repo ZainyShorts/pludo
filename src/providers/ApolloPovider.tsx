@@ -2,7 +2,7 @@
 import { ApolloClient, InMemoryCache, ApolloProvider as Provider } from "@apollo/client";
 
 const client = new ApolloClient({
-    uri: "http://localhost:3007/graphql",
+    uri: `${process.env.NEXT_PUBLIC_PLUDO_SERVER}/graphql`,
     cache: new InMemoryCache(),
 });
 

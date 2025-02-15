@@ -1,4 +1,5 @@
-import { Sidebar } from "./Sidebar/Sidebar"
+import { Sidebar } from "./Sidebar/Sidebar"; 
+import { ToastContainer } from "react-toastify";
 
 export default function DashboardLayout({
   children,
@@ -9,8 +10,11 @@ export default function DashboardLayout({
     <div className="min-h-screen ">
       <Sidebar />
       <main className=" md:pl-64 bg-custom-gradient">
-        {children}
-      </main>
+        {children} 
+
+      </main> 
+       <ToastContainer/>
+      
     </div>
   )
 }

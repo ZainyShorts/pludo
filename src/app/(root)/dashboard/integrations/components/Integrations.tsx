@@ -1,9 +1,16 @@
 'use client'
 
 import { Switch } from "@/components/ui/switch"
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, Loader2 } from 'lucide-react' // Import Loader
+import React from "react"
 import { motion } from "framer-motion" 
-import { integrationData } from "./integrationData"
+import { gql , useQuery } from "@apollo/client"
+import { GET_INTEGRATIONS } from "@/lib/query" 
+import {  useUser } from '@descope/nextjs-sdk/client';  
+import useFetchHook from "@/hooks/apiCall"
+import IconBody from "../../components/icons/icons"
+import { useEffect, useState } from "react" 
+import ModalComponent from "./InputModal" 
 
 interface IntegrationCardProps {
   icon: React.ReactNode
@@ -11,18 +18,18 @@ interface IntegrationCardProps {
   isConnected: boolean
   onToggle: () => void
   description: string
-}
+} 
 
-function IntegrationCard({ icon, name, isConnected, onToggle, description }: IntegrationCardProps) {
+function IntegrationCard({ icon, name, isConnected, onToggle, description }: IntegrationCardProps) {   
   return (
     <motion.div
       className="relative min-h-[300px] overflow-hidden rounded-2xl backdrop-blur-2xl bg-white/10 border border-white/20 p-8 flex flex-col gap-4 group transition-all duration-300"
     >
       <div className="flex items-start justify-between">
         <div className="flex gap-6">
-          <div className="text-white/90 w-16 h-16 flex items-center justify-center rounded-2xl bg-gradient-to-r from-purple-500/50 to-pink-500/50 shadow-lg shadow-purple-500/20"> 
-            {icon}
-          </div>
+        <div className="text-white/90 w-16 h-16 flex items-center justify-center rounded-2xl bg-gradient-to-r from-purple-500/50 to-pink-500/50 shadow-lg shadow-purple-500/20">  
+    <IconBody iconName={icon} /> 
+  </div>
           <div className="space-y-2">
             <h3 className="text-2xl font-semibold text-white">{name}</h3>
             <p className="text-white/60 text-lg">
@@ -55,8 +62,76 @@ function IntegrationCard({ icon, name, isConnected, onToggle, description }: Int
 }
 
 export default function Integrations() {
- 
+  const { user } = useUser(); 
+  const [email, setEmail] = useState<any>('');  
+  const [isOpen , setIsOpen] = useState<Boolean>(false);
+  const [appCode, setAppCode] = useState<any>(''); 
+  const [ID , setID] = useState<any>(''); 
+  const [integrationData, setIntegrationData] = useState<any>(null); 
+  const [isLoading, setIsLoading] = useState<boolean>(false); // Add loading state
+  const {fetchData} = useFetchHook();
+  const { loading, error, data, refetch } = useQuery(GET_INTEGRATIONS, {
+    variables: { deScopeId: "U2rrj2rBFC55B1eIRWqrcOVkypr3" },
+  });
 
+  useEffect(() => {
+    if (user?.userId) {
+      refetch({ deScopeId: "U2rrj2rBFC55B1eIRWqrcOVkypr3" });
+    }
+  }, [user?.userId]);
+
+  useEffect(() => {
+    if (data) {
+      console.log('data', data, 'error', loading);
+      setIntegrationData(data.getIntegrations);
+    }
+  }, [data, loading, error]); 
+   
+  const handleSwitch = async ( status ? : boolean  , id ? : any) => {   
+    setIsLoading(true);  
+    setIsOpen(false);
+    const data  = { 
+      Id:ID ? ID : id, 
+      status: status ? false : true, 
+      email : email, 
+      appCode : appCode,
+    }    
+    
+    const res = await fetchData(`${process.env.NEXT_PUBLIC_PLUDO_SERVER}/integration/updateGmailStatus`,'POST',data);  
+
+    if (res.success === true) {
+        if (Array.isArray(integrationData)) {
+            const index = integrationData.findIndex(int => int._id === id || int._id === ID);  
+            setID(null);
+            console.log(index);
+    
+            if (index !== -1) {
+                const updatedData = integrationData.map((item, i) =>
+                    i === index ? { ...item, isConnected: !item.isConnected } : item
+                );
+    
+                setIntegrationData(updatedData);
+            }
+        } else {
+            console.error("integrationData is not an array or is null.");
+        }
+    }
+     setIsLoading(false); 
+  }  
+  const handleToggle = async (id : any , isConnected : boolean) => {    
+    setID(id);  
+
+     if (isConnected) { 
+      handleSwitch(isConnected , id);
+     } 
+     else if (!isConnected) {
+     setIsOpen(true) 
+     }
+  }
+  const onClose = () => { 
+    setIsOpen(false);
+  }
+    
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-black via-purple-900/50 to-pink-900/30">
       <div className="container mx-auto px-6 py-24">
@@ -91,7 +166,7 @@ export default function Integrations() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
           >
-            {integrationData.map((integration, index) => (
+            {integrationData && integrationData.map((integration, index) => (
               <motion.div
                 key={integration.name} 
                 initial={{ opacity: 0, y: 20 }}
@@ -99,15 +174,26 @@ export default function Integrations() {
                 transition={{ delay: 0.5 + index * 0.1 }}
               >
                 <IntegrationCard
-                  {...integration}
-                  onToggle={() => console.log(`${integration.name}`)}
-                />
-              </motion.div>
-            ))}
+                  icon={integration.icon}
+                  name={integration.name}
+                  isConnected={integration.isConnected}
+                  onToggle={()=>handleToggle(integration._id , integration.isConnected)}
+                  description={integration.description}
+                />    
+             
+              </motion.div> 
+            ))} 
+              {ID && isOpen &&
+                <ModalComponent email={email} AppCode={appCode} setEmail={setEmail} setAppCode={setAppCode} onSubmit={handleSwitch} onClose={onClose}/>
+                 }
           </motion.div>
+          {isLoading && ( // Conditionally render the Loader
+            <div className="fixed inset-0 flex items-center justify-center bg-black/50">
+              <Loader2 className="animate-spin text-white w-12 h-12" />
+            </div>
+          )}
         </motion.div>
       </div>
     </div>
   )
-}
-
+} 

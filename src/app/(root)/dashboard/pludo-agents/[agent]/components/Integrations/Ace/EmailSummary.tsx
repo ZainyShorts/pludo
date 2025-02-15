@@ -3,47 +3,50 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { X, Download } from "lucide-react"
+import { Download } from "lucide-react"
 import { format } from "date-fns"
-import { CalendarIcon } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { Calendar } from "@/components/ui/calendar"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-
+import { Loader2 } from "lucide-react"
+import axios from "axios"
 export default function EmailSummary() {
-  const [date, setDate] = useState<Date | undefined>(new Date())
-  const [summary, setSummary] = useState(
-    "Today's Email Summary:\n\n1. Meeting with client rescheduled to 3 PM\n2. Project deadline extended to next Friday\n3. New team member joining next week\n4. Quarterly report due by end of month\n5. Office potluck scheduled for next Thursday",
-  )
+  const [summary, setSummary] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleClose = () => {
-    // Implement close functionality here
     console.log("Close button clicked")
   }
 
   const handleDownload = () => {
-    const element = document.createElement("a");
-    const file = new Blob([summary], { type: "text/plain" });
-    element.href = URL.createObjectURL(file);
-    element.download = `email_summary_${format(date || new Date(), "yyyy-MM-dd")}.txt`;
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
-  };
-  
-  const handleDateChange = (newDate: Date | undefined) => {
-    setDate(newDate)
-    // Here you would typically fetch the summary for the selected date
-    // For this example, we'll just update the summary with the selected date
-    if (newDate) {
-      setSummary(
-        `Email Summary for ${format(newDate, "MMMM d, yyyy")}:\n\n1. Sample item for selected date\n2. Another sample item\n3. Yet another sample item`,
-      )
-    }
-  }
+    if (!summary) return
 
+    const element = document.createElement("a")
+    const file = new Blob([summary], { type: "text/plain" })
+    element.href = URL.createObjectURL(file)
+    element.download = `email_summary_${format(new Date(), "yyyy-MM-dd")}.txt`
+    document.body.appendChild(element)
+    element.click()
+    document.body.removeChild(element)
+  } 
+ 
+
+  const handleGenerateSummary = async () => {
+    setIsLoading(true)
+    try {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_PLUDO_SERVER}/openai/getEmailSummary`) 
+      console.log('res',response);
+      const sum = formatSummary(response.data.data);
+      setSummary(sum);
+    } catch (error) {
+      console.error("Error fetching summary:", error)
+      setSummary(null)
+    } finally {
+      setIsLoading(false)
+    }
+  } 
+  const formatSummary = (text : any) => {
+    return text.replace(/\*\*/g, ''); 
+  };
   return (
-    <div className=" bg-gradient-to-r from-[#0A0118] to-[#36154a] text-purple-50 flex items-center justify-center p-4">
+    <div className="bg-gradient-to-r from-[#0A0118] to-[#36154a] text-purple-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md space-y-6 bg-[#1c0b2e] p-6 rounded-lg shadow-lg">
         <div className="flex justify-between items-center">
           <h2 className="text-2xl font-bold text-purple-200">Email Summary</h2>
@@ -57,7 +60,8 @@ export default function EmailSummary() {
           </Button>
         </div>
 
-        <Popover>
+        {/* Date picker commented out as requested */}
+        {/* <Popover>
           <PopoverTrigger asChild>
             <Button
               variant={"outline"}
@@ -79,25 +83,44 @@ export default function EmailSummary() {
               className="bg-[#1c0b2e] text-purple-200"
             />
           </PopoverContent>
-        </Popover>
+        </Popover> */}
 
-        <Textarea
-          value={summary}
-          onChange={(e) => setSummary(e.target.value)}
-          className="bg-[#36154a] border-[#4a1d6a] text-purple-100 placeholder-purple-300 min-h-[200px]"
-          placeholder="No summary available for the selected date."
-        />
+        <Button
+          onClick={handleGenerateSummary}
+          className="w-full bg-[#4a1d6a] hover:bg-[#5a2d7a] text-white flex items-center justify-center gap-2"
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Generating Summary...
+            </>
+          ) : (
+            "Generate Summary"
+          )}
+        </Button>
 
-        <div className="flex justify-end">
-          <Button
-            onClick={handleDownload}
-            className="bg-[#4a1d6a] hover:bg-[#5a2d7a] text-white flex items-center gap-2"
-          >
-            <Download className="h-4 w-4" />
-            Download Summary
-          </Button>
-        </div>
+        {summary && (
+          <>
+            <Textarea
+              value={summary}
+              readOnly
+              className="bg-[#36154a] border-[#4a1d6a] text-purple-100 placeholder-purple-300 min-h-[200px]"
+            />
+
+            <div className="flex justify-end">
+              <Button
+                onClick={handleDownload}
+                className="bg-[#4a1d6a] hover:bg-[#5a2d7a] text-white flex items-center gap-2"
+              >
+                <Download className="h-4 w-4" />
+                Download Summary
+              </Button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   )
 }
+

@@ -24,7 +24,20 @@ export function Make_Payment(){
         makePayment(paymentInput: $paymentInput, deScopeId: $deScopeId, path: $path)
     }
     `;
-} 
+}  
+export const GET_INTEGRATIONS = gql`
+  query getIntegrations($deScopeId: String!) {
+    getIntegrations(deScopeId: $deScopeId) {
+      _id
+      name
+      description
+      icon
+      isConnected
+      type
+    }
+  }
+`;
+
 
 
 

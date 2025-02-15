@@ -24,7 +24,7 @@ export function Modal({ isOpen, onClose, children, className }: ModalProps) {
         "backdrop-blur-sm bg-opacity-90",
         "transition-all duration-300 ease-in-out",
         "dark:text-gray-100",
-        "max-w-lg w-full",
+        "max-w-2xl w-full",
         "focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50",
         className
       )}>

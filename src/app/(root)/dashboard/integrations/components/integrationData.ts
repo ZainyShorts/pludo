@@ -1,5 +1,7 @@
 import { Facebook, Instagram, Linkedin, Mail, MessageSquare } from 'lucide-react';
-import React from 'react';
+import React from 'react';  
+
+
 
 export const integrationData = [
   {
