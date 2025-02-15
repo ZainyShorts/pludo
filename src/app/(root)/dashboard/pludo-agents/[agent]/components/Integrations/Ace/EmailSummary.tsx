@@ -53,7 +53,7 @@ export default function EmailSummary() {
             onClick={handleClose}
             className="text-purple-200 hover:text-purple-100 hover:bg-[#36154a]"
           >
-            <X className="h-6 w-6" />
+            {/* <X className="h-6 w-6" /> */}
           </Button>
         </div>
 

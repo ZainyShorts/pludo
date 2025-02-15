@@ -57,7 +57,7 @@ export default function BulkEmail() {
     }
 
     try {
-      const res = await axios.post("https://c76f-39-49-22-31.ngrok-free.app/email/bulkEmail", formData)
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_PLUDO_SERVER}/email/bulkEmail`, formData)
       console.log("res", res)
       alert("Email sent successfully!")
     } catch (error) {
@@ -76,7 +76,7 @@ export default function BulkEmail() {
             <Checkbox
               id="useFileUpload"
               checked={type === "File"}
-              onCheckedChange={(checked) => setType(checked ? "File" : "Text")}
+              onCheckedChange={(checked:any) => setType(checked ? "File" : "Text")}
             />
             <Label htmlFor="useFileUpload" className="text-sm font-medium">
               Use file upload instead of textarea
