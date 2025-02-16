@@ -1,109 +1,76 @@
 "use client"
 
+import type React from "react"
+
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
+import { Select, SelectContent, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Loader2, Download } from "lucide-react"
-import useFetchHook from "@/hooks/apiCall"
+import { Card, CardContent } from "@/components/ui/card" 
+import axios from "axios" 
+import { useSession, useUser } from "@descope/nextjs-sdk/client"
 
-export default function WebsiteAnalyzer() {
-  const [url, setUrl] = useState("")
-  const { fetchData } = useFetchHook()
-  const [isLoading, setIsLoading] = useState(false)
-  const [downloadUrl, setDownloadUrl] = useState<string | null>(null)
 
-  const generateReport = async () => {
-    setIsLoading(true)
-    setDownloadUrl(null)
-    const data = {
-      webLink: url,
+export default function TemplateModal() { 
+    const { user } = useUser()
+      const ID = user?.userId
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setSelectedFile(e.target.files[0])
     }
+  }
+
+  const handleGetTemplates = async () => {
+    if (!selectedFile) return
+
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+    
+    // Log FormData content
+    for (let pair of formData.entries()) {
+        console.log(pair[0], pair[1]);
+    }
+    
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_PLUDO_SERVER}/openai/webAnalyzer`, {
-      method: "POST",
-      headers: {
-        "Accept": "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // Correct MIME type for DOCX
-        "Content-Type": "application/json", // Add this header
-      },
-      body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch file: ${response.statusText}`);
-      }
-
-      const blob = await response.blob(); 
-      const Url = window.URL.createObjectURL(blob);
-      setDownloadUrl(Url)
+      const response = await axios.post(`https://d57d-182-181-142-14.ngrok-free.app/openai/getBulkTemplates`,formData)
+      
+      console.log("API Response:", response);
     } catch (error) {
-      console.error("Error generating report:", error)
-    } finally {
-      setIsLoading(false)
+      console.error("Error fetching templates:", error)
     }
   }
-
-  const handleDownload = () => {
-    if (downloadUrl) {
-      const link = document.createElement("a")
-      link.href = downloadUrl
-      link.download = "website-analysis.docx"
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-      window.URL.revokeObjectURL(downloadUrl)
-    }
-  }
-
 
   return (
-    <div className="max-h-[80vh] bg-gradient-to-r from-[#0A0118] to-[#36154a] text-purple-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-2xl space-y-6 bg-[#1c0b2e] p-6 rounded-lg shadow-lg">
-        <h1 className="text-2xl font-bold text-purple-200 mb-6">Website Analyzer</h1>
+    <Card className="w-full max-w-4xl bg-gradient-to-r from-[#1c0e29] to-[#160a27] border-none text-white">
+      <CardContent className="p-6 space-y-4">
+        <Input
+          type="file"
+          onChange={handleFileChange}
+          accept=".xlsx"
+          className="bg-[#36154a] border-[#4a1d6a] border-none text-white file:text-white file:bg-[#3d3654] hover:file:bg-[#4d466a] file:border-none"
+        />
 
-        <div className="space-y-2">
-          <Label htmlFor="url" className="text-sm font-medium">
-            Website URL
-          </Label>
-          <div className="flex space-x-2">
-            <Input
-              id="url"
-              placeholder="Enter website URL (e.g., https://example.com)"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              className="flex-grow bg-[#36154a] border-[#4a1d6a] text-purple-200 placeholder-purple-400"
-            />
-            <Button
-              onClick={generateReport}
-              disabled={!url || isLoading}
-              className="bg-[#4a1d6a] hover:bg-[#5a2d7a] text-white"
-            >
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Analyzing
-                </>
-              ) : (
-                "Analyze"
-              )}
-            </Button>
-          </div>
-        </div>
+        <Select>
+          <SelectTrigger className="w-full bg-[#36154a] border-[#4a1d6a] border-none text-white">
+            <SelectValue placeholder="Select a template" />
+          </SelectTrigger>
+          <SelectContent className="bg-[#36154a] border-[#4a1d6a]border-none text-white"></SelectContent>
+        </Select>
 
-        {downloadUrl && (
-          <div className="mt-6">
-            <Button
-              onClick={handleDownload}
-              className="w-full bg-[#4a1d6a] hover:bg-[#5a2d7a] text-white flex items-center justify-center"
-            >
-              <Download className="mr-2 h-4 w-4" />
-              Download  Report 
-            </Button>
-          </div>
-        )}
-      </div>
-    </div>
+        <Textarea
+          className="min-h-[200px] bg-[#36154a] border-[#4a1d6a] border-none text-white"
+          placeholder="Template content will appear here..."
+        />
+
+        <Button className="w-full bg-purple-800 hover:bg-purple-900 text-white" onClick={handleGetTemplates}>
+          Get Templates
+        </Button>
+      </CardContent>
+    </Card>
   )
 }
 

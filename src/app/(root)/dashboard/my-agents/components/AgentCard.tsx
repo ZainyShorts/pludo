@@ -1,16 +1,40 @@
+"use client"
+
 import Image from "next/image"
-import { Edit, Share, Power } from "lucide-react"
+import { Edit, Share, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { useState } from "react"
+import axios from "axios"
 
 interface AgentCardProps {
+  id: string
   name: string
-  status: "active" | "inactive"
   avatar: string
-  queries: number
+  title: string
+  description: string
+  onDelete: (id: string) => void
 }
 
-export function AgentCard({ name, avatar, status, queries }: AgentCardProps) {
+export function AgentCard({ id, name, avatar, title, description, onDelete }: AgentCardProps) {
+  const [isDeleting, setIsDeleting] = useState(false)
+
+  const handleDelete = async () => {
+    setIsDeleting(true) 
+    console.log(id);
+    try {
+      const res = await axios.delete(`${process.env.NEXT_PUBLIC_PLUDO_SERVER}/custom/${id}`)
+      if (res) {
+        onDelete(id)
+      }
+    } catch (error) {
+      console.error("Error deleting agent:", error)
+      // You might want to show an error message to the user here
+    } finally {
+      setIsDeleting(false)
+    }
+  }
+
   return (
     <Card className="relative overflow-hidden bg-white/5 backdrop-blur-xl w-full transition-all hover:shadow-lg hover:shadow-purple-500/10 border-0">
       <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-pink-500/20 opacity-50" />
@@ -32,27 +56,13 @@ export function AgentCard({ name, avatar, status, queries }: AgentCardProps) {
             </div>
             <div>
               <h3 className="font-semibold text-white text-xl mb-1">{name}</h3>
-              <span
-                className={`inline-flex items-center text-sm font-medium ${
-                  status === "active" ? "text-green-400" : "text-zinc-400"
-                }`}
-              >
-                <span className={`w-2 h-2 rounded-full mr-2 ${status === "active" ? "bg-green-400" : "bg-zinc-400"}`} />
-                {status === "active" ? "Active" : "Inactive"}
-              </span>
+              <p className="text-sm text-zinc-400">{title}</p>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 mb-6">
-          <div className="space-y-1">
-            <p className="text-sm font-medium text-zinc-400">Queries</p>
-            <p className="text-3xl font-bold text-white tabular-nums">{queries.toLocaleString()}</p>
-          </div>
-          {/* <div className="space-y-1">
-            <p className="text-sm font-medium text-zinc-400">Accuracy</p>
-            <p className="text-3xl font-bold text-white tabular-nums">{accuracy}%</p>
-          </div> */}
+        <div className="mb-6">
+          <p className="text-sm text-zinc-300">{description}</p>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3">
@@ -68,17 +78,25 @@ export function AgentCard({ name, avatar, status, queries }: AgentCardProps) {
             variant="outline"
             size="sm"
             className="flex-1 p-2 bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20 text-white transition-colors"
+            onClick={handleDelete}
+            disabled={isDeleting}
           >
-            <Share className="w-4 h-4 mr-2" />
-            Share
+            {isDeleting ? (
+              <span className="loader"></span>
+            ) : (
+              <>
+                <Trash2 className="w-4 h-4 mr-2" />
+                Delete
+              </>
+            )}
           </Button>
           <Button
             variant="outline"
             size="sm"
             className="flex-1 p-2 bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20 text-white transition-colors"
           >
-            <Power className="w-4 h-4 mr-2" />
-            {status === "active" ? "Deactivate" : "Activate"}
+            <Share className="w-4 h-4 mr-2" />
+            Deactivate
           </Button>
         </div>
       </CardContent>

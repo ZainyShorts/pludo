@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button"
 import { useState } from "react" 
-import { Modal } from "./Modal/IntegrationModal"  
 import { integrations } from "./IntegrationData"
 import { SelectedIntegration } from "./SelectedIntegration/SelectedIntegration"
 
@@ -45,9 +44,8 @@ export default function Integrations() {
           ))}
         </div>
       </div>
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <SelectedIntegration selectedId={selectedIntegrationId} />
-      </Modal>
+      
+      <SelectedIntegration selectedId={selectedIntegrationId} open={isModalOpen} onClose={()=>{setIsModalOpen(false)}} />
     </div>
   )
 }

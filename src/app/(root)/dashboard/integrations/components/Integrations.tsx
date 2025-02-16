@@ -11,7 +11,6 @@ import IconBody from "../../components/icons/icons"
 import { useEffect, useState } from "react" 
 import ModalComponent from "./InputModal" 
 import { useDescope, useSession, useUser } from '@descope/nextjs-sdk/client';
-import { skip } from "node:test"
 
 interface IntegrationCardProps {
   icon: React.ReactNode

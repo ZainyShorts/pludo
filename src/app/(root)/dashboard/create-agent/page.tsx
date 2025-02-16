@@ -1,22 +1,69 @@
 "use client"
 
 import type React from "react"
-
-import { useState } from "react"
-import { Upload, Info, X, User } from "lucide-react"
+import { useEffect, useState } from "react"
+import { Upload, Info, X, User , Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { useSession, useUser } from "@descope/nextjs-sdk/client"
+import axios from "axios"
+
+const uploadImageToAWS = async (file: File, setUploadProgress: (progress: number) => void): Promise<any> => {
+  const formData = new FormData()
+  formData.append("file", file)
+
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_PLUDO_SERVER}/aws/signed-url?fileName=${file.name}&contentType=${file.type}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    )
+    const signedUrl = response.data.msg.url
+
+    const uploadResponse = await axios.put(signedUrl, file, {
+      headers: {
+        "Content-Type": file.type,
+      },
+      onUploadProgress: (progressEvent) => {
+        if (progressEvent.total) {
+          const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+          setUploadProgress(progress)
+        }
+      },
+    })
+
+    if (uploadResponse.status === 200) {
+      return { awsUrl: signedUrl.split("?")[0], key: response.data.msg.key }
+    } else {
+      throw new Error("Failed to upload file")
+    }
+  } catch (error) {
+    console.error("Error uploading file:", error)
+    throw new Error("Failed to upload file")
+  }
+}
 
 export default function CreateAgent() {
   const [agentTitle, setAgentTitle] = useState("")
   const [agentName, setAgentName] = useState("")
-  const [file, setFile] = useState<File | null>(null)
+  const [file, setFile] = useState<File | null>(null) 
+  const [isLoading , setIsLoading] = useState<boolean>(false);
   const [previewUrl, setPreviewUrl] = useState<string>("")
   const [systemPrompt, setSystemPrompt] = useState("")
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [uploadProgress, setUploadProgress] = useState<number>(0)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const { isAuthenticated, isSessionLoading, sessionToken } = useSession()
+  const { user } = useUser()
+  const ID = user?.userId
+
+ 
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
@@ -30,10 +77,45 @@ export default function CreateAgent() {
     return Object.keys(newErrors).length === 0
   }
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault()
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault() 
+    setIsLoading(true);
     if (validateForm()) {
-      console.log("Form submitted", { agentTitle, agentName, file, systemPrompt })
+      setIsSubmitting(true)
+      try {
+        if (file) {
+          const uploadResult = await uploadImageToAWS(file, setUploadProgress)
+
+          const response = await axios.post(`${process.env.NEXT_PUBLIC_PLUDO_SERVER}/custom/add`, {
+            name: agentName,
+            title: agentTitle,
+            avatar: uploadResult.awsUrl,
+            description: systemPrompt,
+            deScopeId: ID,
+          })
+           console.log(response);
+          if (response.status === 201) {
+            console.log("Agent created successfully", response.data); 
+            setSystemPrompt('');  
+            setErrors({});  
+            setAgentName(''); 
+            setAgentTitle('');  
+            setPreviewUrl(''); 
+            setFile(null);
+
+
+
+          } else {
+            throw new Error("Failed to create agent")
+          }
+        }
+      } catch (error) {
+        console.error("Error creating agent:", error)
+        setErrors({ submit: "Failed to create agent. Please try again." })
+      } finally {
+        setIsSubmitting(false) 
+        setIsLoading(false);
+      }
     }
   }
 
@@ -55,8 +137,13 @@ export default function CreateAgent() {
   }
 
   return (
-      <div className="min-h-screen flex flex-col justify-center items-center bg-custom-gradient text-white p-8 font-sans">
-        <div className="max-w-3xl w-full mx-auto bg-gray-800 rounded-2xl shadow-2xl overflow-hidden border border-gray-700">
+    <div className="min-h-screen flex flex-col justify-center items-center bg-custom-gradient text-white p-8 font-sans"> 
+     {isLoading && ( 
+                <div className="fixed inset-0 flex items-center justify-center bg-black/50">
+                  <Loader2 className="animate-spin text-white w-12 h-12" />
+                </div>
+              )}
+      <div className="max-w-3xl w-full mx-auto bg-gray-800 rounded-2xl shadow-2xl overflow-hidden border border-gray-700">
         <div className="p-8 space-y-8">
           <h1 className="text-4xl font-bold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500">
             Create Agent
@@ -135,7 +222,7 @@ export default function CreateAgent() {
                     </div>
                     <div className="flex justify-center gap-2">
                       <Button
-                      className="text-black "
+                        className="text-black"
                         type="button"
                         variant="outline"
                         size="sm"
@@ -181,16 +268,25 @@ export default function CreateAgent() {
             <Button
               type="submit"
               className="w-full py-3 px-6 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105"
+              disabled={isSubmitting}
             >
-              Create Agent
+              {isSubmitting ? "Creating Agent..." : "Create Agent"}
             </Button>
+
+            {errors.submit && <p className="text-red-400 text-sm mt-2">{errors.submit}</p>}
+
+            {uploadProgress > 0 && uploadProgress < 100 && (
+              <div className="mt-2">
+                <div className="bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                  <div className="bg-blue-600 h-2.5 rounded-full" style={{ width: `${uploadProgress}%` }}></div>
+                </div>
+                <p className="text-sm text-gray-400 mt-1">Uploading: {uploadProgress}%</p>
+              </div>
+            )}
           </form>
         </div>
-         </div>
-     </div>
+      </div>
+    </div>
   )
 }
-
-
- 
 

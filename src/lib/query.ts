@@ -36,7 +36,19 @@ export const GET_INTEGRATIONS = gql`
       type
     }
   }
-`;
+`; 
+export const Fetch_Custom_Agents = gql `
+ query getCustomAgent($userId: String!) { 
+    getCustomAgent(userId: $userId) { 
+    _id 
+    name
+    title
+    avatar
+    description
+    }
+ }
+
+`
 
 
 
