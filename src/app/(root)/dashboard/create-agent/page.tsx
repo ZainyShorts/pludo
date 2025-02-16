@@ -79,8 +79,8 @@ export default function CreateAgent() {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault() 
-    setIsLoading(true);
     if (validateForm()) {
+      setIsLoading(true);
       setIsSubmitting(true)
       try {
         if (file) {
