@@ -21,13 +21,21 @@ export default function WebsiteAnalyzer() {
     }
 
     try {
-      const res = await fetchData(`${process.env.NEXT_PUBLIC_PLUDO_SERVER}/openai/webAnalyzer`, "POST", data); 
-      console.log(res);
-      const buffer = res.data.data 
-      const blob = new Blob([buffer], {
-        type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      })
-      const Url = URL.createObjectURL(blob); 
+      const response = await fetch(`${process.env.NEXT_PUBLIC_PLUDO_SERVER}/openai/webAnalyzer`, {
+      method: "POST",
+      headers: {
+        "Accept": "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // Correct MIME type for DOCX
+        "Content-Type": "application/json", // Add this header
+      },
+      body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch file: ${response.statusText}`);
+      }
+
+      const blob = await response.blob(); 
+      const Url = window.URL.createObjectURL(blob);
       setDownloadUrl(Url)
     } catch (error) {
       console.error("Error generating report:", error)
@@ -47,6 +55,7 @@ export default function WebsiteAnalyzer() {
       window.URL.revokeObjectURL(downloadUrl)
     }
   }
+
 
   return (
     <div className="max-h-[80vh] bg-gradient-to-r from-[#0A0118] to-[#36154a] text-purple-50 flex items-center justify-center p-4">

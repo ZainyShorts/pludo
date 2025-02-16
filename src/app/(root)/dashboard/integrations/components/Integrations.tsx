@@ -6,11 +6,12 @@ import React from "react"
 import { motion } from "framer-motion" 
 import { gql , useQuery } from "@apollo/client"
 import { GET_INTEGRATIONS } from "@/lib/query" 
-import {  useUser } from '@descope/nextjs-sdk/client';  
 import useFetchHook from "@/hooks/apiCall"
 import IconBody from "../../components/icons/icons"
 import { useEffect, useState } from "react" 
 import ModalComponent from "./InputModal" 
+import { useDescope, useSession, useUser } from '@descope/nextjs-sdk/client';
+import { skip } from "node:test"
 
 interface IntegrationCardProps {
   icon: React.ReactNode
@@ -62,7 +63,6 @@ function IntegrationCard({ icon, name, isConnected, onToggle, description }: Int
 }
 
 export default function Integrations() {
-  const { user } = useUser(); 
   const [email, setEmail] = useState<any>('');  
   const [isOpen , setIsOpen] = useState<Boolean>(false);
   const [appCode, setAppCode] = useState<any>(''); 
@@ -70,19 +70,23 @@ export default function Integrations() {
   const [integrationData, setIntegrationData] = useState<any>(null); 
   const [isLoading, setIsLoading] = useState<boolean>(false); // Add loading state
   const {fetchData} = useFetchHook();
+  const { user } = useUser(); 
+  const { isAuthenticated, isSessionLoading, sessionToken } = useSession();
+
   const { loading, error, data, refetch } = useQuery(GET_INTEGRATIONS, {
-    variables: { deScopeId: "U2rrj2rBFC55B1eIRWqrcOVkypr3" },
+    skip:!isAuthenticated,
+    variables: { deScopeId: user?.userId},
   });
 
+  
   useEffect(() => {
-    if (user?.userId) {
-      refetch({ deScopeId: "U2rrj2rBFC55B1eIRWqrcOVkypr3" });
+    if(isAuthenticated && !isSessionLoading && user?.userId){
+      refetch();
     }
-  }, [user?.userId]);
+  }, [isAuthenticated,isSessionLoading]);
 
   useEffect(() => {
-    if (data) {
-      console.log('data', data, 'error', loading);
+    if ((!loading || !error) && data) {
       setIntegrationData(data.getIntegrations);
     }
   }, [data, loading, error]); 
@@ -166,7 +170,7 @@ export default function Integrations() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
           >
-            {integrationData && integrationData.map((integration, index) => (
+            {integrationData && integrationData.map((integration:any, index:number) => (
               <motion.div
                 key={integration.name} 
                 initial={{ opacity: 0, y: 20 }}

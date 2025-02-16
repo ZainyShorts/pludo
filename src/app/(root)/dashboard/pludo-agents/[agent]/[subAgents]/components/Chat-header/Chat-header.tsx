@@ -4,6 +4,7 @@ import {  Settings } from 'lucide-react'
 import { useAppDispatch} from '@/redux/hooks' 
 import { toggleSidebar } from '@/redux/features/chatBox/chatBox' 
 import { Button } from "@/components/ui/button"
+import { usePathname, useRouter } from 'next/navigation'
 
 interface ChatHeaderProps {
   botName?: string
@@ -11,8 +12,9 @@ interface ChatHeaderProps {
 }
 
 export const ChatHeader = ({ botName = 'Bot', botAvatar }: ChatHeaderProps) => { 
-  const dispatch = useAppDispatch();    
-
+  const dispatch = useAppDispatch(); 
+  const path = usePathname()   
+  console.log(path)
   return (
     <div className="flex  items-center gap-3 mt-20 md:mt-0 p-4 bg-gradient-to-r from-purple-600 to-blue-700 backdrop-blur-lg border-b rounded-t-2xl border-white/10">
       {/* Custom Avatar */}
@@ -32,8 +34,8 @@ export const ChatHeader = ({ botName = 'Bot', botAvatar }: ChatHeaderProps) => {
       </div>
       
       <div className="flex-1">
-        <h2 className="text-white playwrite font-sm tracking-wide">Chat with {botName ?? 'Bot'}</h2>
-        <p className="text-xs text-white/70 ">Online</p>
+        <h2 className="text-white playwrite font-sm tracking-wide">{path.split("/")[3]}</h2>
+        <p className=" text-white/70 ">{botName}</p>
       </div>
       
       <div className="flex items-center gap-1">

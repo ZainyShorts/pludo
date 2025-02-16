@@ -5,6 +5,8 @@ import { useParams } from "next/navigation"
 import { agentsWithSubAgents } from "../components/agentData"
 import { ChatInterface } from "./components/ChatInterface/ChatInterface"
 import { CompactAgentSidebar } from "./components/Sidebar/chatSideBar"
+import { useAppDispatch } from "@/redux/hooks"
+import { setEmpty } from "@/redux/features/openAI/messageSlice"
 
 type Params = {
   subAgents?: string
@@ -19,6 +21,7 @@ const Page = () => {
   const [mainAgentName, setMainAgentName] = React.useState<string>("")
   const [agent, setAgent] = React.useState<string>(""); 
   const [role,setRole] = React.useState<string>('');
+  const dispatch = useAppDispatch();  
 
   React.useEffect(() => {
     try {
@@ -39,7 +42,18 @@ const Page = () => {
     } catch (e) {
       console.log(e)
     }
+
   }, [mainagent, subAgents])
+
+
+
+
+
+  React.useEffect(() => {
+    return () => {
+      dispatch(setEmpty()); 
+    };
+  }, [dispatch]);
 
   return (
     <div className="flex h-screen bg-gradient-to-b from-purple-950 via-gray-950 to-black">

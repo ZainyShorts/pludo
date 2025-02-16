@@ -78,7 +78,7 @@ export function CompactAgentSidebar({ botName, botAvatar, mainAgent }: CompactAg
               {/* Profile Section */}
               <div className="px-6 pt-6 pb-4">
                 <div className="flex justify-between items-start mb-4">
-                  <h2 className="text-white font-semibold text-lg tracking-tight">{botName}</h2>
+                  <h2 className="text-white font-semibold text-lg tracking-tight">{botName || "Custom Agent"}</h2>
                   <motion.button
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
@@ -123,18 +123,18 @@ export function CompactAgentSidebar({ botName, botAvatar, mainAgent }: CompactAg
                   </Button>
                 </motion.div>
 
-                <motion.div
+                {/* <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4 }}
                   className="flex flex-col gap-1"
                 >
                   <span className="text-white/70 text-sm font-medium tracking-wide">{mainAgent}</span>
-                </motion.div>
+                </motion.div> */}
               </div>
 
               {/* Enhanced Power-Ups Section */}
-              <motion.div
+              {/* <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
@@ -152,7 +152,6 @@ export function CompactAgentSidebar({ botName, botAvatar, mainAgent }: CompactAg
                   </motion.button>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
-                  {/* Enhanced Twitter Button */}
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
@@ -172,7 +171,6 @@ export function CompactAgentSidebar({ botName, botAvatar, mainAgent }: CompactAg
                     />
                   </motion.button>
 
-                  {/* Enhanced LinkedIn Button */}
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
@@ -192,14 +190,14 @@ export function CompactAgentSidebar({ botName, botAvatar, mainAgent }: CompactAg
                     />
                   </motion.button>
                 </div>
-              </motion.div>
+              </motion.div> */}
 
               {/* Enhanced History Section */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
-                className="flex-1 px-6 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent"
+                className="flex-1 px-6 mt-3 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent"
               >
                 <div className="flex items-center gap-2 mb-3">
                   <History className="h-4 w-4 text-white/70" />
