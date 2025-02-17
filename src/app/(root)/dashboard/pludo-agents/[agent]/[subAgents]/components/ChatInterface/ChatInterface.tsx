@@ -7,9 +7,10 @@ import { Sparkles, Play, Pause ,Volume2 ,Files } from "lucide-react"
 import { sendMessage , updateBotMessage } from "@/redux/features/openAI/messageSlice"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import { ChatHeader } from "../Chat-header/Chat-header" 
-import { TypingLoader } from "../typing-Loader/Typing-Loader"
+import { TypingLoader } from "../typing-Loader/Typing-Loader" 
 import { useAIFunctions } from "./Functions/Functions"
-import Markdown from "react-markdown"
+import Markdown from "react-markdown" 
+import { useSession, useUser } from "@descope/nextjs-sdk/client"
 import remarkGfm from "remark-gfm"
 import Image from "next/image"
 import { copyToClipboard } from "@/lib/methods"
@@ -33,14 +34,16 @@ interface ChatInterfaceProps {
 }
 
 export const ChatInterface: React.FC<ChatInterfaceProps> = ({ botName, botAvatar, mainAgent }) => {
-  const dispatch = useAppDispatch()
-  const {  createMessage, AudioToText, createMessageWithImage , createMessageStream } = useAIFunctions()
+  const dispatch = useAppDispatch() 
+  const { user } = useUser() 
+  const { isAuthenticated, isSessionLoading, sessionToken } = useSession();
+  const ID = user?.userId; 
+  const { AudioToText, createMessageWithImage } = useAIFunctions()
   const messages = useAppSelector((state: { message: { messages: Message[] } }) => state.message.messages)
   const [isTyping, setIsTyping] = useState<boolean>(false)
   const [subAgent, setSubAgent] = useState<string>("")
   const chatEndRef = useRef<HTMLDivElement>(null)
   const [audioPlaying, setAudioPlaying] = useState<string | null>(null)
-  const [tts,setTts] = useState<boolean>(false)
   
   const [disable , setDisable ] = useState(false);
 
@@ -142,7 +145,10 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ botName, botAvatar
                 .replace(/\\n/g, '\n')     // Handle escaped newlines
                 .replace(/\\\"/g, '"')     // Handle escaped quotes
                 .replace(/\\t/g, '\t')     // Handle escaped tabs
-                .replace(/\d+\\\nid:\s*\d+\\ndata:\s*/g, '') // Remove id markers 
+                .replace(/\d+\\\nid:\s*\d+\\ndata:\s*/g, '') // Remove id markers  
+                .replace(/\*\*/g, '') 
+                .replace(/```/g, '')         // Remove occurrences of **
+
 
                 .trim();
     
@@ -225,7 +231,47 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ botName, botAvatar
       setDisable(false);
     }
   }
+   const audioref = useRef<any>(null); 
+   const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
+   const handleConvertTextToSpeech = async (text: string) => {
+    try {
+      setIsPlaying(true);
+  
+      const response = await fetch(`${process.env.NEXT_PUBLIC_PLUDO_SERVER}/openai/tts`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          inputText: text,
+          userId: ID,
+        }),
+      });
+  
+      if (!response.ok) throw new Error("Failed to fetch audio");
+  
+      const audioBlob = await response.blob();
+      const audioUrl = URL.createObjectURL(audioBlob);
+  
+      if (audioref.current) {
+        audioref.current.src = audioUrl;
+  
+        // Set an event listener to update state when audio ends
+        audioref.current.onended = () => {
+          setIsPlaying(false);
+        };
+  
+        await audioref.current.play();
+      } else {
+        setIsPlaying(false);
+      }
+    } catch (error) {
+      console.error("Error converting text to speech:", error);
+      setIsPlaying(false); // Ensure state resets on error
+    }
+  };
+  
   const audioRef = useRef<any>([]);
   const [currentPlaying, setCurrentPlaying] = useState<number | null>(null); 
   const handleAudioEnded = () => { 
@@ -261,31 +307,14 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ botName, botAvatar
 };
 
 
-  function triggerTTS(inputText:string){
-    if(inputText == "") return
-    try{
-      setTts(true)
-
-      console.log(inputText)
-      const audio = new Audio(`${process.env.NEXT_PUBLIC_PLUDO_SERVER}/openai/tts/${inputText}/321231`); // API endpoint
-      console.log(audio.src);
-      // Ensure audio loads properly
-      audio.load();
-      
-      // Play audio after a short delay
-      setTimeout(() => {
-        audio.play().catch(err => console.error("Playback error:", err));
-      }, 500); 
-    }catch(e){
-      console.log(e)
-    }finally{
-      setTts(false)
-
-    }
-  }
+ 
 
   return (
-    <div className="flex flex-col w-full md:w-[80%] h-[95vh] bg-gradient-to-b from-purple-950 via-gray-950 to-black">
+    <div className="flex flex-col w-full md:w-[80%] h-[95vh] bg-gradient-to-b from-purple-950 via-gray-950 to-black"> 
+     <audio
+        ref={audioref}
+        style={{ display: 'none' }}
+      />
       <div className="absolute lg:ml-64 inset-0 overflow-hidden pointer-events-none">
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
@@ -382,13 +411,23 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ botName, botAvatar
                     transition={{ delay: 0.2, duration: 0.2 }}
                     className="mt-2 flex gap-2 ml-4"
                   >
-                     <div 
-                        aria-disabled={tts} 
-                        onClick={!tts ? ()=>triggerTTS(msg.content.text || "") : undefined} // Prevent clicking when TTS is active
-                        className="p-1 text-white rounded-full shadow-md transition-transform hover:scale-110 cursor-pointer"
-                      >
-                        <Volume2 size={18} />
-                      </div>
+              <div
+  aria-disabled={isPlaying}
+  className={`p-1 text-white rounded-full shadow-md transition-transform ${
+    isPlaying ? 'cursor-none' : 'cursor-pointer hover:scale-110'
+  }`}
+>
+  {isPlaying ? (
+    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+  ) : (
+    <Volume2
+      onClick={() => handleConvertTextToSpeech(msg.content.text as string)}
+      size={18}
+    />
+  )}
+</div>
+
+
                     <div className="p-1 text-white rounded-full shadow-md transition-transform hover:scale-110 cursor-pointer">
                       <Files onClick={()=>copyToClipboard(msg.content.text|| "")}   size={18} />
                     </div>
