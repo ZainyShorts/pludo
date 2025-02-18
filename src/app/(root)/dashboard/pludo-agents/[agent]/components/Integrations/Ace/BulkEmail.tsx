@@ -50,7 +50,7 @@ export default function EmailInterface() {
       receiver : file, 
       userId: ID
     };
-    
+     console.log(formDataObject);
     try {
       const res = await axios.post(`${process.env.NEXT_PUBLIC_PLUDO_SERVER}/email/bulkEmail`, formDataObject)
       console.log("res", res)

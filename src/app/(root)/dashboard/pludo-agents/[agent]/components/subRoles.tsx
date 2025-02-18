@@ -58,7 +58,7 @@ const SubRoles: React.FC<Prop> = ({ name }) => {
               key={index}
               className="group py-8 relative bg-white/5 rounded-xl p-6 
                         backdrop-blur-md border border-white/10 shadow-lg transform transition-all duration-300 
-                        hover:scale-105 hover:shadow-violet-500/20 hover:border-white/20 overflow-hidden"
+                        hover:scale-105  hover:border-white/20 overflow-hidden"
             >
               <div
                 className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-purple-500/10 to-cyan-500/10 

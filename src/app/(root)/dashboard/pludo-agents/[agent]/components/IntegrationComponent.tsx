@@ -28,8 +28,11 @@ export default function Integrations() {
           {integrations.map((integration) => (
             <div
               key={integration.name}
-              className="bg-white/5 border border-white/10 bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-lg p-6 flex flex-col items-center transition-all duration-300 hover:scale-105 hover:bg-opacity-20"
-            >
+              className="bg-white/5 border border-white/10 bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-lg p-6 flex flex-col items-center transition-all duration-300 hover:scale-105 hover:bg-opacity-20 group py-8 relative 
+                           transform 
+                         hover:border-white/20 overflow-hidden"
+            >  
+              
               <integration.icon className="w-8 h-8 mb-4 text-purple-400" />
               <h2 className="text-lg font-semibold mb-2">{integration.name}</h2>
               <p className="text-gray-400 text-sm text-center mb-4">{integration.description}</p>

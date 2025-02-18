@@ -90,16 +90,17 @@ export default function Integrations() {
     }
   }, [data, loading, error]); 
    
-  const handleSwitch = async ( status ? : boolean  , id ? : any) => {   
-    setIsLoading(true);  
-    setIsOpen(false);
+  const handleSwitch = async ( status ? : boolean  , id ? : any) => {    
+    if (status) { 
+      setIsLoading(true);
+    }
     const data  = { 
       Id:ID ? ID : id, 
       status: status ? false : true, 
       email : email, 
       appCode : appCode,
     }    
-    
+     try { 
     const res = await fetchData(`${process.env.NEXT_PUBLIC_PLUDO_SERVER}/integration/updateGmailStatus`,'POST',data);  
 
     if (res.success === true) {
@@ -112,14 +113,19 @@ export default function Integrations() {
                 const updatedData = integrationData.map((item, i) =>
                     i === index ? { ...item, isConnected: !item.isConnected } : item
                 );
-    
-                setIntegrationData(updatedData);
+                setIsOpen(false);
+                setIntegrationData(updatedData); 
+                
             }
         } else {
             console.error("integrationData is not an array or is null.");
+        } 
+      
+    }  
+  } 
+    finally{ 
+      setIsLoading(false); 
         }
-    }
-     setIsLoading(false); 
   }  
   const handleToggle = async (id : any , isConnected : boolean) => {    
     setID(id);  
@@ -136,7 +142,12 @@ export default function Integrations() {
   }
     
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-black via-purple-900/50 to-pink-900/30">
+    <div className="min-h-screen w-full bg-gradient-to-br from-black via-purple-950/50 to-pink-950/30"> 
+     {isLoading && ( // Conditionally render the Loader
+            <div className="fixed inset-0 flex z-50 items-center justify-center bg-black/70 ">
+              <Loader2 className="animate-spin text-white w-12 h-12" />
+            </div>
+          )}
       <div className="container mx-auto px-6 py-24">
         <motion.div 
           className="max-w-7xl mx-auto space-y-16"
@@ -190,11 +201,7 @@ export default function Integrations() {
                 <ModalComponent email={email} AppCode={appCode} setEmail={setEmail} setAppCode={setAppCode} onSubmit={handleSwitch} onClose={onClose}/>
                  }
           </motion.div>
-          {isLoading && ( // Conditionally render the Loader
-            <div className="fixed inset-0 flex items-center justify-center bg-black/50">
-              <Loader2 className="animate-spin text-white w-12 h-12" />
-            </div>
-          )}
+         
         </motion.div>
       </div>
     </div>

@@ -13,7 +13,8 @@ export default function DashboardLayout({
         {children} 
 
       </main> 
-       <ToastContainer/>
+      <ToastContainer autoClose={5000} theme="dark" />
+
       
     </div>
   )
