@@ -205,7 +205,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ botName, botAvatar
         subType: subAgent,
         userPrompt: content.text + audiotext,
         url: content.url,
-        token: 100,
+        token: 500,
       }
 
       const response = await createMessageWithImage(data)

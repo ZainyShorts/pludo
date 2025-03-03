@@ -8,8 +8,11 @@ import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
 import axios from "axios"
-import { useSession, useUser } from "@descope/nextjs-sdk/client"
-import { Loader2 } from "lucide-react"
+import { useSession, useUser } from "@descope/nextjs-sdk/client" 
+import * as XLSX from 'xlsx';
+import { Loader2 } from "lucide-react" 
+import { toast } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
 
 interface EmailTemplate {
   email: string
@@ -24,6 +27,7 @@ export default function TemplateModal() {
   const [subject, setSubject] = useState<string>("")
   const [body, setBody] = useState<string>("")
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [isSending, setIsSending] = useState<boolean>(false)
   const { isAuthenticated, isSessionLoading, sessionToken } = useSession()
   const { user } = useUser()
   const ID = user?.userId
@@ -76,21 +80,73 @@ export default function TemplateModal() {
     )
     setEmailTemplates(updatedTemplates)
   }
-
+  const exportToExcel = (data: any) => {
+    // Extract the relevant data
+    const rows = data.data.map(item => ({
+      email: item.email,
+      msg: item.msg
+    }));
+  
+    // Create a new workbook and worksheet
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.json_to_sheet(rows);
+  
+    // Add the worksheet to the workbook
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Responses');
+  
+    // Generate Excel file
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    
+    // Create Blob and download
+    const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'response_data.xlsx';
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+  
   const handleEmailSend = async () => {
+    setIsSending(true);
     const data = {
       userId: ID,
       emailJson: emailTemplates,
-    }
-    console.log(data)
+    };
+  
     try {
-      const res = await axios.post(`${process.env.NEXT_PUBLIC_PLUDO_SERVER}/email/sendTemplateEmails`, data)
-      console.log(res)
+      const res = await axios.post(`https://94e4-39-49-54-90.ngrok-free.app/email/sendTemplateEmails`, data);
+      console.log(res);
+  
+      if (res.data.success) { 
+         toast.success("Templates Sent successfully!", {
+                      autoClose: 5000,
+                      hideProgressBar: false,
+                      closeOnClick: true,
+                      pauseOnHover: true,
+                      draggable: true,
+                      progress: undefined,
+                      theme: "dark",
+                    })
+        try {
+          exportToExcel(res.data);
+          console.log('Excel file has been created successfully!');
+          // You might want to show a success message to the user here
+        } catch (error) {
+          console.error('Error creating Excel file:', error);
+          // You might want to show an error message to the user here
+        }
+      } else {
+        console.error('API call was not successful');
+        // You might want to show an error message to the user here
+      }
     } catch (e) {
-      console.error("Error sending emails:", e)
+      console.error("Error sending emails:", e);
+      // You might want to show an error message to the user here
+    } finally {
+      setIsSending(false);
     }
-  }
-
+  };
   const handleEmailSelect = (email: string) => {
     setSelectedEmail(email)
     const selectedTemplate = emailTemplates.find((template) => template.email === email)
@@ -110,8 +166,19 @@ export default function TemplateModal() {
           className="bg-[#36154a] border-[#4a1d6a] border-none text-white file:text-white file:bg-[#3d3654] hover:file:bg-[#4d466a] file:border-none"
         />
         {emailTemplates.length > 0 ? (
-          <Button className="w-full bg-purple-800 hover:bg-purple-900 text-white" onClick={handleEmailSend}>
-            Send Emails
+          <Button
+            className="w-full bg-purple-800 hover:bg-purple-900 text-white"
+            onClick={handleEmailSend}
+            disabled={isSending}
+          >
+            {isSending ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Sending Emails...
+              </>
+            ) : (
+              "Send Emails"
+            )}
           </Button>
         ) : (
           <Button

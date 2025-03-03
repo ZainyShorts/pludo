@@ -21,7 +21,7 @@ const Page = () => {
     <div>
       <AgentDetails name={agent} /> 
       <SubRoles name={agent}/> 
-      <Integrations/>
+      <Integrations name={agent}/>
     </div>
   );
 };

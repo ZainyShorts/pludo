@@ -8,15 +8,18 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent } from "@/components/ui/card"
-import { Send } from "lucide-react"
-import { useSession, useUser } from "@descope/nextjs-sdk/client"
+import { Send, Loader2 } from "lucide-react"
+import { useSession, useUser } from "@descope/nextjs-sdk/client"   
+import { toast } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
+
 
 export default function EmailInterface() {
   const [subject, setSubject] = useState("")
-  const [body, setBody] = useState("") 
-   const { isAuthenticated, isSessionLoading, sessionToken } = useSession()
-    const { user } = useUser()
-    const ID = user?.userId
+  const [body, setBody] = useState("")
+  const { isAuthenticated, isSessionLoading, sessionToken } = useSession()
+  const { user } = useUser()
+  const ID = user?.userId
   const [file, setFile] = useState<File | null>(null)
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
   const [isLoading, setIsLoading] = useState(false)
@@ -43,18 +46,33 @@ export default function EmailInterface() {
 
     setIsLoading(true)
 
-    const formDataObject = {
-      type: 'File',
-      subject: subject,
-      body: body,
-      receiver : file, 
-      userId: ID
-    };
-     console.log(formDataObject);
+    const formData = new FormData()
+    formData.append("type", "File")
+    formData.append("subject", subject)
+    formData.append("body", body)
+    formData.append("file", file)
+    formData.append("userId", ID)
+
+    for (const [key, value] of formData.entries()) {
+      console.log(key, value)
+    }
     try {
-      const res = await axios.post(`${process.env.NEXT_PUBLIC_PLUDO_SERVER}/email/bulkEmail`, formDataObject)
-      console.log("res", res)
-      alert("Email sent successfully!")
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_PLUDO_SERVER}/email/bulkEmail`, formData)  
+      if (res.data.success) { 
+        setFile(null); 
+        setBody(''); 
+        setSubject('');
+      }
+        toast.success("Emails Sent successfully!", {
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                  }) 
+
     } catch (error) {
       console.error("Failed to send email:", error)
       if (axios.isAxiosError(error) && error.response) {
@@ -79,7 +97,11 @@ export default function EmailInterface() {
                 id="subject"
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
-                className={errors.subject ? "border-red-500" : "bg-[#36154a] border-[#4a1d6a] text-purple-200 file:bg-[#4a1d6a] file:text-purple-200 file:border-0"}
+                className={
+                  errors.subject
+                    ? "border-red-500"
+                    : "bg-[#36154a] border-[#4a1d6a] text-purple-200 file:bg-[#4a1d6a] file:text-purple-200 file:border-0"
+                }
               />
               {errors.subject && <p className="text-red-500 text-sm">{errors.subject}</p>}
             </div>
@@ -89,7 +111,11 @@ export default function EmailInterface() {
                 id="body"
                 value={body}
                 onChange={(e) => setBody(e.target.value)}
-                className={errors.body ? "border-red-500" : "bg-[#36154a] border-[#4a1d6a] text-purple-200 file:bg-[#4a1d6a] file:text-purple-200 file:border-0"}
+                className={
+                  errors.body
+                    ? "border-red-500"
+                    : "bg-[#36154a] border-[#4a1d6a] text-purple-200 file:bg-[#4a1d6a] file:text-purple-200 file:border-0"
+                }
               />
               {errors.body && <p className="text-red-500 text-sm">{errors.body}</p>}
             </div>
@@ -105,8 +131,17 @@ export default function EmailInterface() {
               {errors.file && <p className="text-red-500 text-sm">{errors.file}</p>}
             </div>
             <Button type="submit" className="w-full bg-purple-800 hover:bg-purple-900" disabled={isLoading}>
-              <Send className="mr-2 h-4 w-4" />
-              {isLoading ? "Sending..." : "Send Email"}
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Sending...
+                </>
+              ) : (
+                <>
+                  <Send className="mr-2 h-4 w-4" />
+                  Send Email
+                </>
+              )}
             </Button>
           </form>
         </CardContent>

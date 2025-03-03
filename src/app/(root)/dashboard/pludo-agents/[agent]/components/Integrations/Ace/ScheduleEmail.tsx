@@ -25,7 +25,7 @@ export default function EmailScheduler() {
   }
 
   return (
-    <div className="min-h-[400px] bg-gradient-to-br from-[#0A0118] to-[#36154a] text-purple-50 flex items-center justify-center p-4">
+    <div className="min-h-[400px] bg-gradient-to-br from-[#c6c0d1] to-[#36154a] text-purple-50 flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}

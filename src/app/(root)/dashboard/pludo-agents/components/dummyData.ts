@@ -26,7 +26,7 @@ export const pludoAgentsData: Agent[] = [
   },
   {
     id: "cora",
-    name: "CORA",
+    name: "Cora",
     role: "Customer Support",
     image: Avatars.Cora,
     isLocked: true,

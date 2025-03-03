@@ -95,7 +95,6 @@ export default function CreateAgent() {
           })
           console.log(response)
           if (response.status === 201) {
-            console.log("Agent created successfully", response.data)
             setSystemPrompt("")
             setErrors({})
             setAgentName("")
