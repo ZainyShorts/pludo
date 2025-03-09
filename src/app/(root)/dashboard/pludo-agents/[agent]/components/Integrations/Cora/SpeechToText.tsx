@@ -1,0 +1,186 @@
+"use client"
+
+import type React from "react"
+
+import { useState, useRef } from "react"
+import { X, Upload, Loader2, FileAudio, Copy, Check } from "lucide-react"
+import axios from "axios"
+
+const url = process.env.NEXT_PUBLIC_PLUDO_SERVER || ""
+
+export default function SpeechToText() {
+  const [file, setFile] = useState<File | null>(null)
+  const [isUploading, setIsUploading] = useState<boolean>(false)
+  const [isGenerating, setIsGenerating] = useState<boolean>(false)
+  const [transcription, setTranscription] = useState<string>("")
+  const [isCopied, setIsCopied] = useState<boolean>(false)
+
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const selectedFile = e.target.files[0]
+
+      if (!selectedFile.type.startsWith("audio/")) {
+        alert("Please upload an audio file")
+        return
+      }
+
+      if (selectedFile.size > 10 * 1024 * 1024) {
+        alert("File size exceeds 10MB limit")
+        return
+      }
+
+      setIsUploading(true)
+      setFile(selectedFile)
+      setIsUploading(false)
+    }
+  }
+
+  const handleRemoveFile = () => {
+    setFile(null)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ""
+    }
+  }
+
+  const triggerFileInput = () => {
+    fileInputRef.current?.click()
+  }
+
+  const handleGenerateTranscription = async () => {
+    if (!file) {
+      alert("Please upload an audio file first")
+      return
+    }
+
+    setIsGenerating(true)
+
+    try {
+      const formData = new FormData()
+      formData.append("file", file)
+
+      const res = await axios.post(`${url}/elevenlab/stt`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      console.log("data", res)
+
+      // Update based on your API response structure
+      setTranscription(res.data.text || res.data.data || "")
+
+      setFile(null)
+
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ""
+      }
+    } catch (error) {
+      console.error("Error generating transcription:", error)
+      setTranscription("Error generating transcription. Please try again.")
+    } finally {
+      setIsGenerating(false)
+    }
+  }
+
+  const handleCopyText = () => {
+    if (transcription) {
+      navigator.clipboard.writeText(transcription)
+      setIsCopied(true)
+
+      // Reset the copied state after 2 seconds
+      setTimeout(() => {
+        setIsCopied(false)
+      }, 2000)
+    }
+  }
+
+  return (
+    <div className="bg-gradient-to-r from-[#1c0e29] to-[#160a27] border border-[#3b1d59]/30 shadow-[0_0_15px_rgba(74,29,106,0.15)] backdrop-blur-sm min-h-[350px] max-h-[450px] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-[#3b1d59]/50 rounded-lg relative max-w-4xl w-full p-6">
+      <h2 className="text-2xl font-bold text-white mb-6">Speech to Text Convertor</h2>
+
+      <div className="mb-6">
+        <input
+          type="file"
+          ref={fileInputRef}
+          className="hidden"
+          accept="audio/*"
+          onChange={handleFileSelect}
+          disabled={isUploading}
+        />
+
+        {!file ? (
+          <div
+            className="border-2 border-dashed border-[#3b1d59] rounded-lg p-8 flex flex-col items-center justify-center cursor-pointer hover:border-[#4a2472] transition-colors"
+            onClick={triggerFileInput}
+          >
+            <Upload className="h-12 w-12 text-purple-400 mb-4" />
+            <p className="text-purple-300 text-center mb-2">Click to upload or drag and drop</p>
+            <p className="text-purple-400/60 text-sm text-center">Audio File only (Max 10MB)</p>
+          </div>
+        ) : (
+          <div className="flex items-center justify-between bg-[#2a1541] border border-[#3b1d59] rounded-lg p-4">
+            <div className="flex items-center space-x-3">
+              <FileAudio className="h-6 w-6 text-purple-400" />
+              <span className="text-white truncate max-w-[300px]">{file.name}</span>
+            </div>
+            <button
+              className="bg-[#3b1d59]/50 hover:bg-[#3b1d59] rounded-full p-1.5 transition-colors"
+              onClick={handleRemoveFile}
+            >
+              <X className="h-4 w-4 text-white" />
+            </button>
+          </div>
+        )}
+      </div>
+
+      <button
+        className="w-full py-6 text-lg font-semibold bg-[#3b1d59] hover:bg-[#4a2472] transition-colors text-white rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
+        onClick={handleGenerateTranscription}
+        disabled={isUploading || isGenerating || !file}
+      >
+        {isGenerating ? (
+          <div className="flex items-center justify-center">
+            <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+            <span>Generating Text...</span>
+          </div>
+        ) : (
+          "Generate Text"
+        )}
+      </button>
+
+      {transcription && (
+        <div className="mt-6">
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-xl font-bold text-white">Generated Text</h3>
+            <button
+              onClick={handleCopyText}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-[#3b1d59] hover:bg-[#4a2472] text-white rounded-md transition-colors text-sm"
+              disabled={isCopied}
+            >
+              {isCopied ? (
+                <>
+                  <Check className="h-4 w-4" />
+                  <span>Copied!</span>
+                </>
+              ) : (
+                <>
+                  <Copy className="h-4 w-4" />
+                  <span>Copy Text</span>
+                </>
+              )}
+            </button>
+          </div>
+          <div className="relative">
+            <textarea
+              className="w-full h-[200px] p-3 bg-[#2a1541] text-white border border-[#3b1d59] rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-[#4a2472]"
+              value={transcription}
+              readOnly
+            />
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+

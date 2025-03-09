@@ -78,33 +78,33 @@ export const agentsWithSubAgents: AgentWithSubAgents[] = [
   },
   {
     name: "Cora",
-    role: "Customer Support",
+    role: "",
     image: Avatars.Cora,
     subAgents: [
-      {
-        id: "cora-1",
-        name: "Issue Resolution Agent",
-        description: "Addresses customer complaints and issues.",
-        icon: MessageSquare,
-      },
-      {
-        id: "cora-2",
-        name: "Feedback Collection Agent",
-        description: "Gathers insights through customer surveys.",
-        icon: ClipboardList,
-      },
-      {
-        id: "cora-3",
-        name: "Knowledge Base Management Agent",
-        description: "Maintains a comprehensive knowledge base.",
-        icon: BookOpen,
-      },
-      {
-        id: "cora-4",
-        name: "Customer Engagement Agent",
-        description: "Proactively engages customers for loyalty.",
-        icon: Users,
-      },
+      // {
+      //   id: "cora-1",
+      //   name: "Issue Resolution Agent",
+      //   description: "Addresses customer complaints and issues.",
+      //   icon: MessageSquare,
+      // },
+      // {
+      //   id: "cora-2",
+      //   name: "Feedback Collection Agent",
+      //   description: "Gathers insights through customer surveys.",
+      //   icon: ClipboardList,
+      // },
+      // {
+      //   id: "cora-3",
+      //   name: "Knowledge Base Management Agent",
+      //   description: "Maintains a comprehensive knowledge base.",
+      //   icon: BookOpen,
+      // },
+      // {
+      //   id: "cora-4",
+      //   name: "Customer Engagement Agent",
+      //   description: "Proactively engages customers for loyalty.",
+      //   icon: Users,
+      // },
     ],
   },
   {

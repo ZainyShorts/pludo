@@ -78,7 +78,59 @@
     .scrollbar-thin {
       scrollbar-width: thin;
       scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
-    }
+    } 
+    /* Add these styles to your globals.css file */
+
+.progress-slider [data-orientation="horizontal"] {
+  height: 8px;
+}
+
+.progress-slider .slider-track {
+  background: linear-gradient(to right, #4a2472, #7a3db8);
+  height: 8px;
+  border-radius: 4px;
+}
+
+.progress-slider .slider-range {
+  background: #3b1d59;
+  height: 8px;
+  border-radius: 4px;
+}
+
+.progress-slider .slider-thumb {
+  background: #9f5ce2;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 10px rgba(159, 92, 226, 0.5);
+}
+
+.volume-slider [data-orientation="horizontal"] {
+  height: 4px;
+}
+
+.volume-slider .slider-track {
+  background: #3b1d59;
+  height: 4px;
+  border-radius: 2px;
+}
+
+.volume-slider .slider-range {
+  background: linear-gradient(to right, #4a2472, #7a3db8);
+  height: 4px;
+  border-radius: 2px;
+}
+
+.volume-slider .slider-thumb {
+  background: #9f5ce2;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+}
+
+
   }
   @keyframes move-twink-back {
     from {background-position:0 0;}

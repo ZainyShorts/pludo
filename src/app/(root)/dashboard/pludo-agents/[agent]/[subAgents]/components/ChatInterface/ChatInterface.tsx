@@ -108,7 +108,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ botName, botAvatar
         }
         dispatch(sendMessage(initialBotMessage)) 
         
-        
+        console.log('data',data)
         const response = await fetch(`${process.env.NEXT_PUBLIC_PLUDO_SERVER}/openai/stream`, {
           method: 'POST',
           headers: {

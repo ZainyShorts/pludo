@@ -49,9 +49,11 @@ const SubRoles: React.FC<Prop> = ({ name }) => {
   return (
     <div className="min-h-auto bg-gradient-to-br from-black to-black text-white p-6 sm:p-8 md:p-12">
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-3xl md:text-5xl font-bold mb-12 text-start bg-gradient-to-r from-white to-purple-400 text-transparent bg-clip-text">
-          {details?.role || "Role Details"}
+        {details?.role && 
+         <h2 className="text-3xl md:text-5xl font-bold mb-12 text-start bg-gradient-to-r from-white to-purple-400 text-transparent bg-clip-text">
+          {details?.role}
         </h2>
+         }
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
           {details?.subAgents.map((role: SubAgent, index: number) => (
             <div
