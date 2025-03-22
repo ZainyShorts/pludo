@@ -19,9 +19,9 @@ import WebScrap from "./Integrations/Delta/WebScrap"
 import TextExtract from "./Integrations/Delta/TextExtract"
 import FileComparison from "./Integrations/Delta/FileComparison"
 import SpeechToText from "./Integrations/Cora/SpeechToText"  
-
 import AILanguageTranslator from "./Integrations/Cora/LanguageTranslator"
-import TextToSpeechModal from "./Integrations/Cora/TextToSpeech"
+import TextToSpeechModal from "./Integrations/Cora/TextToSpeech" 
+import resumeMaker from "./Integrations/Maverik/resumeMaker"
 export const integrations = [
   {
     id: "ace",
@@ -125,6 +125,20 @@ export const integrations = [
   ],
 
 
+  }, { 
+    id: "maverik",
+    name: "Maverik",
+    icon: FileText,
+    description: "Document and web content processing tools",
+    subagents: [
+      {
+        id: "mav-resumeMaker",
+        name: "CV Maker",
+        icon: FileText,
+        description: "Make a attractive CV in less than a minute",
+        Modal: resumeMaker,
+      }, 
+    ]
   }
 ]
 
