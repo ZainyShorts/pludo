@@ -137,6 +137,14 @@ export const integrations = [
         icon: FileText,
         description: "Make a attractive CV in less than a minute",
         Modal: resumeMaker,
+      },  
+      {
+        id: "mav-chatBot",
+        name: "ChatBot Maker",
+        icon: FileText,
+        description: "Make Multiple Chatbots of your choice ",
+        page:true, 
+        link : `/dashboard/pludo-agents/Maverik/integration/chatbot`
       }, 
     ]
   }

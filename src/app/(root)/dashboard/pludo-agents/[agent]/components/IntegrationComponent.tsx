@@ -2,13 +2,15 @@
 
 import { Button } from "@/components/ui/button"
 import { useState, useEffect } from "react"
-import { integrations } from "./IntegrationData"
-import { SelectedIntegration } from "./SelectedIntegration/SelectedIntegration"
+import { integrations } from "./IntegrationData" 
+import { useRouter } from "next/navigation"
+import { SelectedIntegration } from "./SelectedIntegration/SelectedIntegration" 
 
 export default function Integrations({ name }: { name: string }) {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const [selectedIntegrationId, setSelectedIntegrationId] = useState<string | null>(null)
-  const [extractedAgent, setExtractedAgent] = useState<any>(null)
+  const [extractedAgent, setExtractedAgent] = useState<any>(null) 
+  const router = useRouter();
 
   useEffect(() => {
     // Find the integration that matches the provided name
@@ -27,9 +29,14 @@ export default function Integrations({ name }: { name: string }) {
     }
   }, [name])
 
-  const handleIntegration = (id: string) => {
+  const handleIntegration = (id: string , link? : string) => { 
+    if (!link) {
     setSelectedIntegrationId(id)
-    setIsModalOpen(true)
+    setIsModalOpen(true) 
+    } 
+    else  { 
+      router.push(link);
+    }
   }
 
   // If no agent is extracted, show a message or return null
@@ -64,7 +71,7 @@ export default function Integrations({ name }: { name: string }) {
                 <p className="text-gray-400 text-sm text-center mb-4">{subagent.description}</p>
                 <Button
                   variant="outline"
-                  onClick={() => handleIntegration(subagent.id)}
+                  onClick={() => handleIntegration(subagent.id , subagent?.link)}
                   className="w-full bg-white/5 hover:bg-white/10 border-white/20 hover:border-white/30 text-white hover:text-white transition-all duration-300"
                 >
                   Start
