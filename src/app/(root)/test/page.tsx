@@ -14,7 +14,6 @@ function Page() {
           right: '20px', 
           border: 'none', 
           borderRadius: '12px', 
-          boxShadow: '0 4px 20px rgba(0,0,0,0.1)' 
         }}
       />
     </div>

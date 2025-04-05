@@ -1,11 +1,14 @@
 "use client"
 import { useEffect, useState, useRef } from "react"
+import type React from "react"
+
 import { useParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar } from "@/components/ui/avatar"
-import { Send, Bot, User } from 'lucide-react'
+import { Send, Bot, User, X, MessageCircle } from "lucide-react"
+import { useSearchParams } from "next/navigation"
 
 interface Assistant {
   id: string
@@ -37,11 +40,15 @@ const ChatbotPage = () => {
   const { chatbotId } = useParams()
   const [assistant, setAssistant] = useState<Assistant | null>(null)
   const [loading, setLoading] = useState(true)
+  const searchParams = useSearchParams()
+  const clr = decodeURIComponent(searchParams?.get("clr") || "")
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState("")
   const [isProcessing, setIsProcessing] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const [threadId, setThreadId] = useState<string | null>(null)
+  const [isFirstMessage, setIsFirstMessage] = useState(true)
+  const [isChatOpen, setIsChatOpen] = useState(true)
 
   // Fetch assistant data
   useEffect(() => {
@@ -77,11 +84,14 @@ const ChatbotPage = () => {
     setInput(e.target.value)
   }
 
-  const createThread = async () => {
+  const createThread = async (email: string) => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_PLUDO_SERVER}/openai/createThread?assistantId=${chatbotId}`)
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_PLUDO_SERVER}/openai/createThread?assistantId=${chatbotId}&email=${email}`,
+      )
       const data: ThreadResponse = await response.json()
-      
+      console.log(data)
+
       if (data.success && data.data.id) {
         setThreadId(data.data.id)
         return data.data.id
@@ -103,8 +113,8 @@ const ChatbotPage = () => {
         },
         body: JSON.stringify({
           message: messageText,
-          threadId: threadIdValue
-        })
+          threadId: threadIdValue,
+        }),
       })
       const data = await response.json()
       console.log("Message created:", data)
@@ -125,8 +135,8 @@ const ChatbotPage = () => {
         },
         body: JSON.stringify({
           assistantId: assistantIdValue,
-          threadId: threadIdValue
-        })
+          threadId: threadIdValue,
+        }),
       })
       const data = await response.json()
       console.log("Run created:", data)
@@ -135,7 +145,7 @@ const ChatbotPage = () => {
       console.error("Error creating run:", error)
       throw error
     }
-  } 
+  }
   const pollRunStatus = async (runId: string, threadIdValue: string) => {
     try {
       let isCompleted = false
@@ -261,6 +271,11 @@ const ChatbotPage = () => {
       setMessages((prev) => [...prev, errorMessage])
     }
   }
+
+  const isValidEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+  }
+
   // Handle message submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -280,19 +295,43 @@ const ChatbotPage = () => {
     setIsProcessing(true)
 
     try {
-      // TASK 1: Create thread if this is the first message
-      let currentThreadId = threadId
-      if (!currentThreadId) {
-        currentThreadId = await createThread()
+      if (isFirstMessage) {
+        // Validate email for first message
+        if (!isValidEmail(messageText)) {
+          const errorMessage: Message = {
+            role: "assistant",
+            content: "Please enter a valid email address to continue.",
+            id: Date.now().toString(),
+          }
+          setMessages((prev) => [...prev, errorMessage])
+          setIsProcessing(false)
+          return
+        }
+
+        // Create thread with email
+        const currentThreadId = await createThread(messageText)
+
+        // Add success message
+        const successMessage: Message = {
+          role: "assistant",
+          content: "Thank you! Now you can chat with me.",
+          id: Date.now().toString(),
+        }
+        setMessages((prev) => [...prev, successMessage])
+        setIsFirstMessage(false)
+        setIsProcessing(false)
+        return
       }
 
-      // TASK 2: Create message
+      let currentThreadId = threadId
+      if (!currentThreadId) {
+        currentThreadId = await createThread("")
+      }
+
       await createMessage(messageText, currentThreadId!)
 
-      // TASK 3: Create run
       const runResponse = await createRun(chatbotId as string, currentThreadId!)
 
-      // Start polling for run status
       if (runResponse && runResponse.data && runResponse.data.id) {
         await pollRunStatus(runResponse.data.id, currentThreadId!)
       } else {
@@ -300,7 +339,6 @@ const ChatbotPage = () => {
       }
     } catch (error) {
       console.error("Error in chat flow:", error)
-      // Add error message
       const errorMessage: Message = {
         role: "assistant",
         content: "Sorry, I encountered an error. Please try again.",
@@ -311,38 +349,75 @@ const ChatbotPage = () => {
     }
   }
 
+  // Toggle chat open/closed
+  const toggleChat = () => {
+    setIsChatOpen(!isChatOpen)
+  }
+
+  if (!isChatOpen) {
+    return (
+      <div className="fixed inset-0 pointer-events-none bg-transparent">
+        <div
+          className="fixed bottom-6 right-6 cursor-pointer transform transition-transform hover:scale-110 pointer-events-auto"
+          onClick={toggleChat}
+        >
+          <div
+            className="rounded-full p-4 shadow-lg flex items-center justify-center"
+            style={{ backgroundColor: clr || "#4f46e5" }}
+          >
+            <MessageCircle className="h-10 w-10 text-white" />
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="flex flex-col h-screen bg-gray-50">
       {/* Header */}
       <Card className="rounded-none border-b shadow-sm">
         <CardHeader className="py-3">
-          <div className="flex items-center">
-            <Avatar className="h-10 w-10 mr-3 bg-primary/10">
-              <Bot className="h-6 w-6 text-primary" />
-            </Avatar>
-            <div>
-              <CardTitle className="text-xl">{loading ? "Loading..." : assistant?.name || "AI Assistant"}</CardTitle>
-              <p className="text-sm text-muted-foreground">{loading ? "" : assistant?.model || ""}</p>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <Avatar className="h-10 w-10 mr-3 flex justify-center items-center" style={{ backgroundColor: clr }}>
+                <Bot className="h-6 w-6 text-primary" />
+              </Avatar>
+              <div>
+                <CardTitle className="text-xl">{loading ? "Loading..." : assistant?.name || "AI Assistant"}</CardTitle>
+                <p className="text-sm text-muted-foreground">{loading ? "" : "online" || ""}</p>
+              </div>
             </div>
+            <Button variant="ghost" size="icon" onClick={toggleChat} className="rounded-full hover:bg-gray-100">
+              <X className="h-5 w-5" />
+              <span className="sr-only">Close</span>
+            </Button>
           </div>
         </CardHeader>
       </Card>
 
       {/* Chat Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {messages.length === 0 ? (
+        {messages.length === 0 && !isFirstMessage ? (
           <div className="flex h-full items-center justify-center">
             <div className="text-center space-y-3 max-w-md mx-auto">
               <Bot className="h-12 w-12 mx-auto text-primary/80" />
               <h3 className="text-xl font-medium">Start a conversation</h3>
               <p className="text-muted-foreground">
-                Send a message to begin chatting with {assistant?.name || 'the assistant'}
+                Send a message to begin chatting with {assistant?.name || "the assistant"}
               </p>
             </div>
           </div>
+        ) : messages.length === 0 && isFirstMessage ? (
+          <div className="flex h-full items-center justify-center">
+            <div className="text-center space-y-3 max-w-md mx-auto">
+              <Bot className="h-12 w-12 mx-auto text-primary/80" />
+              <h3 className="text-xl font-medium">Write your email to continue</h3>
+              <p className="text-muted-foreground">Please enter your email address to start chatting</p>
+            </div>
+          </div>
         ) : (
-          messages.map((message) => (
-            <div key={message.id} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
+          messages.map((message, index) => (
+            <div key={index} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
               <div
                 className={`flex max-w-[80%] md:max-w-[70%] ${
                   message.role === "user" ? "flex-row-reverse" : "flex-row"
@@ -380,9 +455,18 @@ const ChatbotPage = () => {
               </div>
               <div className="p-3 rounded-lg bg-muted">
                 <div className="flex space-x-2">
-                  <div className="w-2 h-2 rounded-full bg-primary/40 animate-bounce" style={{ animationDelay: "0ms" }}></div>
-                  <div className="w-2 h-2 rounded-full bg-primary/40 animate-bounce" style={{ animationDelay: "150ms" }}></div>
-                  <div className="w-2 h-2 rounded-full bg-primary/40 animate-bounce" style={{ animationDelay: "300ms" }}></div>
+                  <div
+                    className="w-2 h-2 rounded-full bg-primary/40 animate-bounce"
+                    style={{ animationDelay: "0ms" }}
+                  ></div>
+                  <div
+                    className="w-2 h-2 rounded-full bg-primary/40 animate-bounce"
+                    style={{ animationDelay: "150ms" }}
+                  ></div>
+                  <div
+                    className="w-2 h-2 rounded-full bg-primary/40 animate-bounce"
+                    style={{ animationDelay: "300ms" }}
+                  ></div>
                 </div>
               </div>
             </div>
@@ -398,12 +482,12 @@ const ChatbotPage = () => {
             <Input
               value={input}
               onChange={handleInputChange}
-              placeholder="Type your message..."
+              placeholder={isFirstMessage ? "Enter your email..." : "Type your message..."}
               className="flex-1"
               disabled={isProcessing}
             />
-            <Button type="submit" disabled={isProcessing || !input.trim()}>
-              <Send className="h-4 w-4" />
+            <Button style={{ backgroundColor: clr }} type="submit" disabled={isProcessing || !input.trim()}>
+              <Send className="h-4 w-4 text-black" />
               <span className="sr-only">Send</span>
             </Button>
           </form>
@@ -413,4 +497,5 @@ const ChatbotPage = () => {
   )
 }
 
-export default ChatbotPage 
+export default ChatbotPage
+

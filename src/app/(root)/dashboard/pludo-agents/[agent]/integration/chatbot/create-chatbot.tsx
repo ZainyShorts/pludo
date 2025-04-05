@@ -22,9 +22,9 @@ interface CreateChatbotProps {
 }
 
 const tones = [
-  { label: "Casual", value: "casual" },
-  { label: "Professional", value: "professional" },
-  { label: "Friendly", value: "friendly" },
+  { label: "Casual", value: "Casual" },
+  { label: "Formal", value: "Formal" },
+  { label: "Friendly", value: "Friendly" },
 ]
 
 export default function CreateChatbot({ chatbotToEdit, isEditMode, onSuccess, onCancel }: CreateChatbotProps) {
