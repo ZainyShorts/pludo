@@ -409,7 +409,7 @@ const ChatbotPage = () => {
           </div>
         ) : messages.length === 0 && isFirstMessage ? (
           <div className="flex h-full items-center justify-center">
-            <div className="text-center space-y-3 max-w-md mx-auto">
+            <div className="text-center  space-y-3 max-w-md mx-auto">
               <Bot className="h-12 w-12 mx-auto text-primary/80" />
               <h3 className="text-xl font-medium">Write your email to continue</h3>
               <p className="text-muted-foreground">Please enter your email address to start chatting</p>

@@ -203,7 +203,8 @@ export default function Messaging({ onEditChatbot }: MessagingProps) {
     e.stopPropagation()
     setChatbotToDelete(chatbot)
     setIsDeleteModalOpen(true)
-  }
+  } 
+  const [chatBotColor, setChatBotColor] = useState<any>('#ffffff');
 
   const closeDeleteModal = () => {
     setIsDeleteModalOpen(false)
@@ -345,7 +346,8 @@ export default function Messaging({ onEditChatbot }: MessagingProps) {
                             <button
                               key={index}
                               onClick={() => {
-                                setSelectedChatbot(chatbot._id)
+                                setSelectedChatbot(chatbot._id) 
+                                setChatBotColor(chatbot.appearance)
                                 fetchMessages(history.threadId as any)
                               }}
                               className={`w-full flex items-center flex-wrap justify-between p-2 rounded-lg  transition-colors ${
@@ -366,10 +368,7 @@ export default function Messaging({ onEditChatbot }: MessagingProps) {
   }} 
   className="h-4 w-4 mr-2 flex-shrink-0" 
 />                              </div>
-                              <div className="flex items-center text-xs text-purple-400">
-                                <Clock className="h-3 w-3 mr-1" />
-                                {history.threadId}
-                              </div>
+                             
                             </button>
                           ))
                         ) : (
@@ -414,8 +413,10 @@ export default function Messaging({ onEditChatbot }: MessagingProps) {
                 <User className="h-5 w-5 text-primary-foreground" />
               </div>
             ) : (
-              <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-                <Bot className="h-5 w-5 text-primary" />
+              <div className="h-8 w-8 rounded-full  flex items-center justify-center"
+              style={{backgroundColor : chatBotColor || "#9333ea"}}
+               >
+                <Bot className="h-5 w-5 text-white" />
               </div>
             )}
           </div>
