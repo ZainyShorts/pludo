@@ -166,20 +166,33 @@ export default function Messaging({ onEditChatbot }: MessagingProps) {
   // Find the selected history based on IDs
   const selectedChatbotData = chatbots.find((bot) => bot._id === selectedChatbot)
 
-  const copyLinkToClipboard = (id: string, clr : string , e: React.MouseEvent) => {
-    const link = `${window.location.origin}/dashboard/pludo-agents/Maverik/integration/${id}?clr=${encodeURIComponent(clr)}`;
+  const copyLinkToClipboard = (id: string, clr: string, e: React.MouseEvent) => {
+    // Construct the iframe HTML string
+    const iframeHtml = `<iframe 
+        src="${window.location.origin}/dashboard/pludo-agents/Maverik/integration/${id}?clr=${encodeURIComponent(clr)}"
+        width="400"
+        height="500"
+        style="
+            position: absolute; 
+            bottom: 20px; 
+            right: 20px; 
+            border: none; 
+            border-radius: 12px;"
+    ></iframe>`;
+
+    // Copy the iframe HTML to clipboard
     navigator.clipboard
-      .writeText(link)
-      .then(() => {
-        setCopiedLinkId(id)
-        setTimeout(() => setCopiedLinkId(null), 2000) // Reset after 2 seconds
-        toast.success("Link copied to clipboard!")
-      })
-      .catch((err) => {
-        console.error("Failed to copy link:", err)
-        toast.error("Failed to copy link")
-      })
-  }
+        .writeText(iframeHtml)
+        .then(() => {
+            setCopiedLinkId(id);
+            setTimeout(() => setCopiedLinkId(null), 2000);
+            toast.success("Iframe HTML copied to clipboard!");
+        })
+        .catch((err) => {
+            console.error("Failed to copy iframe:", err);
+            toast.error("Failed to copy iframe");
+        });
+};
 
   const handleEditClick = (chatbot: Chatbot, e: React.MouseEvent) => {
     e.stopPropagation() // Prevent accordion from toggling
