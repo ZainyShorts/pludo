@@ -4,7 +4,8 @@ import type React from "react"
 
 import { useParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { Input } from "@/components/ui/input" 
+import axios from "axios"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar } from "@/components/ui/avatar"
 import { Send, Bot, User, X, MessageCircle } from "lucide-react"
@@ -73,8 +74,9 @@ const ChatbotPage = () => {
       fetchAssistant()
     }
   }, [chatbotId])
-
-  // Scroll to bottom when messages change
+  useEffect(()=>{
+    console.log('message',isFirstMessage)
+  },[isFirstMessage])
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [messages])
@@ -202,7 +204,8 @@ const ChatbotPage = () => {
     }
   }
 
-  const fetchMessages = async (threadIdValue: string) => {
+  const fetchPreviousChat = async (threadIdValue: string) => { 
+    setLoading(true);
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_PLUDO_SERVER}/openai/messagesList?threadId=${threadIdValue}`,
@@ -212,7 +215,8 @@ const ChatbotPage = () => {
 
       let messagesArray = null
 
-      if (responseData.success) {
+      setMessages([]);
+      if (responseData.success) { 
         if (responseData.data && Array.isArray(responseData.data)) {
           messagesArray = responseData.data
         } else if (responseData.data && responseData.data.data && Array.isArray(responseData.data.data)) {
@@ -226,38 +230,48 @@ const ChatbotPage = () => {
           messagesArray = responseData.data.body.data
         }
       }
-
+      if (!responseData.data.data) { 
+        console.log("No messages found in the response")   
+        setIsFirstMessage(false);
+        setLoading(false);
+        return 
+      }
       if (messagesArray && messagesArray.length > 0) {
         const sortedMessages = [...messagesArray].sort((a, b) => b.created_at - a.created_at)
 
-        const assistantMessages = sortedMessages.filter((msg) => msg.role === "assistant")
 
-        if (assistantMessages.length > 0) {
-          const latestMessage = assistantMessages[0]
-
-          if (
-            latestMessage.content &&
-            Array.isArray(latestMessage.content) &&
-            latestMessage.content.length > 0 &&
-            latestMessage.content[0].type === "text" &&
-            latestMessage.content[0].text &&
-            latestMessage.content[0].text.value
-          ) {
-            const assistantMessage: Message = {
-              role: "assistant",
-              content: latestMessage.content[0].text.value,
-              id: Date.now().toString(),
+        if (sortedMessages.length > 0) {
+          for (let i = sortedMessages.length - 1; i >= 0; i--) {
+            const currentMessage = sortedMessages[i];
+            if (
+              currentMessage.content &&
+              Array.isArray(currentMessage.content) &&
+              currentMessage.content.length > 0
+            ) {
+              const textValues = currentMessage.content
+                .filter((item) => item.type === "text" && item.text?.value)
+                .map((item) => item.text.value);
+        
+              if (textValues.length > 0) {
+                const assistantMessage: Message = {
+                  role: currentMessage.role, 
+                  content: textValues.join("\n"), 
+                  id: Date.now().toString() + "-" + i, 
+                };
+        
+                setMessages((prev) => [...prev, assistantMessage]);
+                console.log(assistantMessage);
+              }
+            } else {
+              throw new Error("Invalid message content format");
             }
-
-            setMessages((prev) => [...prev, assistantMessage])
-          } else {
-            throw new Error("Invalid message content format")
           }
         } else {
           throw new Error("No assistant messages found")
         }
-      } else {
-        throw new Error("No messages found in the response")
+      } else { 
+          setIsFirstMessage(false);
+          console.log("No messages found in the response")
       }
     } catch (error) {
       console.error("Error fetching messages:", error)
@@ -269,11 +283,95 @@ const ChatbotPage = () => {
         id: Date.now().toString(),
       }
       setMessages((prev) => [...prev, errorMessage])
+    } 
+    finally{ 
+      setLoading(false);
     }
   }
 
   const isValidEmail = (email: string) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+  } 
+  const fetchMessages = async (threadIdValue: string) => { 
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_PLUDO_SERVER}/openai/messagesList?threadId=${threadIdValue}`,
+      )
+      const responseData = await response.json()
+      console.log("Messages fetched:", responseData)
+
+      let messagesArray = null
+
+      setMessages([]);
+      if (responseData.success) { 
+        if (responseData.data && Array.isArray(responseData.data)) {
+          messagesArray = responseData.data
+        } else if (responseData.data && responseData.data.data && Array.isArray(responseData.data.data)) {
+          messagesArray = responseData.data.data
+        } else if (
+          responseData.data &&
+          responseData.data.body &&
+          responseData.data.body.data &&
+          Array.isArray(responseData.data.body.data)
+        ) {
+          messagesArray = responseData.data.body.data
+        }
+      }
+      if (!responseData.data.data) { 
+        console.log("No messages found in the response") 
+        return 
+      }
+      if (messagesArray && messagesArray.length > 0) {
+        const sortedMessages = [...messagesArray].sort((a, b) => b.created_at - a.created_at)
+
+
+        if (sortedMessages.length > 0) {
+          for (let i = sortedMessages.length - 1; i >= 0; i--) {
+            const currentMessage = sortedMessages[i];
+            if (
+              currentMessage.content &&
+              Array.isArray(currentMessage.content) &&
+              currentMessage.content.length > 0
+            ) {
+              const textValues = currentMessage.content
+                .filter((item) => item.type === "text" && item.text?.value)
+                .map((item) => item.text.value);
+        
+              if (textValues.length > 0) {
+                const assistantMessage: Message = {
+                  role: currentMessage.role, 
+                  content: textValues.join("\n"), 
+                  id: Date.now().toString() + "-" + i, 
+                };
+        
+                setMessages((prev) => [...prev, assistantMessage]);
+                console.log(assistantMessage);
+              }
+            } else {
+              throw new Error("Invalid message content format");
+            }
+          }
+        } else {
+          throw new Error("No assistant messages found")
+        }
+      } else {
+          console.log("No messages found in the response")
+      }
+    } catch (error) {
+      console.error("Error fetching messages:", error)
+
+      // Add a fallback message
+      const errorMessage: Message = {
+        role: "assistant",
+        content: "I processed your request, but couldn't retrieve the response. Please try again.",
+        id: Date.now().toString(),
+      }
+      setMessages((prev) => [...prev, errorMessage])
+    } 
+    finally{ 
+      setLoading(false);
+    }
   }
 
   // Handle message submission
@@ -296,7 +394,6 @@ const ChatbotPage = () => {
 
     try {
       if (isFirstMessage) {
-        // Validate email for first message
         if (!isValidEmail(messageText)) {
           const errorMessage: Message = {
             role: "assistant",
@@ -306,10 +403,32 @@ const ChatbotPage = () => {
           setMessages((prev) => [...prev, errorMessage])
           setIsProcessing(false)
           return
-        }
+        } 
+        let conversations = [];
+        if (isValidEmail(messageText)) {  
+        
+          const res = await axios.get(`${process.env.NEXT_PUBLIC_PLUDO_SERVER}/chatbot/findOne/${chatbotId}`)  
+          console.log('res',res);
+           for (let i = 0; i < res.data.conversations.length; i++) { 
+            conversations.push(res.data.conversations[i])
+           } 
+          const matchedEmail = conversations.find((conv)=> conv.email === messageText)  
+          if (matchedEmail) {
+          let threadID = matchedEmail.threadId;   
+          setThreadId(threadID) 
+          setIsProcessing(false) 
+          await fetchPreviousChat(threadID);  
+          setIsFirstMessage(false) 
+         return 
+          } 
+          else if (!matchedEmail) {  
+            console.log('Not MATCHED',matchedEmail )
+            const currentThreadId = await createThread(messageText)
 
-        // Create thread with email
-        const currentThreadId = await createThread(messageText)
+          }  
+          
+        } 
+
 
         // Add success message
         const successMessage: Message = {
@@ -324,9 +443,9 @@ const ChatbotPage = () => {
       }
 
       let currentThreadId = threadId
-      if (!currentThreadId) {
-        currentThreadId = await createThread("")
-      }
+      // if (!currentThreadId) {
+      //   currentThreadId = await createThread("")
+      // }
 
       await createMessage(messageText, currentThreadId!)
 

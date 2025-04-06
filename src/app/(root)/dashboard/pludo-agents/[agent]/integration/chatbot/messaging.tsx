@@ -248,7 +248,9 @@ export default function Messaging({ onEditChatbot }: MessagingProps) {
   const handleDeleteThread = async (threadId : any , ass_ID : any) => { 
     setIsLoading(true)
     try {
-      const response = await axios.delete(`${process.env.NEXT_PUBLIC_PLUDO_SERVER}/openai/deleteThread/${threadId}/${ass_ID}`);
+      const response = await axios.delete(`${process.env.NEXT_PUBLIC_PLUDO_SERVER}/openai/deleteThread/${threadId}/${ass_ID}`);  
+      setMessages([])
+
       toast.success("Chat Deleted Successfully!")
       
       fetchChatbots();
@@ -340,7 +342,7 @@ export default function Messaging({ onEditChatbot }: MessagingProps) {
                       </div>
                     </div>
                     <AccordionContent>
-                      <div className="pl-2 pr-2 pb-2 space-y-1">
+                      <div className="pl-2 pr-2 pb-2 space-y-1 max-h-[200px] overflow-y-auto scrollbar-hide">
                         {chatbot.conversations && chatbot.conversations.length > 0 ? (
                           chatbot.conversations.map((history,index) => (
                             <button
@@ -390,9 +392,9 @@ export default function Messaging({ onEditChatbot }: MessagingProps) {
 
               <ScrollArea className="flex-1 p-4">
   <div className="space-y-4">
-    <div className="flex-1 overflow-y-auto p-4 space-y-4">
+    <div className="flex-1 max-h-screen  overflow-y-auto p-4 space-y-4">
     {messages.length === 0 ? (
-  <div className="flex h-full items-center justify-center">
+  <div className="flex h-full  items-center justify-center">
     <div className="text-center text-white space-y-3 max-w-md mx-auto">
       <Bot className="text-white h-12 w-12 mx-auto text-primary/80" />
       <h3 className="  text-xl font-medium">Chats Will be Shown Here</h3>
