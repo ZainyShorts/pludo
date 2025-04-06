@@ -4,26 +4,25 @@ import type React from "react"
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { MessageSquare, Clock,  Trash, Trash2, Edit, Link, Check, Loader2 } from "lucide-react"
+import { MessageSquare, Trash, Trash2, Edit, Link, Check, Loader2 } from "lucide-react"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { ScrollArea } from "@/components/ui/scroll-area" 
+import { ScrollArea } from "@/components/ui/scroll-area"
 import axios from "axios"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { useSession, useUser } from "@descope/nextjs-sdk/client" 
-import { Bot, User } from 'lucide-react'
+import { useSession, useUser } from "@descope/nextjs-sdk/client"
+import { Bot, User } from "lucide-react"
 import { toast } from "react-toastify"
 import { DeleteChatbotModal } from "./confirmation"
 import type { Chatbot } from "./page" // Import the Chatbot interface from page.tsx
 
 interface MessagingProps {
   onEditChatbot: (chatbot: Chatbot) => void
-} 
+}
 interface Message {
   role: "user" | "assistant"
   content: string
   id: string
 }
-
 
 interface Conversation {
   id: string
@@ -40,15 +39,14 @@ export default function Messaging({ onEditChatbot }: MessagingProps) {
   const [selectedHistory, setSelectedHistory] = useState<string | null>(null)
   const [selectedChatbot, setSelectedChatbot] = useState<string | null>(null)
   const [chatbots, setChatbots] = useState<Chatbot[]>([])
-  const [isLoading, setIsLoading] = useState(true) 
-    const [messages, setMessages] = useState<Message[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [messages, setMessages] = useState<Message[]>([])
   const [error, setError] = useState<string | null>(null)
   const [copiedLinkId, setCopiedLinkId] = useState<string | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [chatbotToDelete, setChatbotToDelete] = useState<Chatbot | null>(null)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
-  
-   
+
   // Get user from Descope
   const { user } = useUser()
   const { isAuthenticated, isSessionLoading, sessionToken } = useSession()
@@ -76,14 +74,49 @@ export default function Messaging({ onEditChatbot }: MessagingProps) {
     }
   }
   useEffect(() => {
-
     fetchChatbots()
-  }, [ID, isSessionLoading]) 
-   const [loading , setLoading] = useState(false);
- 
-    const [noMessages ,setNoMessages] = useState<any>(null);
-   const fetchMessages = async (threadIdValue: string) => { 
-    setLoading(true);
+  }, [ID, isSessionLoading])
+  const [loading, setLoading] = useState(false)
+
+  const [noMessages, setNoMessages] = useState<any>(null)
+  function formatMarkdownText(raw: string): string {
+    // First, handle the escaped newlines
+    let formattedText = raw.replace(/\\n/g, "\n")
+
+    // Replace ** bold markers with HTML tags
+    formattedText = formattedText.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+
+    // Add line breaks after periods (but not if they're already followed by a newline)
+    formattedText = formattedText.replace(/\.(?!\n)([^\s])/g, ".\n$1")
+    formattedText = formattedText.replace(/\.(?!\n)(\s+)/g, ".\n$1")
+
+    // Add proper spacing for numbered lists
+    formattedText = formattedText.replace(/(\d+\.)(\s*)/g, "<strong>$1</strong>$2")
+
+    // Add proper paragraph spacing
+    formattedText = formattedText.replace(/\n{3,}/g, "\n\n") // Normalize multiple newlines
+
+    // Ensure proper spacing after colons in headings
+    formattedText = formattedText.replace(/<strong>(.*?):<\/strong>/g, "<strong>$1:</strong> ")
+
+    // Split into paragraphs and process each one
+    const paragraphs = formattedText.split("\n\n")
+    const processedParagraphs = paragraphs
+      .map((p) => {
+        if (p.trim()) {
+          // Instead of wrapping in HTML tags, just add a line break after each paragraph
+          return p.trim()
+        }
+        return ""
+      })
+      .join("\n\n")
+
+    // Convert newlines to <br> tags for HTML rendering
+    return processedParagraphs.replace(/\n/g, "<br />")
+  }
+
+  const fetchMessages = async (threadIdValue: string) => {
+    setLoading(true)
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_PLUDO_SERVER}/openai/messagesList?threadId=${threadIdValue}`,
@@ -93,8 +126,8 @@ export default function Messaging({ onEditChatbot }: MessagingProps) {
 
       let messagesArray = null
 
-      setMessages([]);
-      if (responseData.success) { 
+      setMessages([])
+      if (responseData.success) {
         if (responseData.data && Array.isArray(responseData.data)) {
           messagesArray = responseData.data
         } else if (responseData.data && responseData.data.data && Array.isArray(responseData.data.data)) {
@@ -108,45 +141,42 @@ export default function Messaging({ onEditChatbot }: MessagingProps) {
           messagesArray = responseData.data.body.data
         }
       }
-      if (!responseData.data.data) { 
-        setNoMessages("No messages found in the response") 
-        return 
+      if (!responseData.data.data) {
+        setNoMessages("No messages found in the response")
+        return
       }
       if (messagesArray && messagesArray.length > 0) {
         const sortedMessages = [...messagesArray].sort((a, b) => b.created_at - a.created_at)
 
-
         if (sortedMessages.length > 0) {
           for (let i = sortedMessages.length - 1; i >= 0; i--) {
-            const currentMessage = sortedMessages[i];
-            if (
-              currentMessage.content &&
-              Array.isArray(currentMessage.content) &&
-              currentMessage.content.length > 0
-            ) {
+            const currentMessage = sortedMessages[i]
+            if (currentMessage.content && Array.isArray(currentMessage.content) && currentMessage.content.length > 0) {
               const textValues = currentMessage.content
                 .filter((item) => item.type === "text" && item.text?.value)
-                .map((item) => item.text.value);
-        
+                .map((item) => item.text.value)
+
               if (textValues.length > 0) {
+                const formattedContent = formatMarkdownText(textValues.join("\n"))
+
                 const assistantMessage: Message = {
-                  role: currentMessage.role, 
-                  content: textValues.join("\n"), 
-                  id: Date.now().toString() + "-" + i, 
-                };
-        
-                setMessages((prev) => [...prev, assistantMessage]);
-                console.log(assistantMessage);
+                  role: currentMessage.role,
+                  content: formattedContent,
+                  id: Date.now().toString() + "-" + i,
+                }
+
+                setMessages((prev) => [...prev, assistantMessage])
+                console.log(assistantMessage)
               }
             } else {
-              throw new Error("Invalid message content format");
+              throw new Error("Invalid message content format")
             }
           }
         } else {
           throw new Error("No assistant messages found")
         }
       } else {
-          setNoMessages("No messages found in the response")
+        setNoMessages("No messages found in the response")
       }
     } catch (error) {
       console.error("Error fetching messages:", error)
@@ -158,9 +188,8 @@ export default function Messaging({ onEditChatbot }: MessagingProps) {
         id: Date.now().toString(),
       }
       setMessages((prev) => [...prev, errorMessage])
-    } 
-    finally{ 
-      setLoading(false);
+    } finally {
+      setLoading(false)
     }
   }
   // Find the selected history based on IDs
@@ -178,21 +207,21 @@ export default function Messaging({ onEditChatbot }: MessagingProps) {
             right: 20px; 
             border: none; 
             border-radius: 12px;"
-    ></iframe>`;
+    ></iframe>`
 
     // Copy the iframe HTML to clipboard
     navigator.clipboard
-        .writeText(iframeHtml)
-        .then(() => {
-            setCopiedLinkId(id);
-            setTimeout(() => setCopiedLinkId(null), 2000);
-            toast.success("Iframe HTML copied to clipboard!");
-        })
-        .catch((err) => {
-            console.error("Failed to copy iframe:", err);
-            toast.error("Failed to copy iframe");
-        });
-};
+      .writeText(iframeHtml)
+      .then(() => {
+        setCopiedLinkId(id)
+        setTimeout(() => setCopiedLinkId(null), 2000)
+        toast.success("Iframe HTML copied to clipboard!")
+      })
+      .catch((err) => {
+        console.error("Failed to copy iframe:", err)
+        toast.error("Failed to copy iframe")
+      })
+  }
 
   const handleEditClick = (chatbot: Chatbot, e: React.MouseEvent) => {
     e.stopPropagation() // Prevent accordion from toggling
@@ -203,8 +232,8 @@ export default function Messaging({ onEditChatbot }: MessagingProps) {
     e.stopPropagation()
     setChatbotToDelete(chatbot)
     setIsDeleteModalOpen(true)
-  } 
-  const [chatBotColor, setChatBotColor] = useState<any>('#ffffff');
+  }
+  const [chatBotColor, setChatBotColor] = useState<any>("#ffffff")
 
   const closeDeleteModal = () => {
     setIsDeleteModalOpen(false)
@@ -245,25 +274,25 @@ export default function Messaging({ onEditChatbot }: MessagingProps) {
       setDeletingId(null)
     }
   }
-  const handleDeleteThread = async (threadId : any , ass_ID : any) => { 
+  const handleDeleteThread = async (threadId: any, ass_ID: any) => {
     setIsLoading(true)
     try {
-      const response = await axios.delete(`${process.env.NEXT_PUBLIC_PLUDO_SERVER}/openai/deleteThread/${threadId}/${ass_ID}`);  
+      const response = await axios.delete(
+        `${process.env.NEXT_PUBLIC_PLUDO_SERVER}/openai/deleteThread/${threadId}/${ass_ID}`,
+      )
       setMessages([])
 
       toast.success("Chat Deleted Successfully!")
-      
-      fetchChatbots();
-      return response.data; 
 
+      fetchChatbots()
+      return response.data
     } catch (error) {
-      console.error('Error deleting thread:', error.response?.data || error.message);
-      throw error;
-    } 
-    finally{ 
+      console.error("Error deleting thread:", error.response?.data || error.message)
+      throw error
+    } finally {
       setIsLoading(false)
     }
-  };
+  }
   return (
     <motion.div
       className="w-full h-full rounded-2xl overflow-hidden backdrop-blur-sm bg-purple-950/30 border border-purple-700/50 shadow-[0_0_15px_rgba(139,92,246,0.2)] flex flex-col"
@@ -273,7 +302,6 @@ export default function Messaging({ onEditChatbot }: MessagingProps) {
     >
       <div className="p-4 border-b border-purple-800/50 bg-purple-900/30 flex items-center justify-between">
         <h2 className="text-xl font-bold text-white">Chatbot Conversations</h2>
-       
       </div>
 
       <div className="flex-1 flex overflow-hidden">
@@ -314,7 +342,7 @@ export default function Messaging({ onEditChatbot }: MessagingProps) {
                       </div>
                       <div className="flex items-center space-x-1 ml-2">
                         <button
-                          onClick={(e) => copyLinkToClipboard(chatbot.chatBotId , chatbot.appearance, e)}
+                          onClick={(e) => copyLinkToClipboard(chatbot.chatBotId, chatbot.appearance, e)}
                           className="p-1.5 rounded-full hover:bg-purple-800/50 transition-colors"
                           aria-label="Copy link"
                         >
@@ -344,11 +372,11 @@ export default function Messaging({ onEditChatbot }: MessagingProps) {
                     <AccordionContent>
                       <div className="pl-2 pr-2 pb-2 space-y-1 max-h-[200px] overflow-y-auto scrollbar-hide">
                         {chatbot.conversations && chatbot.conversations.length > 0 ? (
-                          chatbot.conversations.map((history,index) => (
+                          chatbot.conversations.map((history, index) => (
                             <button
                               key={index}
                               onClick={() => {
-                                setSelectedChatbot(chatbot._id) 
+                                setSelectedChatbot(chatbot._id)
                                 setChatBotColor(chatbot.appearance)
                                 fetchMessages(history.threadId as any)
                               }}
@@ -358,19 +386,19 @@ export default function Messaging({ onEditChatbot }: MessagingProps) {
                                   : "text-purple-300 hover:bg-purple-800/30"
                               }`}
                             >
-                              <div className="flex items-center justify-between w-full"> 
+                              <div className="flex items-center justify-between w-full">
                                 <div className="flex gap-2 items-center">
-                                <MessageSquare className="h-4 w-4 mr-2 flex-shrink-0" />
-                                <div className="truncate">{history.email.slice(0,12)}...</div>  
+                                  <MessageSquare className="h-4 w-4 mr-2 flex-shrink-0" />
+                                  <div className="truncate">{history.email.slice(0, 12)}...</div>
                                 </div>
-                                <Trash2 
-  onClick={(e) => {
-    e.stopPropagation();
-    handleDeleteThread(history.threadId , chatbot.chatBotId);
-  }} 
-  className="h-4 w-4 mr-2 flex-shrink-0" 
-/>                              </div>
-                             
+                                <Trash2
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    handleDeleteThread(history.threadId, chatbot.chatBotId)
+                                  }}
+                                  className="h-4 w-4 mr-2 flex-shrink-0"
+                                />{" "}
+                              </div>
                             </button>
                           ))
                         ) : (
@@ -389,56 +417,60 @@ export default function Messaging({ onEditChatbot }: MessagingProps) {
         <div className="flex-1 flex flex-col">
           {messages ? (
             <>
-
               <ScrollArea className="flex-1 p-4">
-  <div className="space-y-4">
-    <div className="flex-1 max-h-screen  overflow-y-auto p-4 space-y-4">
-    {messages.length === 0 ? (
-  <div className="flex h-full  items-center justify-center">
-    <div className="text-center text-white space-y-3 max-w-md mx-auto">
-      <Bot className="text-white h-12 w-12 mx-auto text-primary/80" />
-      <h3 className="  text-xl font-medium">Chats Will be Shown Here</h3>
-    </div>
-  </div>
-) : (
-  <>
-    {messages.map((message, index) => (
-      <div key={index} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
-        <div
-          className={`flex max-w-[80%] md:max-w-[70%] ${
-            message.role === "user" ? "flex-row-reverse" : "flex-row"
-          }`}
-        >
-          <div className={`flex-shrink-0 ${message.role === "user" ? "ml-3" : "mr-3"}`}>
-            {message.role === "user" ? (
-              <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
-                <User className="h-5 w-5 text-primary-foreground" />
-              </div>
-            ) : (
-              <div className="h-8 w-8 rounded-full  flex items-center justify-center"
-              style={{backgroundColor : chatBotColor || "#9333ea"}}
-               >
-                <Bot className="h-5 w-5 text-white" />
-              </div>
-            )}
-          </div>
-          <div
-            className={`p-3 rounded-lg ${
-              message.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted"
-            }`}
-          >
-            {message.content}
-          </div>
-        </div>
-      </div>
-    ))}
-   
-  </>
-)}
-      
-    </div>
-  </div>
-</ScrollArea>
+                <div className="space-y-4">
+                  <div className="flex-1 max-h-screen  overflow-y-auto p-4 space-y-4">
+                    {messages.length === 0 ? (
+                      <div className="flex h-full  items-center justify-center">
+                        <div className="text-center text-white space-y-3 max-w-md mx-auto">
+                          <Bot className="text-white h-12 w-12 mx-auto text-primary/80" />
+                          <h3 className="  text-xl font-medium">Chats Will be Shown Here</h3>
+                        </div>
+                      </div>
+                    ) : (
+                      <>
+                        {messages.map((message, index) => (
+                          <div
+                            key={index}
+                            className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
+                          >
+                            <div
+                              className={`flex max-w-[80%] md:max-w-[70%] ${
+                                message.role === "user" ? "flex-row-reverse" : "flex-row"
+                              }`}
+                            >
+                              <div className={`flex-shrink-0 ${message.role === "user" ? "ml-3" : "mr-3"}`}>
+                                {message.role === "user" ? (
+                                  <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
+                                    <User className="h-5 w-5 text-primary-foreground" />
+                                  </div>
+                                ) : (
+                                  <div
+                                    className="h-8 w-8 rounded-full  flex items-center justify-center"
+                                    style={{ backgroundColor: chatBotColor || "#9333ea" }}
+                                  >
+                                    <Bot className="h-5 w-5 text-white" />
+                                  </div>
+                                )}
+                              </div>
+                              <div
+                                className={`p-3 rounded-lg ${
+                                  message.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted"
+                                }`}
+                                dangerouslySetInnerHTML={
+                                  message.role === "assistant" ? { __html: message.content } : undefined
+                                }
+                              >
+                                {message.role === "user" ? message.content : null}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </>
+                    )}
+                  </div>
+                </div>
+              </ScrollArea>
             </>
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center p-6 md:p-8">
