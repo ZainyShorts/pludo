@@ -21,7 +21,8 @@ import FileComparison from "./Integrations/Delta/FileComparison"
 import SpeechToText from "./Integrations/Cora/SpeechToText"  
 import AILanguageTranslator from "./Integrations/Cora/LanguageTranslator"
 import TextToSpeechModal from "./Integrations/Cora/TextToSpeech" 
-import resumeMaker from "./Integrations/Maverik/resumeMaker"
+import resumeMaker from "./Integrations/Maverik/resumeMaker" 
+import LogoGenerator from "./Integrations/Gala/LogoGenerator"
 export const integrations = [
   {
     id: "ace",
@@ -146,6 +147,20 @@ export const integrations = [
         page:true, 
         link : `/dashboard/pludo-agents/Maverik/integration/chatbot`
       }, 
+    ]
+  } , { 
+    id: "gala",
+    name: "Gala",
+    icon: FileText,
+    description: "Graphic Designer ",
+    subagents: [
+      {
+        id: "gala-logoGenerator",
+        name: "Logo Generator",
+        icon: FileText,
+        description: "Make a attractive Logo in less than a minute",
+        Modal: LogoGenerator,
+      },  
     ]
   }
 ]

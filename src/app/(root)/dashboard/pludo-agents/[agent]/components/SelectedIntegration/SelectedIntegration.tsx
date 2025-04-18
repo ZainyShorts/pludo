@@ -25,7 +25,7 @@ export function SelectedIntegration({ selectedId, open, onClose }: SelectedInteg
       onClick={onClose} 
     >
       <div
-        className="bg-gradient-to-r from-[#1c0e29] to-[#160a27] border border-[#3b1d59]/30 shadow-[0_0_15px_rgba(74,29,106,0.15)] backdrop-blur-sm max-h-[450px] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-[#3b1d59]/50 rounded-lg relative max-w-4xl w-full"
+        className="bg-gradient-to-r p-2 from-[#1c0e29] to-[#160a27] border border-[#3b1d59]/30 shadow-[0_0_15px_rgba(74,29,106,0.15)] backdrop-blur-sm max-h-[450px] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-[#3b1d59]/50 rounded-lg relative max-w-4xl w-full"
         onClick={(e) => e.stopPropagation()} 
       >
         <button className="absolute top-2 right-2 text-gray-600 hover:text-gray-900" onClick={onClose}>
