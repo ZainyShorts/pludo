@@ -6,7 +6,9 @@ import {
   FileText,
   Globe,
   ScanText, 
-  AudioLines,
+  AudioLines,  
+  Image,
+  ChevronsLeftRightEllipsis,
   ContrastIcon as Compare, 
 } from "lucide-react"
 
@@ -22,7 +24,9 @@ import SpeechToText from "./Integrations/Cora/SpeechToText"
 import AILanguageTranslator from "./Integrations/Cora/LanguageTranslator"
 import TextToSpeechModal from "./Integrations/Cora/TextToSpeech" 
 import resumeMaker from "./Integrations/Maverik/resumeMaker" 
-import LogoGenerator from "./Integrations/Gala/LogoGenerator"
+import LogoGenerator from "./Integrations/Gala/LogoGenerator"  
+import ImageGenerator from "./Integrations/Gala/ImageGenerator"
+import WebsiteGenerator from "./Integrations/Gala/WebsiteGenerator"
 export const integrations = [
   {
     id: "ace",
@@ -160,7 +164,21 @@ export const integrations = [
         icon: FileText,
         description: "Make a attractive Logo in less than a minute",
         Modal: LogoGenerator,
-      },  
+      },   
+      {
+        id: "gala-webGenerator",
+        name: "Website Developer",
+        icon: ChevronsLeftRightEllipsis,
+        description: "Make a attractive Website in less than a minute",
+        Modal: WebsiteGenerator,
+      }, 
+      {
+        id: "gala-image",
+        name: "Image Generator",
+        icon: Image,
+        description: "Make different Images powered by AI",
+        Modal: ImageGenerator,
+      },
     ]
   }
 ]

@@ -1,66 +1,65 @@
 import React, { useState } from 'react';
 import { Download } from 'lucide-react';
 
-const LogoGenerator: React.FC = () => {
-  const [logoText, setLogoText] = useState('');
+const ImageGenerator: React.FC = () => {
+  const [promptText, setPromptText] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
-  const [showLogo, setShowLogo] = useState(false);
-  const [logoData, setLogoData] = useState<{url: string, filename: string} | null>(null);
+  const [showImage, setShowImage] = useState(false);
+  const [imageData, setImageData] = useState<{url: string, filename: string} | null>(null);
   
-  const logoOptions = {
-    chatgpt: {
-      url: '/images/chatgpt.png',
-      filename: 'chatgpt.png'
+  const imageOptions = {
+    building: {
+      url: '/images/building.jpg',
+      filename: 'building.jpg'
     },
-    software: {
-      url: '/images/software.avif',
-      filename: 'software.avif'
+    girl: {
+      url: '/images/girl.avif',
+      filename: 'girl.avif'
     },
-    clothing: {
-      url: '/images/clothing.jpg',
-      filename: 'clothing.jpg'
+    young: {
+      url: '/images/young.avif',
+      filename: 'young-boy.avif'
     },
-    rock: {
-      url: '/images/music.png',
-      filename: 'rockmusic.png'
+    old: {
+      url: '/images/old.avif',
+      filename: 'old-man.avif'
     }
   };
 
-  const getLogoData = (text: string) => {
+  const getImageData = (text: string) => {
     const lowerText = text.toLowerCase();
     
-    if (lowerText.includes('chatgpt')) return logoOptions.chatgpt;
-    if (lowerText.includes('software')) return logoOptions.software;
-    if (lowerText.includes('clothing')) return logoOptions.clothing;
-    if (lowerText.includes('rock')) return logoOptions.rock;
+    if (lowerText.includes('building')) return imageOptions.building;
+    if (lowerText.includes('girl')) return imageOptions.girl;
+    if (lowerText.includes('young') || lowerText.includes('boy')) return imageOptions.young;
+    if (lowerText.includes('old') || lowerText.includes('man')) return imageOptions.old;
     
     return null;
   };
 
   const handleGenerate = () => {
-    const data = getLogoData(logoText);
+    const data = getImageData(promptText);
     if (!data) {
-      alert('No matching logo found. Try including: "software", "chatgpt", "clothing", or "rock"');
+      alert('No matching image found. Try including: "building", "girl", "young boy", or "old man"');
       return;
     }
 
     setIsGenerating(true);
-    setShowLogo(false);
+    setShowImage(false);
     
     setTimeout(() => {
-      setLogoData(data);
+      setImageData(data);
       setIsGenerating(false);
-      setShowLogo(true);
-    }, 6000);
+      setShowImage(true);
+    }, 7000);
   }; 
 
   const handleDownload = () => {
-    if (!logoData) return;
+    if (!imageData) return;
     
-    // Create a temporary link to trigger download
     const link = document.createElement('a');
-    link.href = logoData.url;
-    link.download = logoData.filename;
+    link.href = imageData.url;
+    link.download = imageData.filename;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -70,16 +69,16 @@ const LogoGenerator: React.FC = () => {
     <div className="w-full max-w-4xl mx-auto h-[400px] bg-gradient-to-br from-indigo-950 via-purple-900 to-fuchsia-950 rounded-xl shadow-2xl overflow-hidden border border-fuchsia-500/30">
       <div className="p-6 h-full w-full flex flex-col overflow-y-auto">
         <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-400 via-purple-400 to-cyan-400 mb-6">
-           Logo Generator
+           Image Generator
         </h2>
         
-        <div className={`space-y-4 ${!showLogo ? 'flex-1 flex flex-col justify-center' : 'mb-6'}`}>
+        <div className={`space-y-4 ${!showImage ? 'flex-1 flex flex-col justify-center' : 'mb-6'}`}>
           <div className="relative">
             <input
               type="text"
-              value={logoText}
-              onChange={(e) => setLogoText(e.target.value)}
-              placeholder="Enter your prompt here..."
+              value={promptText}
+              onChange={(e) => setPromptText(e.target.value)}
+              placeholder="Enter Prompt here..."
               className="w-full p-3 bg-black/50 border border-fuchsia-500/50 rounded-lg text-white placeholder-fuchsia-300/50 focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:border-transparent transition-all"
             />
           </div>
@@ -89,7 +88,7 @@ const LogoGenerator: React.FC = () => {
             disabled={isGenerating}
             className="w-full bg-gradient-to-r from-fuchsia-600 to-purple-800 hover:from-fuchsia-700 hover:to-purple-900 text-white font-medium py-3 px-4 rounded-lg transition-all duration-300 shadow-lg shadow-fuchsia-900/50 disabled:opacity-70"
           >
-            Generate Logo
+            Generate Image
           </button>
         </div>
         
@@ -102,18 +101,18 @@ const LogoGenerator: React.FC = () => {
                 </div>
               </div>
               <div className="text-fuchsia-300 text-center">
-                <p className="font-medium">Generating Your Logo</p>
-                <p className="text-xs opacity-70 mt-1">finalizing...</p>
+                <p className="font-medium">Generating Your Image</p>
+                <p className="text-xs opacity-70 mt-1">Integrating from Artificial Intelligiance...</p>
               </div>
             </div>
           </div>
         )}
         
-        {showLogo && logoData && (
+        {showImage && imageData && (
           <div className="flex-1 bg-black/40 rounded-lg p-4 border border-fuchsia-500/20">
             <div className="h-full flex flex-col">
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-medium text-fuchsia-300">Your Generated Logo</h3>
+                <h3 className="text-lg font-medium text-fuchsia-300">Your Generated Image</h3>
                 <button
                   onClick={handleDownload}
                   className="flex items-center gap-2 px-3 py-1.5 bg-fuchsia-600/20 hover:bg-fuchsia-600/30 rounded-lg text-fuchsia-300 text-sm transition-colors"
@@ -124,13 +123,13 @@ const LogoGenerator: React.FC = () => {
               </div>
               <div className="flex-1 flex items-center justify-center">
                 <img 
-                  src={logoData.url} 
-                  alt="Generated Logo" 
+                  src={imageData.url} 
+                  alt="Generated Image" 
                   className="max-h-[200px] max-w-full object-contain rounded shadow-xl animate-fade-in"
                 /> 
               </div>
               <p className="mt-4 text-xs text-fuchsia-300/70 text-center">
-                {logoText || "Generated Logo"} • Gala Logo Generator
+                {promptText || "Generated Image"} • Gala Image Generator
               </p>
             </div>
           </div>
@@ -140,4 +139,4 @@ const LogoGenerator: React.FC = () => {
   );
 };
 
-export default LogoGenerator;
+export default ImageGenerator;
