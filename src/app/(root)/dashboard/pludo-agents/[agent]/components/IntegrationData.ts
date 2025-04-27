@@ -26,7 +26,6 @@ import TextToSpeechModal from "./Integrations/Cora/TextToSpeech"
 import resumeMaker from "./Integrations/Maverik/resumeMaker" 
 import LogoGenerator from "./Integrations/Gala/LogoGenerator"  
 import ImageGenerator from "./Integrations/Gala/ImageGenerator"
-import WebsiteGenerator from "./Integrations/Gala/WebsiteGenerator"
 export const integrations = [
   {
     id: "ace",
@@ -170,8 +169,8 @@ export const integrations = [
         name: "Website Developer",
         icon: ChevronsLeftRightEllipsis,
         description: "Make a attractive Website in less than a minute",
-        Modal: WebsiteGenerator,
-      }, 
+        link : "/dashboard/pludo-agents/Gala/integration/web-generator"
+       }, 
       {
         id: "gala-image",
         name: "Image Generator",
