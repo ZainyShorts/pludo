@@ -3,15 +3,11 @@ import LoadingSpinner from "./LoadingSpinner";
 
 interface WebsitePreviewProps {
   html: string;
-  css: string;
-  js: string;
   isLoading: boolean;
 }
 
 const WebsitePreview: React.FC<WebsitePreviewProps> = ({ 
   html, 
-  css, 
-  js, 
   isLoading 
 }) => {
   const [viewMode, setViewMode] = useState<"desktop" | "tablet" | "mobile">("desktop");
@@ -24,30 +20,19 @@ const WebsitePreview: React.FC<WebsitePreviewProps> = ({
   };
 
   useEffect(() => {
-    if (html && css && js && iframeRef.current) {
+    if (html) {
       const iframe = iframeRef.current;
       const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
       
       if (iframeDoc) {
         iframeDoc.open();
         iframeDoc.write(`
-          <!DOCTYPE html>
-          <html>
-            <head>
-              <meta charset="UTF-8">
-              <meta name="viewport" content="width=device-width, initial-scale=1.0">
-              <style>${css}</style>
-            </head>
-            <body>
-              ${html}
-              <script>${js}</script>
-            </body>
-          </html>
+         ${html}
         `);
         iframeDoc.close();
       }
     }
-  }, [html, css, js]);
+  }, [html]);
 
   return (
     <div className="flex flex-col h-full">
@@ -93,7 +78,7 @@ const WebsitePreview: React.FC<WebsitePreviewProps> = ({
               transition: "max-width 0.3s ease"
             }}
           >
-            {html && css && js ? (
+            {html ? (
               <iframe
                 ref={iframeRef}
                 title="Website Preview"

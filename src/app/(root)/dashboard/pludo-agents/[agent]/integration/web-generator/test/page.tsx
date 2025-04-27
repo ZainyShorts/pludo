@@ -32,7 +32,7 @@ const WebsiteGenerator: React.FC = () => {
       setBusinessName(formData.businessName); 
       console.log('formData',formData)
       
-      const {data} = await axios.post("https://brandsblitz.xyz/service1/openai/generateWebsiteCode", formData);
+      const {data} = await axios.post("https://l8wlljm3-3011.inc1.devtunnels.ms/openai/generateWebsiteCode", formData);
       console.log('data',data); 
       if (data.html) {
         setGeneratedWebsite({
@@ -105,8 +105,6 @@ const WebsiteGenerator: React.FC = () => {
             >
               <WebsitePreview 
                 html={generatedWebsite.html} 
-                css={generatedWebsite.css} 
-                js={generatedWebsite.js}
                 isLoading={isGenerating} 
               />
             </TabsContent>

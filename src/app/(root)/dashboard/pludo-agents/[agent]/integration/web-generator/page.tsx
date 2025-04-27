@@ -1,149 +1,121 @@
 'use client'
-import { useState, useEffect } from "react";
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardFooter, 
-  CardHeader, 
-  CardTitle 
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
-} from "@/components/ui/select";
-import { Separator } from "./seperator/seperator";
-import { Loader2, Download, Code, Sparkles } from "lucide-react";
-import { cn } from "@/lib/utils";
-import PreviewFrame from "./preview-frame";
+import React, { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
+import BusinessForm from "@/components/BusinessForm";
+import WebsitePreview from "@/components/WebsitePreview";
+import CodeView from "@/components/CodeView";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import axios from "axios";
 
-const TEMPLATE_OPTIONS = [
-  { value: "gym", label: "Fitness & Gym" },
-  { value: "portfolio", label: "Creative Portfolio" },
-  { value: "real-estate", label: "Real Estate" },
-  { value: "medical", label: "Healthcare & Medical" },
-  { value: "restaurant", label: "Restaurant & Food" },
-  { value: "ecommerce", label: "E-Commerce" },
-];
+interface GeneratedWebsite {
+  html: string;
+  imageUrls: string[];
+}
 
-export default function TemplateGenerator() {
-  const [selectedTemplate, setSelectedTemplate] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
-  const [isGenerating, setIsGenerating] = useState<boolean>(false);
-  const [isGenerated, setIsGenerated] = useState<boolean>(false);
-  const [showIframe, setShowIframe] = useState<boolean>(false);
-  
-  const handleGenerate = () => {
-    if (!selectedTemplate || !description.trim()) return;
-    
-    setIsGenerating(true);
-    setShowIframe(false);
-    
-    // Simulate generation process
-    setTimeout(() => {
-      setIsGenerating(false);
-      setIsGenerated(true);
-      setShowIframe(true);
-    }, 2000);
-  };
-  
-  return (
-    <div className="w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-6 items-start">
-      <Card className="w-full lg:w-[400px] border-border/30 bg-card/80 backdrop-blur-sm">
-        <CardHeader className="pb-4">
-          <div className="flex items-center gap-2 mb-2">
-            <Code className="h-5 w-5 text-primary" />
-            <CardTitle className="text-xl font-medium">Template Generator</CardTitle>
-          </div>
-          <CardDescription>
-            Select a template and provide a description to generate your custom website
-          </CardDescription>
-        </CardHeader>
-        
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <label htmlFor="template" className="text-sm font-medium text-foreground/90">
-              Select Template
-            </label>
-            <Select value={selectedTemplate} onValueChange={setSelectedTemplate}>
-              <SelectTrigger id="template" className="w-full bg-background/50">
-                <SelectValue placeholder="Choose a template" />
-              </SelectTrigger>
-              <SelectContent className="bg-popover/90 backdrop-blur-sm border-border/30">
-                {TEMPLATE_OPTIONS.map((template) => (
-                  <SelectItem key={template.value} value={template.value}>
-                    {template.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          
-          <div className="space-y-2">
-            <label htmlFor="description" className="text-sm font-medium text-foreground/90">
-              Description
-            </label>
-            <Textarea
-              id="description"
-              placeholder="Describe what you want in your website..."
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="min-h-[120px] bg-background/50 resize-none"
-            />
-            <p className="text-xs text-muted-foreground">
-              Be specific about the features, style, and content you want.
-            </p>
-          </div>
-        </CardContent>
-        
-        <Separator className="mb-4 bg-border/20" />
-        
-        <CardFooter className="flex-col gap-4">
-          <Button 
-            onClick={handleGenerate} 
-            disabled={isGenerating || !selectedTemplate || !description.trim()}
-            className="w-full gap-2 bg-primary/90 hover:bg-primary transition-all"
-          >
-            {isGenerating ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Generating...
-              </>
-            ) : (
-              <>
-                <Sparkles className="h-4 w-4" />
-                Generate Template
-              </>
-            )}
-          </Button>
-          
-          <Button 
-            variant="outline" 
-            className={cn(
-              "w-full gap-2 transition-all duration-300 bg-background/50 border-border/50",
-              !isGenerated && "opacity-0 pointer-events-none h-0 mt-0 mb-0 py-0"
-            )}
-            disabled={!isGenerated}
-          >
-            <Download className="h-4 w-4" />
-            Download ZIP
-          </Button>
-        </CardFooter>
-      </Card>
+const WebsiteGenerator: React.FC = () => {
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [selectedTab, setSelectedTab] = useState<"preview" | "code">("preview");
+  const [businessName, setBusinessName] = useState("");
+  const [generatedWebsite, setGeneratedWebsite] = useState<any>({
+    html: "",
+  });
+  const { toast } = useToast();
+
+  const handleGenerateWebsite = async (formData: any) => {
+    try {
+      setIsGenerating(true);
+      setBusinessName(formData.businessName); 
+      console.log('formData',formData)
       
-      <div className={cn(
-        "w-full flex-1 transition-all duration-500 ease-in-out",
-        !showIframe && "opacity-0"
-      )}>
-        <div className="rounded-lg overflow-hidden border border-border/30 shadow-2xl bg-background h-[600px] w-full">
-          {showIframe && <PreviewFrame />}
+      const {data} = await axios.post("https://l8wlljm3-3011.inc1.devtunnels.ms/openai/generateWebsiteCode", formData);
+      console.log('data',data); 
+      if (data.html) {
+       
+        setGeneratedWebsite({
+            html: data.html,
+          });
+          
+    }
+    //     toast({
+    //       title: "Website generated successfully!",
+    //       description: "Your website code is ready to preview and download.",
+    //       variant: "default",
+    //     });
+    //   } else {
+    //     throw new Error("Failed to generate website code");
+    //   }
+    } catch (error) {
+      console.error("Error generating website:", error);
+      toast({
+        title: "Error generating website",
+        description: error instanceof Error ? error.message : "An unexpected error occurred",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  return (
+    <div className="bg-black rounded-lg overflow-hidden shadow-xl border border-gray-800">
+      <div className="grid md:grid-cols-5 min-h-[700px]">
+        {/* Input Panel */}
+        <div className="md:col-span-2 border-r border-gray-800 p-6 space-y-6">
+          <BusinessForm 
+            onSubmit={handleGenerateWebsite} 
+            isLoading={isGenerating} 
+          />
+        </div>
+        
+        {/* Preview/Code Panel */}
+        <div className="md:col-span-3 flex flex-col">
+          <Tabs 
+            defaultValue="preview" 
+            value={selectedTab}
+            onValueChange={(value) => setSelectedTab(value as "preview" | "code")}
+            className="flex-1 flex flex-col"
+          >
+            <div className="border-b border-gray-800">
+              <TabsList className="bg-transparent h-auto p-0">
+                <TabsTrigger 
+                  value="preview" 
+                  className="data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none px-4 py-2"
+                >
+                  Preview
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="code" 
+                  className="data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none px-4 py-2"
+                >
+                  Code
+                </TabsTrigger>
+              </TabsList>
+            </div>
+            
+            <TabsContent 
+              value="preview" 
+              className="m-0 p-0 flex-1 data-[state=active]:block"
+            >
+              <WebsitePreview 
+                html={generatedWebsite.html} 
+                isLoading={isGenerating} 
+              />
+            </TabsContent>
+            
+            <TabsContent 
+              value="code" 
+              className="m-0 p-0 flex-1 data-[state=active]:block"
+            >
+              <CodeView 
+                html={generatedWebsite.html}
+                businessName={businessName || "website"} 
+              />
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default WebsiteGenerator;

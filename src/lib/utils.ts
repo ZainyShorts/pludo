@@ -31,7 +31,7 @@ export const templateOptions = [
 ];
 
 // Generate a downloadable zip file
-export function generateZipDownload(html: string, css: string, js: string, filename: string) {
+export function generateZipDownload(html: string,  filename: string) {
   // Use client-side JSZip library
   const JSZip = (window as any).JSZip;
   
@@ -43,8 +43,7 @@ export function generateZipDownload(html: string, css: string, js: string, filen
   
   // Add files to the zip
   zip.file("index.html", html);
-  zip.file("styles.css", css);
-  zip.file("script.js", js);
+
   
   // Generate the zip file
   zip.generateAsync({ type: "blob" }).then(function(content: Blob) {
@@ -92,7 +91,12 @@ export const industryOptions = [
   // { value: "finance", label: "Finance" },
   // { value: "retail", label: "Retail" },
   // { value: "restaurant", label: "Restaurant" },
-  { value: "gym", label: "Gym" },
+  { value: "gym", label: "Gym" }, 
+  {value : "realEstate " , label :"Real Estate"}, 
+  {value : "portfolio", label : "Portfolio"},  
+  {value : "business", label : "Business"}, 
+
+
   // { value: "creative", label: "Creative & Design" },
   // { value: "professional", label: "Professional Services" },
   // { value: "real_estate", label: "Real Estate" },

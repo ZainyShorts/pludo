@@ -23,7 +23,8 @@ import FileComparison from "./Integrations/Delta/FileComparison"
 import SpeechToText from "./Integrations/Cora/SpeechToText"  
 import AILanguageTranslator from "./Integrations/Cora/LanguageTranslator"
 import TextToSpeechModal from "./Integrations/Cora/TextToSpeech" 
-import resumeMaker from "./Integrations/Maverik/resumeMaker" 
+import resumeMaker from "./Integrations/Maverik/resumeMaker"  
+import BackgroundRemover from "./Integrations/Gala/Bg-Remover"
 import LogoGenerator from "./Integrations/Gala/LogoGenerator"  
 import ImageGenerator from "./Integrations/Gala/ImageGenerator"
 export const integrations = [
@@ -177,6 +178,13 @@ export const integrations = [
         icon: Image,
         description: "Make different Images powered by AI",
         Modal: ImageGenerator,
+      }, 
+      {
+        id: "gala-bg-rem",
+        name: "Background Remover",
+        icon: Image,
+        description: "Remove Background of Images by Pludo",
+        Modal: BackgroundRemover,
       },
     ]
   }

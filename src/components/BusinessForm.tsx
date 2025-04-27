@@ -42,12 +42,11 @@ const BusinessForm: React.FC<BusinessFormProps> = ({ onSubmit, isLoading }) => {
   });
 
   const handleFormSubmit = (data: any) => { 
-    console.log('done')
     onSubmit(data);
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-[#18181B] rounded-xl border border-neutral-800/50 shadow-2xl">
+    <div className="max-w-3xl min-h-screen mx-auto p-6 bg-[#18181B] rounded-xl border border-neutral-800/50 shadow-2xl">
       <div className="mb-8 text-center">
         <h2 className="text-2xl font-bold text-white mb-2">Website Generator</h2>
         <p className="text-neutral-400">Create a professional business website in minutes</p>
